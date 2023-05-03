@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/splash_screen/splash_screen.dart';
+import 'package:kangsayur_seller/ui/auth/login/login.dart';
+import 'package:kangsayur_seller/ui/auth/login/otp.dart';
+import 'package:kangsayur_seller/ui/auth/login/otp_login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,9 +26,9 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
-      home: const SplashScreen(),
+      home: const OTP(),
     );
   }
 }

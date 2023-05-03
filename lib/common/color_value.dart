@@ -10,5 +10,6 @@ class ColorValue {
   static const Color deadColor = Color(0xFFF6F6F6);
   static const Color dyingColor = Color(0xFFB6B6B6);
   static const Color blackColor = Color(0xFF000000);
+  static const Color hintColor = Color(0xffA0A0A0);
 
 }
