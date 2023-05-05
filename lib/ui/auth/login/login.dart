@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
+import 'package:kangsayur_seller/ui/auth/login/otp.dart';
+
+import '../../../widget/dialog_alret.dart';
 
 class login_screen extends StatefulWidget {
   const login_screen({Key? key}) : super(key: key);
@@ -147,19 +150,25 @@ class _login_screenState extends State<login_screen> {
                           setState(() {
                             _emailHasError = true;
                           });
-                          showErrorDialog(context, 'Email tidak boleh kosong');
+                          showErrorDialog(context, "Perhatian" ,'Email tidak boleh kosong');
                         } else if(!_isValidEmail(_emailController.text)) {
                           setState(() {
                             _emailHasError = true;
                           });
-                          showErrorDialog(context, 'Email tidak valid');
+                          showErrorDialog(context, "Perhatian" ,'Email tidak valid');
                         } else if(_passwordController.text.isEmpty) {
-                          showErrorDialog(context, 'Password tidak boleh kosong');
+                          showErrorDialog(context, 'Perhatian', 'Password tidak boleh kosong');
                         } else if(_passwordController.text.length < 6) {
-                          showErrorDialog(context, 'Password minimal 6 karakter');
+                          showErrorDialog(context, 'perhatian', 'Password minimal 6 karakter');
                         } else {
                           print('Email: ${_emailController.text}');
                           print('Password: ${_passwordController.text}');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const OTP(),
+                            ),
+                          );
                         }
                       },
                       child: Text(
@@ -195,44 +204,5 @@ class _login_screenState extends State<login_screen> {
         multiLine: false);
 
     return emailRegex.hasMatch(email);
-  }
-
-  void showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Error',
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(
-              color: Colors.red,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Text(message,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-              color: Colors.black,
-              fontWeight: FontWeight.normal,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _emailHasError = false;
-                });
-                Navigator.pop(context);
-              },
-              child: Text('OK',
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                  color: ColorValue.primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

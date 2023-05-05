@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/on_boarding/on_boarding_content.dart';
 import 'package:kangsayur_seller/on_boarding/size_config.dart';
+import 'package:kangsayur_seller/ui/auth/login/login.dart';
+import 'package:kangsayur_seller/ui/auth/register/register_pemilik.dart';
 import '../common/color_value.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -122,7 +124,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const login_screen(),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorValue.primaryColor,
                             elevation: 0,
@@ -137,7 +146,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),),
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const register_pemilik(),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
                             side: const BorderSide(
@@ -160,7 +176,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const login_screen(),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorValue.primaryColor,
                             elevation: 0,
@@ -175,7 +198,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),),
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const register_pemilik(),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               side: const BorderSide(
