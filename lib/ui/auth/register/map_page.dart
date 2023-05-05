@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:kangsayur_seller/ui/auth/register/sandi_register.dart';
-import 'package:kangsayur_seller/widget/main_button.dart';
 import 'package:location/location.dart' as loc;
 import '../../../Constants/app_constants.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../common/color_value.dart';
+import '../../widget/main_button.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);

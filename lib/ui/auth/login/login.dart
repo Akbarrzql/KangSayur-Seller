@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/login/otp.dart';
-
-import '../../../widget/dialog_alret.dart';
+import '../../widget/dialog_alret.dart';
 
 class login_screen extends StatefulWidget {
   const login_screen({Key? key}) : super(key: key);

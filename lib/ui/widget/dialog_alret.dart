@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../common/color_value.dart';
+
+import '../../common/color_value.dart';
 
 void showErrorDialog(BuildContext context, String message, String tittle_eror) {
   showDialog(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kangsayur_seller/widget/dialog_alret.dart';
-
 import '../../../common/color_value.dart';
+import '../../widget/dialog_alret.dart';
 
 class register extends StatefulWidget {
   const register({Key? key}) : super(key: key);

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,8 +7,7 @@ import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/kategori_toko.dart';
 import 'package:kangsayur_seller/ui/auth/register/map_page.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_pemilik.dart';
-
-import '../../../widget/textfiled.dart';
+import '../../widget/textfiled.dart';
 
 class register_toko extends StatefulWidget {
   const register_toko({Key? key, required this.selectedCategories}) : super(key: key);

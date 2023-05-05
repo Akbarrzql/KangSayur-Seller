@@ -1,10 +1,8 @@
-import 'package:contacts_service/contacts_service.dart';
-import 'package:contacts_service/contacts_service.dart' as contacts_service;
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/nama_toko.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
-import 'package:kangsayur_seller/widget/textfiled.dart';
+import '../../widget/textfiled.dart';
 
 class register_pemilik extends StatefulWidget {
   const register_pemilik({Key? key}) : super(key: key);

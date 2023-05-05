@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../common/color_value.dart';
+import '../../common/color_value.dart';
 
 //if else in parameter widget
 

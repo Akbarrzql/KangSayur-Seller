@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:kangsayur_seller/on_boarding/on_boarding_content.dart';
-import 'package:kangsayur_seller/on_boarding/size_config.dart';
 import 'package:kangsayur_seller/ui/auth/login/login.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_pemilik.dart';
-import '../common/color_value.dart';
+import 'package:kangsayur_seller/ui/on_boarding/size_config.dart';
+import '../../common/color_value.dart';
+import '../auth/register/register_pemilik.dart';
+import 'on_boarding_content.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);

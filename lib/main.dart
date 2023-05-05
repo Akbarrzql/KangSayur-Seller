@@ -1,13 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kangsayur_seller/splash_screen/splash_screen.dart';
-import 'package:kangsayur_seller/ui/auth/login/login.dart';
-import 'package:kangsayur_seller/ui/auth/login/otp.dart';
-import 'package:kangsayur_seller/ui/auth/login/otp_login.dart';
-import 'package:kangsayur_seller/ui/auth/register/kategori_toko.dart';
-import 'package:kangsayur_seller/ui/auth/register/nama_toko.dart';
-import 'package:kangsayur_seller/ui/auth/register/register_pemilik.dart';
-import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
-import 'package:kangsayur_seller/ui/auth/register/sandi_register.dart';
+import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());

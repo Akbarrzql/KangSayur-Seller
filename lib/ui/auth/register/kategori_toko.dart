@@ -3,8 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
 
-import '../../../widget/dialog_alret.dart';
-
 class KategoriToko extends StatefulWidget {
   const KategoriToko({Key? key}) : super(key: key);
 

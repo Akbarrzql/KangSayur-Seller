@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/map_page.dart';
-import 'package:kangsayur_seller/widget/textfiled.dart';
-import '../../../widget/main_button.dart';
-import '../../../widget/dialog_alret.dart';
+import '../../widget/dialog_alret.dart';
+import '../../widget/main_button.dart';
 
 class KataSandiRegister extends StatefulWidget {
   const KataSandiRegister({Key? key}) : super(key: key);
