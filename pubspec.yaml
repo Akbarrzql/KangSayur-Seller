@@ -50,6 +50,7 @@ dependencies:
   geolocator: ^9.0.2
   location: ^4.4.0
   syncfusion_flutter_charts: ^21.2.3
+  flutter_localization: ^0.1.10
 
 
 dev_dependencies:

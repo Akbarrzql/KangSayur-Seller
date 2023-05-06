@@ -332,7 +332,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                       color: Color(0xFFE5E5E5),
                     ),
                     child: Text(
-                      "Terkahir diperbarui ${DateFormat('dd MMMM yyyy id_ID').format(DateTime.now())}",
+                      "Terkahir diperbarui ${DateFormat('dd MMMM yyyy').format(DateTime.now())}",
                       style: textTheme.bodyText1!.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
