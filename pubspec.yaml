@@ -46,11 +46,11 @@ dependencies:
   latlong2: ^0.8.1
   vector_math: ^2.1.2
   geocoding: ^2.1.0
-  flutter_map_marker_cluster: ^1.1.0
   geolocator: ^9.0.2
   location: ^4.4.0
   syncfusion_flutter_charts: ^21.2.3
   flutter_localization: ^0.1.10
+  lottie: ^2.3.2
 
 
 dev_dependencies:
