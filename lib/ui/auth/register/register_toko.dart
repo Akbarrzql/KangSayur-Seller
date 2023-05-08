@@ -492,19 +492,19 @@ class _register_tokoState extends State<register_toko> {
                         ),
                       );
                     },
-                    child: Text(
-                      'Selanjutnya',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
                     style: ElevatedButton.styleFrom(
                       primary: ColorValue.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      'Selanjutnya',
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
                   ),
                 ),

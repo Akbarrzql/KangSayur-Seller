@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:kangsayur_seller/ui/auth/register/sandi_register.dart';
+import 'package:kangsayur_seller/ui/bottom_navigation/bottom_navigation.dart';
+import 'package:kangsayur_seller/ui/bottom_navigation/item/dashboard.dart';
 import 'package:location/location.dart' as loc;
 import '../../../Constants/app_constants.dart';
 import 'package:latlong2/latlong.dart';
@@ -184,7 +186,11 @@ class _MapScreenState extends State<MapScreen> {
                     'Longitude: ${_currentPosition.longitude.toStringAsFixed(6)}',
                   ),
                   const SizedBox(height: 15),
-                  main_button("Daftar", context, onPressed: (){}),
+                  main_button("Daftar", context, onPressed: (){
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                            (Route<dynamic> route) => false);
+                  }),
                 ],
               ),
             ),
