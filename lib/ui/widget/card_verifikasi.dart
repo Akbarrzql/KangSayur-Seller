@@ -4,13 +4,14 @@ import 'package:flutter_svg/svg.dart';
 import '../../common/color_value.dart';
 
 class CardVerifikasi extends StatelessWidget {
-  const CardVerifikasi({Key? key, required this.jenisVerifikasiProduk, required this.tanggalVerifikasiProduk, required this.namaVerifikasiProduk , required this.descVerifikasiProduk, required this.gambarVerifikasiProduk, required this.statusVerifikasiProduk}) : super(key: key);
+  CardVerifikasi({Key? key, required this.jenisVerifikasiProduk, required this.tanggalVerifikasiProduk, required this.namaVerifikasiProduk , required this.descVerifikasiProduk, required this.gambarVerifikasiProduk, required this.statusVerifikasiProduk, required this.onPressed}) : super(key: key);
   final String jenisVerifikasiProduk;
   final String tanggalVerifikasiProduk;
   final String namaVerifikasiProduk;
   final String descVerifikasiProduk;
   final String gambarVerifikasiProduk;
   final String statusVerifikasiProduk;
+  final void Function()? onPressed;
 
 
   @override
@@ -155,7 +156,7 @@ class CardVerifikasi extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                      onPressed: (){},
+                      onPressed: onPressed,
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(85, 25),
                         primary: ColorValue.primaryColor,

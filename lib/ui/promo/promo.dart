@@ -1,3 +1,4 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/ui/produk/kategori_produk.dart';
 import 'package:kangsayur_seller/ui/promo/list_promo.dart';
@@ -23,6 +24,7 @@ class _PromoPageState extends State<PromoPage> {
 
   bool _isCategorySelected = false;
   final _hargaPromoController = TextEditingController();
+  bool withInputFormatter = false;
 
   List<String> categoryNames = [
     "Beras",
@@ -70,6 +72,12 @@ class _PromoPageState extends State<PromoPage> {
     "Rp 5.000",
     "Rp 6.000",
   ];
+
+  final _formatter = CurrencyTextInputFormatter(
+    locale: 'id',
+    decimalDigits: 0,
+    symbol: 'Rp. ',
+  );
 
   @override
   void initState() {
@@ -382,7 +390,30 @@ class _PromoPageState extends State<PromoPage> {
                                             ),
                                           ),
                                           const SizedBox(height: 10,),
-                                          textfield(context, "Harga Promo", _hargaPromoController, TextInputType.text)
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5),
+                                              border: Border.all(
+                                                color: ColorValue.hintColor,
+                                                width: 0.5,
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                                              child: TextFormField(
+                                                controller: _hargaPromoController,
+                                                keyboardType: TextInputType.number,
+                                                inputFormatters: [_formatter],
+                                                decoration: InputDecoration(
+                                                  border: InputBorder.none,
+                                                  hintText: "Rp. ",
+                                                  hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                                    color: ColorValue.hintColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -393,7 +424,12 @@ class _PromoPageState extends State<PromoPage> {
                             const SizedBox(height: 10,),
                           ],
                         ),
-                    main_button("Buat Promo", context, onPressed: (){})
+                    main_button("Buat Promo", context, onPressed: (){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ListPromoPage()));
+                    })
                   ],
                 )
               else

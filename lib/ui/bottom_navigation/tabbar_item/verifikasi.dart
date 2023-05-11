@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/ui/widget/card_verifikasi.dart';
 
 import '../../../common/color_value.dart';
+import '../../produk/detail_produk.dart';
 
 class VerifikasiPage extends StatefulWidget {
   const VerifikasiPage({Key? key}) : super(key: key);
@@ -62,13 +63,21 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
                   shrinkWrap: true,
                   itemCount: 3  ,
                   itemBuilder: (BuildContext context, int index) {
-                    return const CardVerifikasi(
+                    return CardVerifikasi(
                       jenisVerifikasiProduk: 'Bahan Pokok',
                       tanggalVerifikasiProduk: '12/12/2021',
                       namaVerifikasiProduk: 'Wortel',
                       descVerifikasiProduk: 'Wortel segar dari kebun sayur',
                       gambarVerifikasiProduk: 'assets/images/wortel.png',
                       statusVerifikasiProduk: 'Terverifikasi',
+                      onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DetailProduk(),
+                          ),
+                        );
+                      },
                     );
                   },
                 )
@@ -77,14 +86,6 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Aksi ketika FAB ditekan
-        },
-        child: Icon(Icons.add),
-        backgroundColor: ColorValue.primaryColor,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 

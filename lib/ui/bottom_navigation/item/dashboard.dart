@@ -23,7 +23,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
   late String _selectedMonth;
   late String _selectedMonthGrafik;
 
-  late ScrollController _scrollController;
+  ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -62,6 +62,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
         child: Container(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: SingleChildScrollView(
+            controller: _scrollController,
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(0, 24, 0, 24),
             child: Column(
@@ -106,7 +107,11 @@ class _DahsboardPageState extends State<DahsboardPage> {
                       value: dropdownValue,
                       icon: const Icon(Icons.arrow_drop_down),
                       iconSize: 24,
-                      elevation: 16,
+                      //underline transparent
+                      underline: Container(
+                        height: 0,
+                        color: Colors.transparent,
+                      ),
                       style: textTheme.subtitle1!.copyWith(
                         fontWeight: FontWeight.w400,
                         fontSize: 16,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/nama_toko.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
+import 'package:kangsayur_seller/ui/on_boarding/on_boarding_screen.dart';
 import '../../widget/textfiled.dart';
 
 class register_pemilik extends StatefulWidget {
@@ -29,7 +30,7 @@ class _register_pemilikState extends State<register_pemilik> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => register()),
+              MaterialPageRoute(builder: (context) => OnboardingScreen()),
                   (Route<dynamic> route) => false),
         ),
         backgroundColor: Colors.white,

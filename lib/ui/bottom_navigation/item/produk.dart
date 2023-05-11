@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/bottom_navigation/tabbar_item/daftar_produk.dart';
 import 'package:kangsayur_seller/ui/bottom_navigation/tabbar_item/verifikasi.dart';
+import 'package:kangsayur_seller/ui/produk/tambah_produk.dart';
 
 class ProdukPage extends StatefulWidget {
   const ProdukPage({Key? key}) : super(key: key);
@@ -62,6 +63,15 @@ class _ProdukPageState extends State<ProdukPage>  with SingleTickerProviderState
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Aksi ketika FAB ditekan
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const TambahProdukPage()));
+        },
+        child: Icon(Icons.add),
+        backgroundColor: ColorValue.primaryColor,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

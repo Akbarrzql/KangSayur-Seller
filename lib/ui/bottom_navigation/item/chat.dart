@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
+import 'package:kangsayur_seller/ui/chat/detail_chat.dart';
+import 'package:kangsayur_seller/ui/chat/pengaturan_chat.dart';
 import 'package:kangsayur_seller/ui/widget/list_chat.dart';
 import 'package:kangsayur_seller/ui/widget/textfiled.dart';
 
@@ -29,7 +31,14 @@ class _ChatPageState extends State<ChatPage> {
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PengaturanTokoPage(),
+                  ),
+                );
+              },
               icon: const Icon(
                 Icons.settings_outlined,
                 color: ColorValue.neutralColor,
@@ -77,11 +86,17 @@ class _ChatPageState extends State<ChatPage> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return const ListChart(
+                    return ListChart(
                       imagePelanggan: 'assets/images/ava_profile.png',
                       namePelanggan: 'Nama Pelanggan',
                       pesanPelanggan: 'Halo, saya mau tanya...',
-                      waktuPesan: '12.00',
+                      waktuPesan: '10.00',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DetailChatPage(),
+                        ),
+                      )
                     );
                   },
                 )
