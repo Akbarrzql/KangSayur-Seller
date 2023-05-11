@@ -40,10 +40,10 @@ class _IklanPageState extends State<IklanPage> {
   List<String> categoryNames = [    "Bahan Pokok",    "Sayuran",    "Buah Buahan",    "Daging",    "Unggas",    "Telur"  ];
   List<String> categoryIcons = [
     "assets/svg/bahan_pokok.svg",
-    "assets/svg/sayuran.svg",
-    "assets/svg/buah_buahan.svg",
+    "assets/svg/sayuran_1.svg",
+    "assets/svg/buah.svg",
     "assets/svg/daging.svg",
-    "assets/svg/ayam.svg",
+    "assets/svg/unggas.svg",
     "assets/svg/telur.svg"
   ];
 

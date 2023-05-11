@@ -51,6 +51,7 @@ dependencies:
   syncfusion_flutter_charts: ^21.2.3
   flutter_localization: ^0.1.10
   lottie: ^2.3.2
+  currency_text_input_formatter: ^2.1.8
 
 
 dev_dependencies:

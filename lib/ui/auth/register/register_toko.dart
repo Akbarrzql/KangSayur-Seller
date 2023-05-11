@@ -53,10 +53,10 @@ class _register_tokoState extends State<register_toko> {
   List<String> categoryNames = [    "Bahan Pokok",    "Sayuran",    "Buah Buahan",    "Daging",    "Unggas",    "Telur"  ];
   List<String> categoryIcons = [
     "assets/svg/bahan_pokok.svg",
-    "assets/svg/sayuran.svg",
-    "assets/svg/buah_buahan.svg",
+    "assets/svg/sayuran_1.svg",
+    "assets/svg/buah.svg",
     "assets/svg/daging.svg",
-    "assets/svg/ayam.svg",
+    "assets/svg/unggas.svg",
     "assets/svg/telur.svg"
   ];
 
@@ -95,318 +95,357 @@ class _register_tokoState extends State<register_toko> {
         backgroundColor: Colors.white,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Foto Toko",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Foto Toko",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                //image picker
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: (){
-                        _showBottomSheet(context);
-                      },
-                      child: Container(
-                        height: 100,
-                        width: 100,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              //image picker
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      _showBottomSheet(context);
+                    },
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: ColorValue.neutralColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: _imageFile != null ? ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(_imageFile!, fit: BoxFit.cover),
+                      ) : Container(
                         decoration: BoxDecoration(
                           color: ColorValue.neutralColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: _imageFile != null ? ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.file(_imageFile!, fit: BoxFit.cover),
-                        ) : Container(
-                          decoration: BoxDecoration(
-                            color: ColorValue.neutralColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          "Unggah Foto Toko",
-                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            color: ColorValue.neutralColor,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
-                        _imageFile != null ? ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: ColorValue.primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          onPressed: (){
-                            _showBottomSheet(context);
-                            },
-                          child: Text(
-                            "Unggah Ulang",
-                            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ) : Container(),
-                      ],
-                    )
-                  ],
-                ),
-                //informasi banner
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Color(0xffD7FEDF),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 55,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: ColorValue.primaryColor,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Text(
-                          "Nama toko tidak dapat diubah setelah lapak terverifikasi.",
-                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: ColorValue.primaryColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Nama Toko",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                textfield(context, "Nama toko", _namaTokoController, TextInputType.name),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Deskripsi Toko",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: ColorValue.hintColor,
-                      width: 0.5,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      controller: _deskripsiController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Deksripsi toko",
-                        hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: ColorValue.hintColor,
-                        ),
+                        child: Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Kategori Toko",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
+                  SizedBox(
+                    width: 15,
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                if (_isCategorySelected)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (var i = 0; i < widget.selectedCategories.length; i++)
-                        if (widget.selectedCategories[i])
-                      Column(
-                        children: [
-                            Row(
-                              children: [
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      width: 50,
-                                      height: 50,
-                                      //border radius
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: ColorValue.primaryColor,
-                                      ),
-                                    ),
-                                    SvgPicture.asset(
-                                      categoryIcons[i],
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 15,),
-                                Text(
-                                  categoryNames[i],
-                                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                    color: ColorValue.neutralColor,
-                                  ),
-                                ),
-                        ],
+                      SizedBox(
+                        width: 15,
                       ),
-                          SizedBox(height: 10,)
-                            ],
-                          )
+                      Text(
+                        "Unggah Foto Toko",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: ColorValue.neutralColor,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
+                      _imageFile != null ? ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: ColorValue.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        onPressed: (){
+                          _showBottomSheet(context);
+                          },
+                        child: Text(
+                          "Unggah Ulang",
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ) : Container(),
                     ],
                   )
-                else
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: ColorValue.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+                ],
+              ),
+              //informasi banner
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Color(0xffD7FEDF),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                height: 55,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      color: ColorValue.primaryColor,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Text(
+                        "Nama toko tidak dapat diubah setelah lapak terverifikasi.",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: ColorValue.primaryColor,
+                        ),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => KategoriToko()));
-                    },
-                    child: Text(
-                      "Pilih Kategori Lapak",
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Colors.white,
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Nama Toko",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              textfield(context, "Nama toko", _namaTokoController, TextInputType.name),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Deskripsi Toko",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: ColorValue.hintColor,
+                    width: 0.5,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TextFormField(
+                    controller: _deskripsiController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Deksripsi toko",
+                      hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: ColorValue.hintColor,
                       ),
                     ),
                   ),
-                SizedBox(
-                  height: 20,
                 ),
-                Text(
-                  "Alamat Toko",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Kategori Toko",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: ColorValue.hintColor,
-                      width: 0.5,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              if (_isCategorySelected)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var i = 0; i < widget.selectedCategories.length; i++)
+                      if (widget.selectedCategories[i])
+                    Column(
+                      children: [
+                          Row(
+                            children: [
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    //border radius
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: ColorValue.primaryColor,
+                                    ),
+                                  ),
+                                  SvgPicture.asset(
+                                    categoryIcons[i],
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 15,),
+                              Text(
+                                categoryNames[i],
+                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: ColorValue.neutralColor,
+                                ),
+                              ),
+                      ],
+                    ),
+                        SizedBox(height: 10,)
+                          ],
+                        )
+                  ],
+                )
+              else
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: ColorValue.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      controller: _alamatController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Alamat toko",
-                        hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: ColorValue.hintColor,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => KategoriToko()));
+                  },
+                  child: Text(
+                    "Pilih Kategori Lapak",
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Alamat Toko",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: ColorValue.hintColor,
+                    width: 0.5,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TextFormField(
+                    controller: _alamatController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Alamat toko",
+                      hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: ColorValue.hintColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Jam Operasional",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                Expanded(
+                  child: Container(
+                    height: 50,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: ColorValue.hintColor,
+                        width: 0.5,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: TextFormField(
+                        controller: _jamBukaOperasionalController,
+                        keyboardType: TextInputType.text,
+                        onTap: (){
+                          _selectTime(context, _jamBukaOperasionalController);
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Jam Buka",
+                          hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: ColorValue.hintColor,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Jam Operasional",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
+                  SizedBox(
+                    width: 30,
+                    child: Divider(
+                      color: ColorValue.hintColor,
+                      thickness: 1,
+                      endIndent: 5,
+                      indent: 5,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
                   Expanded(
                     child: Container(
                       height: 50,
@@ -419,16 +458,16 @@ class _register_tokoState extends State<register_toko> {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: TextFormField(
-                          controller: _jamBukaOperasionalController,
+                          controller: _jamtutupOperasionalController,
                           keyboardType: TextInputType.text,
                           onTap: (){
-                            _selectTime(context, _jamBukaOperasionalController);
+                            _selectTime(context, _jamtutupOperasionalController);
                           },
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: "Jam Buka",
+                            hintText: "Jam Tutup",
                             hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
                               color: ColorValue.hintColor,
                             ),
@@ -437,79 +476,39 @@ class _register_tokoState extends State<register_toko> {
                       ),
                     ),
                   ),
-                    SizedBox(
-                      width: 30,
-                      child: Divider(
-                        color: ColorValue.hintColor,
-                        thickness: 1,
-                        endIndent: 5,
-                        indent: 5,
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MapScreen(),
                       ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: ColorValue.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    Expanded(
-                      child: Container(
-                        height: 50,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: ColorValue.hintColor,
-                            width: 0.5,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: TextFormField(
-                            controller: _jamtutupOperasionalController,
-                            keyboardType: TextInputType.text,
-                            onTap: (){
-                              _selectTime(context, _jamtutupOperasionalController);
-                            },
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Jam Tutup",
-                              hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                color: ColorValue.hintColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MapScreen(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: ColorValue.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: Text(
-                      'Selanjutnya',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal,
-                      ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(
+                    'Selanjutnya',
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

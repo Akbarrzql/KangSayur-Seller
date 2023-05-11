@@ -23,10 +23,10 @@ class _KategoriTokoState extends State<KategoriToko> {
   ];
   List<String> categoryIcons = [
     "assets/svg/bahan_pokok.svg",
-    "assets/svg/sayuran.svg",
-    "assets/svg/buah_buahan.svg",
+    "assets/svg/sayuran_1.svg",
+    "assets/svg/buah.svg",
     "assets/svg/daging.svg",
-    "assets/svg/ayam.svg",
+    "assets/svg/unggas.svg",
     "assets/svg/telur.svg"
   ];
 
