@@ -3,6 +3,7 @@ import 'package:kangsayur_seller/ui/auth/register/map_page.dart';
 import 'package:kangsayur_seller/ui/bottom_navigation/bottom_navigation.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kangsayur_seller/ui/bottom_navigation/item/dashboard.dart';
+import 'package:kangsayur_seller/ui/bottom_navigation/item/profile.dart';
 import 'package:kangsayur_seller/ui/chat/detail_chat.dart';
 import 'package:kangsayur_seller/ui/chat/pengaturan_chat.dart';
 import 'package:kangsayur_seller/ui/iklan/detail_iklan.dart';
@@ -10,6 +11,7 @@ import 'package:kangsayur_seller/ui/informasi/informasi.dart';
 import 'package:kangsayur_seller/ui/produk/alasan_produk_ditolak.dart';
 import 'package:kangsayur_seller/ui/produk/detail_produk.dart';
 import 'package:kangsayur_seller/ui/produk/tambah_produk.dart';
+import 'package:kangsayur_seller/ui/profile/inbox.dart';
 import 'package:kangsayur_seller/ui/promo/list_promo.dart';
 import 'package:kangsayur_seller/ui/promo/promo.dart';
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.green,
       ),
-      home: const SplashScreen(),
+      home: const ProfilePage(),
     );
   }
 }

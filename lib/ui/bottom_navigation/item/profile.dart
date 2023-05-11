@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
+import 'package:kangsayur_seller/ui/profile/option_profile.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
+
+import '../../profile/inbox.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -53,7 +56,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const OptionProfile()),
+                      );
+                    },
                     icon: const Icon(
                       size: 20,
                       Icons.arrow_forward_ios_outlined,
@@ -84,7 +92,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             Row(
                               children: [
-                                KategoriProfile("Inbox", "assets/svg/inbox.svg"),
+                                KategoriProfile("Inbox", "assets/svg/inbox.svg", onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const InboxPage()));
+                                }),
                                 const SizedBox(width: 45,),
                                 KategoriProfile("Kelola Ulasan", "assets/svg/kelola_ulasan.svg"),
                                 const SizedBox(width: 25,),
