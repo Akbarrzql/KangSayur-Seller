@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/profile/option_profile.dart';
+import 'package:kangsayur_seller/ui/transaksi/transaksi.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 
 import '../../profile/inbox.dart';
@@ -104,7 +105,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             const SizedBox(height: 40,),
                             Row(
                               children: [
-                                KategoriProfile("Transaksi", "assets/svg/pembayaran.svg"),
+                                KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const TranskasiPage()));
+                                }),
                                 const SizedBox(width: 50,),
                                 KategoriProfile("Promo", "assets/svg/promo_profile.svg"),
                                 const SizedBox(width: 50,),
