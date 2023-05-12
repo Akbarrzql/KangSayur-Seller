@@ -14,6 +14,7 @@ import 'package:kangsayur_seller/ui/produk/tambah_produk.dart';
 import 'package:kangsayur_seller/ui/profile/inbox.dart';
 import 'package:kangsayur_seller/ui/promo/list_promo.dart';
 import 'package:kangsayur_seller/ui/promo/promo.dart';
+import 'package:kangsayur_seller/ui/seller_care/seller_care.dart';
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
 import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.green,
       ),
-      home: const ProfilePage(),
+      home: const SellerCarePage(),
     );
   }
 }
