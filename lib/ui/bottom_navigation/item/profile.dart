@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/profile/option_profile.dart';
+import 'package:kangsayur_seller/ui/promo/promo.dart';
+import 'package:kangsayur_seller/ui/transaksi/transaksi.dart';
+import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 
 import '../../profile/inbox.dart';
+import '../../ulasan/ulasan.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -96,7 +100,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const InboxPage()));
                                 }),
                                 const SizedBox(width: 45,),
-                                KategoriProfile("Kelola Ulasan", "assets/svg/kelola_ulasan.svg"),
+                                KategoriProfile("Kelola Ulasan", "assets/svg/kelola_ulasan.svg", onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ReviewUlasanPage()));
+                                }),
                                 const SizedBox(width: 25,),
                                 KategoriProfile("Seller Care", "assets/svg/seller.svg"),
                               ],
@@ -104,9 +110,13 @@ class _ProfilePageState extends State<ProfilePage> {
                             const SizedBox(height: 40,),
                             Row(
                               children: [
-                                KategoriProfile("Transaksi", "assets/svg/pembayaran.svg"),
+                                KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const TranskasiPage()));
+                                }),
                                 const SizedBox(width: 50,),
-                                KategoriProfile("Promo", "assets/svg/promo_profile.svg"),
+                                KategoriProfile("Promo", "assets/svg/promo_profile.svg", onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoPage(selectedCategories: [])));
+                                },),
                                 const SizedBox(width: 50,),
                                 KategoriProfile("Toko", "assets/svg/toko.svg"),
                               ],

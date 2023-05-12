@@ -15,6 +15,7 @@ import 'package:kangsayur_seller/ui/profile/inbox.dart';
 import 'package:kangsayur_seller/ui/promo/list_promo.dart';
 import 'package:kangsayur_seller/ui/promo/promo.dart';
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
+import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(const MyApp()));
