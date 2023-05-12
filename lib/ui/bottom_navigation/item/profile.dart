@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/profile/option_profile.dart';
 import 'package:kangsayur_seller/ui/promo/promo.dart';
+import 'package:kangsayur_seller/ui/seller_care/seller_care.dart';
 import 'package:kangsayur_seller/ui/transaksi/transaksi.dart';
 import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
@@ -104,7 +105,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const ReviewUlasanPage()));
                                 }),
                                 const SizedBox(width: 25,),
-                                KategoriProfile("Seller Care", "assets/svg/seller.svg"),
+                                KategoriProfile("Seller Care", "assets/svg/seller.svg", onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SellerCarePage()));
+                                }),
                               ],
                             ),
                             const SizedBox(height: 40,),
