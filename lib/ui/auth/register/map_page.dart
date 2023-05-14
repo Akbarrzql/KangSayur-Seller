@@ -25,6 +25,8 @@ class _MapScreenState extends State<MapScreen> {
   final List<Marker> _markers = [];
   Marker? _currentMarker;
 
+  var mapController = MapController();
+
   void _handleTap(tapPosition, LatLng tappedPoint) async {
     _currentPosition = tappedPoint;
     setState(() {
@@ -103,6 +105,9 @@ class _MapScreenState extends State<MapScreen> {
       _currentPosition = LatLng(locationData.latitude!, locationData.longitude!);
     });
     _getAddressFromLatLng();
+
+    // Memindahkan peta ke lokasi pengguna atau marker
+    mapController.move(_currentPosition, 14.0); // Sesuaikan level zoom jika perlu
   }
 
   @override
@@ -111,6 +116,7 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     _getAddressFromLatLng();
     _getCurrentLocation();
+    mapController = MapController(); // Initialize the mapController
   }
 
   @override
@@ -135,6 +141,7 @@ class _MapScreenState extends State<MapScreen> {
               zoom: 14.0,
               onTap: _handleTap,
             ),
+            mapController: mapController,
             children: [
               TileLayer(
                 urlTemplate: AppConstants.mapBoxStyleId,
