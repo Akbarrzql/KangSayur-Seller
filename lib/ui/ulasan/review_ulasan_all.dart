@@ -15,6 +15,7 @@ class _ReviewUlasanPageState extends State<ReviewUlasanPage> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
@@ -98,13 +99,16 @@ class _ReviewUlasanPageState extends State<ReviewUlasanPage> {
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
-                      Review(
+                      ReviewWidget(
                           profile: "assets/images/ava_profile.png",
                           name: "name",
                           date: "23/08/2021",
                           comment: "Dayumm",
                           image: "assets/images/wortel.png",
                           rating: 5,
+                          isExpanded: false,
+                          isReplyVisible: false,
+                          replyController: TextEditingController(),
                           context: context),
                       const SizedBox(
                         height: 15,
