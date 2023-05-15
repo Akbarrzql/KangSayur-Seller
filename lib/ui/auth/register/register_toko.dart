@@ -50,6 +50,7 @@ class _register_tokoState extends State<register_toko> {
     }
   }
 
+  /*
   List<String> categoryNames = [    "Bahan Pokok",    "Sayuran",    "Buah Buahan",    "Daging",    "Unggas",    "Telur"  ];
   List<String> categoryIcons = [
     "assets/svg/bahan_pokok.svg",
@@ -59,11 +60,12 @@ class _register_tokoState extends State<register_toko> {
     "assets/svg/unggas.svg",
     "assets/svg/telur.svg"
   ];
+   */
 
   @override
   void initState() {
     super.initState();
-
+    /*
     // Check if any category is already selected
     for (var i = 0; i < widget.selectedCategories.length; i++) {
       if (widget.selectedCategories[i]) {
@@ -71,6 +73,7 @@ class _register_tokoState extends State<register_toko> {
         break;
       }
     }
+     */
   }
 
   @override
@@ -271,6 +274,7 @@ class _register_tokoState extends State<register_toko> {
                   ),
                 ),
               ),
+              /*
               SizedBox(
                 height: 20,
               ),
@@ -353,6 +357,7 @@ class _register_tokoState extends State<register_toko> {
                     ),
                   ),
                 ),
+               */
               SizedBox(
                 height: 20,
               ),
