@@ -12,7 +12,8 @@ import '../../common/color_value.dart';
 import '../auth/register/kategori_toko.dart';
 
 class IklanPage extends StatefulWidget {
-  const IklanPage({Key? key, required this.selectedCategories}) : super(key: key);
+  const IklanPage({Key? key, required this.selectedCategories})
+      : super(key: key);
   final List<bool> selectedCategories;
 
   @override
@@ -20,12 +21,12 @@ class IklanPage extends StatefulWidget {
 }
 
 class _IklanPageState extends State<IklanPage> {
-
   final ImagePicker _picker = ImagePicker();
   File? _imageFile;
   final _judulIklanController = TextEditingController();
   bool _isCategorySelected = false;
-
+  bool _iskategoriIklanSelected = false;
+  bool _iskategoriIklanSelected1 = false;
 
   Future<void> _getImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
@@ -37,7 +38,14 @@ class _IklanPageState extends State<IklanPage> {
     }
   }
 
-  List<String> categoryNames = [    "Bahan Pokok",    "Sayuran",    "Buah Buahan",    "Daging",    "Unggas",    "Telur"  ];
+  List<String> categoryNames = [
+    "Bahan Pokok",
+    "Sayuran",
+    "Buah Buahan",
+    "Daging",
+    "Unggas",
+    "Telur"
+  ];
   List<String> categoryIcons = [
     "assets/svg/bahan_pokok.svg",
     "assets/svg/sayuran_1.svg",
@@ -51,11 +59,12 @@ class _IklanPageState extends State<IklanPage> {
   void initState() {
     super.initState();
 
-    // Check if any category is already selected
-    for (var i = 0; i < widget.selectedCategories.length; i++) {
+    for (int i = 0; i < widget.selectedCategories.length; i++) {
       if (widget.selectedCategories[i]) {
-        _isCategorySelected = true;
-        break;
+        setState(() {
+          _isCategorySelected = true;
+          _iskategoriIklanSelected = true;
+        });
       }
     }
   }
@@ -67,12 +76,12 @@ class _IklanPageState extends State<IklanPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'Pemasukan',
+          'Iklan',
           style: Theme.of(context).textTheme.headline6!.copyWith(
-            color: ColorValue.neutralColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
+                color: ColorValue.neutralColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
         ),
         leading: IconButton(
           onPressed: () {
@@ -85,8 +94,8 @@ class _IklanPageState extends State<IklanPage> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -111,32 +120,36 @@ class _IklanPageState extends State<IklanPage> {
                       child: Text(
                         "Untuk bisa menampilkan iklan kamu harus dengan format lebar 250 & tinggi 94 ",
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 10,
-                          color: ColorValue.primaryColor,
-                        ),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 10,
+                              color: ColorValue.primaryColor,
+                            ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Text(
                 "Foto Banner Iklan",
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  color: ColorValue.neutralColor,
-                ),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: ColorValue.neutralColor,
+                    ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               //image picker
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       _showBottomSheet(context);
                     },
                     child: Container(
@@ -146,16 +159,21 @@ class _IklanPageState extends State<IklanPage> {
                         color: ColorValue.neutralColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: _imageFile != null ? ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.file(_imageFile!, fit: BoxFit.cover),
-                      ) : Container(
-                        decoration: BoxDecoration(
-                          color: ColorValue.neutralColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
-                      ),
+                      child: _imageFile != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.file(_imageFile!, fit: BoxFit.cover),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                color: ColorValue.neutralColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.add_a_photo_outlined,
+                                color: ColorValue.primaryColor,
+                              ),
+                            ),
                     ),
                   ),
                   const SizedBox(
@@ -170,132 +188,276 @@ class _IklanPageState extends State<IklanPage> {
                       Text(
                         "Unggah Foto Toko",
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: ColorValue.neutralColor,
-                        ),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: ColorValue.neutralColor,
+                            ),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
-                      _imageFile != null ? ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: ColorValue.primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        onPressed: (){
-                          _showBottomSheet(context);
-                        },
-                        child: Text(
-                          "Unggah Ulang",
-                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ) : Container(),
+                      _imageFile != null
+                          ? ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: ColorValue.primaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                              onPressed: () {
+                                _showBottomSheet(context);
+                              },
+                              child: Text(
+                                "Unggah Ulang",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                    ),
+                              ),
+                            )
+                          : Container(),
                     ],
                   )
                 ],
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Text(
                 "Nama Iklan Toko",
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  color: ColorValue.neutralColor,
-                ),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: ColorValue.neutralColor,
+                    ),
               ),
-              const SizedBox(height: 10,),
-              textfield(context, "Nama Iklan", _judulIklanController, TextInputType.text),
-              const SizedBox(height: 20,),
-              Text(
-                "Kategori Toko",
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  color: ColorValue.neutralColor,
-                ),
-              ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              if (_isCategorySelected)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (var i = 0; i < widget.selectedCategories.length; i++)
-                      if (widget.selectedCategories[i])
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      width: 50,
-                                      height: 50,
-                                      //border radius
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: ColorValue.primaryColor,
-                                      ),
-                                    ),
-                                    SvgPicture.asset(
-                                      categoryIcons[i],
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 15,),
-                                Text(
-                                  categoryNames[i],
-                                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                    color: ColorValue.neutralColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10,)
-                          ],
-                        )
-                  ],
-                )
-              else
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: ColorValue.primaryColor,
+              textfield(context, "Nama Iklan", _judulIklanController,
+                  TextInputType.text),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Pilih Kateogri Iklan",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: ColorValue.neutralColor,
+                    ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ActionChip(
+                    label: Text(
+                      "Iklan Katalog",
+                      style: textTheme.bodyText2!.copyWith(
+                        color: _iskategoriIklanSelected
+                            ? Colors.white
+                            : ColorValue.neutralColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _iskategoriIklanSelected = true;
+                        _iskategoriIklanSelected1 = false;
+                      });
+                    },
+                    backgroundColor: _iskategoriIklanSelected
+                        ? ColorValue.primaryColor
+                        : ColorValue.neutralColor.withOpacity(0.1),
+                    elevation: 2,
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    labelPadding: const EdgeInsets.symmetric(vertical: 5),
+                    visualDensity: VisualDensity.compact,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => KategoriIklan()));
-                  },
-                  child: Text(
-                    "Pilih Kategori Iklan",
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: Colors.white,
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  ActionChip(
+                    label: Text(
+                      "Iklan Toko",
+                      style: textTheme.bodyText2!.copyWith(
+                        color: _iskategoriIklanSelected1
+                            ? Colors.white
+                            : ColorValue.neutralColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _iskategoriIklanSelected1 = true;
+                        _iskategoriIklanSelected = false;
+                      });
+                    },
+                    backgroundColor: _iskategoriIklanSelected1
+                        ? ColorValue.primaryColor
+                        : ColorValue.neutralColor.withOpacity(0.1),
+                    elevation: 2,
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    labelPadding: const EdgeInsets.symmetric(vertical: 5),
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-                ),
-              const SizedBox(height: 20,),
-              main_button("Iklankan", context, onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => InformasiIklanPage()));
+                ],
+              ),
+              //jika kategori iklan katalog yang dipilih maka akan menampilkan form katalog
+              _iskategoriIklanSelected
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Kategori Toko",
+                          style:
+                              Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: ColorValue.neutralColor,
+                                  ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        if (_isCategorySelected)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (var i = 0;
+                                  i < widget.selectedCategories.length;
+                                  i++)
+                                if (widget.selectedCategories[i])
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              Container(
+                                                width: 50,
+                                                height: 50,
+                                                //border radius
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color:
+                                                      ColorValue.primaryColor,
+                                                ),
+                                              ),
+                                              SvgPicture.asset(
+                                                categoryIcons[i],
+                                                width: 30,
+                                                height: 30,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text(
+                                            categoryNames[i],
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle1!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 16,
+                                                  color:
+                                                      ColorValue.neutralColor,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      )
+                                    ],
+                                  ),
+                              //terdapat button batal
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: ColorValue.primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _isCategorySelected = false;
+                                  });
+                                },
+                                child: Text(
+                                  "Batal",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          )
+                        else
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: ColorValue.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => KategoriIklan()));
+                            },
+                            child: Text(
+                              "Pilih Kategori Iklan",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                            ),
+                          ),
+                      ],
+                    )
+                  : Container(),
+              const SizedBox(
+                height: 20,
+              ),
+              main_button("Iklankan", context, onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => InformasiIklanPage()));
               })
             ],
           ),
@@ -303,7 +465,6 @@ class _IklanPageState extends State<IklanPage> {
       ),
     );
   }
-
 
   //show bottom sheet
   void _showBottomSheet(BuildContext context) {
@@ -318,10 +479,10 @@ class _IklanPageState extends State<IklanPage> {
                 Text(
                   "Pilih Foto",
                   style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: ColorValue.neutralColor,
+                      ),
                 ),
                 const SizedBox(
                   height: 30,
@@ -345,14 +506,12 @@ class _IklanPageState extends State<IklanPage> {
                           ),
                           Text(
                             "Kamera",
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: ColorValue.neutralColor,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.subtitle1!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: ColorValue.neutralColor,
+                                    ),
                           ),
                         ],
                       ),
@@ -373,14 +532,12 @@ class _IklanPageState extends State<IklanPage> {
                           ),
                           Text(
                             "Galeri",
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: ColorValue.neutralColor,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.subtitle1!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: ColorValue.neutralColor,
+                                    ),
                           ),
                         ],
                       ),
