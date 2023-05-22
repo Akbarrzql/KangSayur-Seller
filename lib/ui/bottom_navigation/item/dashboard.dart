@@ -21,6 +21,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
   String _selectedMonth = 'Bulan Ini';
   String _selectedMonthGrafik = 'Bulan Ini';
   DateTimeRange? selectedDate;
+  DateTimeRange? selectedDateGrafik;
   DateTime _selectedDateAwal = DateTime.now();
   DateTime _selectedDateAkhir = DateTime.now();
 
@@ -306,7 +307,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                       if (_selectedMonth == "Kustomisasi") {
                                         showDatePickerDialog(context);
                                       } else {
-                                        selectedDate = null;
+                                        _selectedMonth = _selectedMonth;
+                                        selectedDate = selectedDate;
                                       }
                                     }),
                               ],
@@ -444,9 +446,10 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             onTap: () {
                               _selectedMonthGrafik = _selectedMonthGrafik;
                               if (_selectedMonthGrafik == "Kustomisasi") {
-                                showDatePickerDialog(context);
+                                showDatePickerDialogGrafik(context);
                               } else {
-                                selectedDate = null;
+                                _selectedMonthGrafik = _selectedMonthGrafik;
+                                selectedDateGrafik = selectedDateGrafik;
                               }
                             },
                           ),
@@ -604,14 +607,14 @@ class _DahsboardPageState extends State<DahsboardPage> {
                     ],
                   ),
                 if (_selectedMonthGrafik == "Kustomisasi")
-                  if (selectedDate != null)
+                  if (selectedDateGrafik != null)
                     SfCartesianChart(
                       enableAxisAnimation: true,
                       primaryXAxis: CategoryAxis(),
                       title: ChartTitle(
                           text:
                           'Data Penjualan Dari Tanggal \n ${DateFormat('dd MMMM yyyy').format(
-                            selectedDate!.start,
+                            selectedDateGrafik!.start,
                           )}',
                           textStyle: textTheme.bodyText1!.copyWith(
                               fontWeight: FontWeight.w600,
@@ -641,7 +644,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                     )
                   else
                     ElevatedButton(
-                      onPressed: () => showDatePickerDialog(context),
+                      onPressed: () => showDatePickerDialogGrafik(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         elevation: 0,
@@ -904,6 +907,23 @@ class _DahsboardPageState extends State<DahsboardPage> {
     if (pickedDate != null && pickedDate != selectedDate) {
       setState(() {
         selectedDate = pickedDate;
+      });
+    }
+  }
+
+  Future<void> showDatePickerDialogGrafik(BuildContext context) async {
+    //date range picker dialog
+    final DateTimeRange? pickedDate = await showDateRangePicker(
+        context: context,
+        initialDateRange: DateTimeRange(
+            start: DateTime.now().subtract(const Duration(days: 7)),
+            end: DateTime.now()),
+        firstDate: DateTime(2000),
+        lastDate: DateTime.now());
+
+    if (pickedDate != null && pickedDate != selectedDateGrafik) {
+      setState(() {
+        selectedDateGrafik = pickedDate;
       });
     }
   }
