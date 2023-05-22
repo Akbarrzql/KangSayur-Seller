@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'package:kangsayur_seller/ui/chart/chart.dart';
 import 'package:kangsayur_seller/ui/iklan/iklan.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -18,10 +18,14 @@ class DahsboardPage extends StatefulWidget {
 
 class _DahsboardPageState extends State<DahsboardPage> {
   String dropdownValue = 'Bulan Ini';
-  late String _selectedMonth;
-  late String _selectedMonthGrafik;
+  String _selectedMonth = 'Bulan Ini';
+  String _selectedMonthGrafik = 'Bulan Ini';
+  DateTimeRange? selectedDate;
+  DateTime _selectedDateAwal = DateTime.now();
+  DateTime _selectedDateAkhir = DateTime.now();
 
   ScrollController _scrollController = ScrollController();
+  TextEditingController pemasukanController = TextEditingController();
 
   @override
   void dispose() {
@@ -33,24 +37,11 @@ class _DahsboardPageState extends State<DahsboardPage> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _selectedMonth = DateFormat.MMMM('id').format(DateTime.now());
-    _selectedMonthGrafik = DateFormat.MMMM('id').format(DateTime.now());
-  }
-
-  List<String> _generateMonthList() {
-    List<String> months = [];
-    for (int i = 1; i <= 12; i++) {
-      DateTime monthDateTime = DateTime(DateTime.now().year, i);
-      String monthName = DateFormat.MMMM('id').format(monthDateTime);
-      months.add(monthName);
-    }
-    return months;
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    List<String> months = _generateMonthList();
 
     return Scaffold(
       body: SafeArea(
@@ -121,7 +112,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                         '3 Bulan Terakhir',
                         '6 Bulan Terakhir',
                         '1 Tahun Terakhir',
-                        'Semua'
+                        'Semua',
+                        'Kustomisasi'
                       ].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                             value: value, child: Text(value));
@@ -173,65 +165,65 @@ class _DahsboardPageState extends State<DahsboardPage> {
                         ],
                       )
                     else if (dropdownValue == "6 Bulan Terakhir")
-                      GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.5,
-                        children: [
-                          card_analytic(
-                              ColorValue.primaryColor, "Penjualan", "250"),
-                          card_analytic(ColorValue.secondaryColor,
-                              "Pengunjung toko", "550.000"),
-                          card_analytic(
-                              const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
-                          card_analytic(
-                              const Color(0xFF219EBC), "Produk Terjual", "340"),
-                          card_analytic(
-                              const Color(0xFFF77F00), "Komplain", "5"),
-                          card_analytic(const Color(0xFF354F52),
-                              "Ulasan Customer", "4.8"),
-                        ],
-                      )
-                    else if (dropdownValue == "1 Tahun Terakhir")
-                      GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.5,
-                        children: [
-                          card_analytic(
-                              ColorValue.primaryColor, "Penjualan", "600"),
-                          card_analytic(ColorValue.secondaryColor,
-                              "Pengunjung toko", "1.000.000"),
-                          card_analytic(
-                              const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
-                          card_analytic(
-                              const Color(0xFF219EBC), "Produk Terjual", "460"),
-                          card_analytic(
-                              const Color(0xFFF77F00), "Komplain", "1"),
-                          card_analytic(const Color(0xFF354F52),
-                              "Ulasan Customer", "4.6"),
-                        ],
-                      )
-                    else if (dropdownValue == "Semua")
-                      GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.5,
-                        children: [
-                          card_analytic(
-                              ColorValue.primaryColor, "Penjualan", "800"),
-                          card_analytic(ColorValue.secondaryColor,
-                              "Pengunjung toko", "1.200.000"),
-                          card_analytic(
-                              const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
-                          card_analytic(
-                              const Color(0xFF219EBC), "Produk Terjual", "890"),
-                          card_analytic(
-                              const Color(0xFFF77F00), "Komplain", "1"),
-                          card_analytic(const Color(0xFF354F52),
-                              "Ulasan Customer", "4.8"),
-                        ],
-                      )
+                        GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.5,
+                          children: [
+                            card_analytic(
+                                ColorValue.primaryColor, "Penjualan", "250"),
+                            card_analytic(ColorValue.secondaryColor,
+                                "Pengunjung toko", "550.000"),
+                            card_analytic(
+                                const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
+                            card_analytic(
+                                const Color(0xFF219EBC), "Produk Terjual", "340"),
+                            card_analytic(
+                                const Color(0xFFF77F00), "Komplain", "5"),
+                            card_analytic(const Color(0xFF354F52),
+                                "Ulasan Customer", "4.8"),
+                          ],
+                        )
+                      else if (dropdownValue == "1 Tahun Terakhir")
+                          GridView.count(
+                            shrinkWrap: true,
+                            crossAxisCount: 3,
+                            childAspectRatio: 1.5,
+                            children: [
+                              card_analytic(
+                                  ColorValue.primaryColor, "Penjualan", "600"),
+                              card_analytic(ColorValue.secondaryColor,
+                                  "Pengunjung toko", "1.000.000"),
+                              card_analytic(
+                                  const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
+                              card_analytic(
+                                  const Color(0xFF219EBC), "Produk Terjual", "460"),
+                              card_analytic(
+                                  const Color(0xFFF77F00), "Komplain", "1"),
+                              card_analytic(const Color(0xFF354F52),
+                                  "Ulasan Customer", "4.6"),
+                            ],
+                          )
+                        else if (dropdownValue == "Semua")
+                            GridView.count(
+                              shrinkWrap: true,
+                              crossAxisCount: 3,
+                              childAspectRatio: 1.5,
+                              children: [
+                                card_analytic(
+                                    ColorValue.primaryColor, "Penjualan", "800"),
+                                card_analytic(ColorValue.secondaryColor,
+                                    "Pengunjung toko", "1.200.000"),
+                                card_analytic(
+                                    const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
+                                card_analytic(
+                                    const Color(0xFF219EBC), "Produk Terjual", "890"),
+                                card_analytic(
+                                    const Color(0xFFF77F00), "Komplain", "1"),
+                                card_analytic(const Color(0xFF354F52),
+                                    "Ulasan Customer", "4.8"),
+                              ],
+                            )
                   ],
                 ),
                 const SizedBox(
@@ -281,45 +273,42 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15),
-                                  child: Text(
-                                    "Pemasukan",
-                                    style: textTheme.bodyText1!.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                        color: const Color(0xFF7A7A7A)),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
                                 DropdownButton<String>(
-                                  menuMaxHeight: 150,
-                                  value: _selectedMonth,
-                                  iconEnabledColor: ColorValue.primaryColor,
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      _selectedMonth = newValue!;
-                                    });
-                                  },
-                                  underline: Container(
-                                    height: 0,
-                                    color: Colors.transparent,
-                                  ),
-                                  autofocus: true,
-                                  items: months.map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value,
-                                          style: textTheme.bodyText1!.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14,
-                                              color: ColorValue.primaryColor)),
-                                    );
-                                  }).toList(),
-                                ),
+                                    menuMaxHeight: 150,
+                                    value: _selectedMonth,
+                                    iconEnabledColor: ColorValue.primaryColor,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _selectedMonth = newValue!;
+                                      });
+                                    },
+                                    underline: Container(
+                                      height: 0,
+                                      color: Colors.transparent,
+                                    ),
+                                    autofocus: true,
+                                    items: _months
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value,
+                                                style: textTheme.bodyText1!
+                                                    .copyWith(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 14,
+                                                    color: ColorValue
+                                                        .primaryColor)),
+                                          );
+                                        }).toList(),
+                                    onTap: () {
+                                      _selectedMonth = _selectedMonth;
+                                      if (_selectedMonth == "Kustomisasi") {
+                                        showDatePickerDialog(context);
+                                      } else {
+                                        selectedDate = null;
+                                      }
+                                    }),
                               ],
                             ),
                             TextButton(
@@ -328,7 +317,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const DetailPemasukanPage()));
+                                        const DetailPemasukanPage()));
                               },
                               child: Text(
                                 "Selengkapnya",
@@ -340,14 +329,43 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             )
                           ],
                         ),
-                        if (_selectedMonth == "Januari")
+                        if (_selectedMonth == "Bulan Ini")
                           text_pemasukan("Rp. 5.000.000,00"),
-                        if (_selectedMonth == "Februari")
+                        if (_selectedMonth == "3 Bulan Terakhir")
                           text_pemasukan("Rp. 4.000.000,00"),
-                        if (_selectedMonth == "Maret")
+                        if (_selectedMonth == "6 Bulan Terakhir")
                           text_pemasukan("Rp. 3.000.000,00"),
-                        if (_selectedMonth == "Mei")
-                          text_pemasukan("Rp. 6.000.000,00")
+                        if (_selectedMonth == "1 Tahun Terakhir")
+                          text_pemasukan("Rp. 6.000.000,00"),
+                        if (_selectedMonth == "Semua")
+                          text_pemasukan("Rp. 20.000.000,00"),
+                        if (_selectedMonth == "Kustomisasi")
+                          if (selectedDate != null)
+                            if (selectedDate!.start.day >= 1 &&
+                                selectedDate!.end.day <= 15)
+                              text_pemasukan("Rp. 5.000.000,00")
+                            else
+                              text_pemasukan("Rp. 10.000.000,00")
+                          else
+                            ElevatedButton(
+                              onPressed: () => showDatePickerDialog(context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  side: const BorderSide(
+                                      color: ColorValue.primaryColor),
+                                ),
+                              ),
+                              child: Text(
+                                "Pilih Tanggal",
+                                style: textTheme.bodyText1!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: ColorValue.primaryColor),
+                              ),
+                            )
                       ],
                     ),
                   ),
@@ -412,7 +430,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                               height: 0,
                               color: Colors.transparent,
                             ),
-                            items: months
+                            items: _months
                                 .map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -423,6 +441,14 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                         color: ColorValue.neutralColor)),
                               );
                             }).toList(),
+                            onTap: () {
+                              _selectedMonthGrafik = _selectedMonthGrafik;
+                              if (_selectedMonthGrafik == "Kustomisasi") {
+                                showDatePickerDialog(context);
+                              } else {
+                                selectedDate = null;
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -471,43 +497,51 @@ class _DahsboardPageState extends State<DahsboardPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                if (_selectedMonthGrafik == "Januari")
-                  SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    // Chart title
-                    title: ChartTitle(
-                        text: 'Data Penjualan Januari',
-                        textStyle: textTheme.bodyText1!.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            color: ColorValue.neutralColor)),
-                    // Enable legend and show the legend at the bottom
-                    legend: Legend(
-                        isVisible: true, position: LegendPosition.bottom),
-                    // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<SalesData, String>>[
-                      LineSeries<SalesData, String>(
-                          dataSource: <SalesData>[
-                            SalesData('Minggu 1', 35),
-                            SalesData('Minggu 2', 28),
-                            SalesData('Minggu 3', 34),
-                            SalesData('Minggu 4', 32),
-                          ],
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
-                          color: ColorValue.primaryColor,
-                          // Enable data label
-                          dataLabelSettings:
-                              const DataLabelSettings(isVisible: true))
-                    ],
+                if (_selectedMonthGrafik == "Bulan Ini")
+                  InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ChartHorizotalPage(
+                        salesData: getSalesDataBulanIni(),
+                      )));
+                    },
+                    child: SfCartesianChart(
+                      enableAxisAnimation: true,
+                      primaryXAxis: CategoryAxis(),
+                      // Chart title
+                      title: ChartTitle(
+                          text: 'Data Penjualan Bulan Ini',
+                          textStyle: textTheme.bodyText1!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                              color: ColorValue.neutralColor)),
+                      zoomPanBehavior: ZoomPanBehavior(
+                          enablePinching: true,
+                          enableDoubleTapZooming: true,
+                          enablePanning: true),
+                      // Enable legend and show the legend at the bottom
+                      legend: Legend(
+                          isVisible: true, position: LegendPosition.bottom),
+                      // Enable tooltip
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <ChartSeries<SalesData, String>>[
+                        LineSeries<SalesData, String>(
+                            dataSource: getSalesDataBulanIni(),
+                            xValueMapper: (SalesData sales, _) => sales.year,
+                            yValueMapper: (SalesData sales, _) => sales.sales,
+                            color: ColorValue.primaryColor,
+                            // Enable data label
+                            dataLabelSettings:
+                            const DataLabelSettings(isVisible: true))
+                      ],
+                    ),
                   ),
-                if (_selectedMonthGrafik == "Februari")
+                if (_selectedMonthGrafik == "3 Bulan Terakhir")
                   SfCartesianChart(
+                    enableAxisAnimation: true,
                     primaryXAxis: CategoryAxis(),
                     // Chart title
                     title: ChartTitle(
-                        text: 'Data Penjualan Februari',
+                        text: 'Data Penjualan 3 Bulan Terakhir',
                         textStyle: textTheme.bodyText1!.copyWith(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
@@ -515,6 +549,10 @@ class _DahsboardPageState extends State<DahsboardPage> {
                     // Enable legend and show the legend at the bottom
                     legend: Legend(
                         isVisible: true, position: LegendPosition.bottom),
+                    zoomPanBehavior: ZoomPanBehavior(
+                        enablePinching: true,
+                        enableDoubleTapZooming: true,
+                        enablePanning: true),
                     // Enable tooltip
                     tooltipBehavior: TooltipBehavior(enable: true),
                     series: <ChartSeries<SalesData, String>>[
@@ -530,23 +568,25 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
-                              const DataLabelSettings(isVisible: true))
+                          const DataLabelSettings(isVisible: true))
                     ],
                   ),
-                if (_selectedMonthGrafik == "Mei")
+                if (_selectedMonthGrafik == "6 Bulan Terakhir")
                   SfCartesianChart(
+                    enableAxisAnimation: true,
                     primaryXAxis: CategoryAxis(),
-                    // Chart title
                     title: ChartTitle(
-                        text: 'Data Penjualan Mei',
+                        text: 'Data Penjualan 6 Bulan Terakhir',
                         textStyle: textTheme.bodyText1!.copyWith(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: ColorValue.neutralColor)),
-                    // Enable legend and show the legend at the bottom
                     legend: Legend(
                         isVisible: true, position: LegendPosition.bottom),
-                    // Enable tooltip
+                    zoomPanBehavior: ZoomPanBehavior(
+                        enablePinching: true,
+                        enableDoubleTapZooming: true,
+                        enablePanning: true),
                     tooltipBehavior: TooltipBehavior(enable: true),
                     series: <ChartSeries<SalesData, String>>[
                       LineSeries<SalesData, String>(
@@ -559,11 +599,66 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           xValueMapper: (SalesData sales, _) => sales.year,
                           yValueMapper: (SalesData sales, _) => sales.sales,
                           color: ColorValue.primaryColor,
-                          // Enable data label
                           dataLabelSettings:
-                              const DataLabelSettings(isVisible: true))
+                          const DataLabelSettings(isVisible: true))
                     ],
                   ),
+                if (_selectedMonthGrafik == "Kustomisasi")
+                  if (selectedDate != null)
+                    SfCartesianChart(
+                      enableAxisAnimation: true,
+                      primaryXAxis: CategoryAxis(),
+                      title: ChartTitle(
+                          text:
+                          'Data Penjualan Dari Tanggal \n ${DateFormat('dd MMMM yyyy').format(
+                            selectedDate!.start,
+                          )}',
+                          textStyle: textTheme.bodyText1!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                              color: ColorValue.neutralColor)),
+                      legend: Legend(
+                          isVisible: true, position: LegendPosition.bottom),
+                      zoomPanBehavior: ZoomPanBehavior(
+                          enablePinching: true,
+                          enableDoubleTapZooming: true,
+                          enablePanning: true),
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <ChartSeries<SalesData, String>>[
+                        LineSeries<SalesData, String>(
+                            dataSource: <SalesData>[
+                              SalesData('Minggu 1', 80),
+                              SalesData('Minggu 2', 20),
+                              SalesData('Minggu 3', 40),
+                              SalesData('Minggu 4', 50),
+                            ],
+                            xValueMapper: (SalesData sales, _) => sales.year,
+                            yValueMapper: (SalesData sales, _) => sales.sales,
+                            color: ColorValue.primaryColor,
+                            dataLabelSettings:
+                            const DataLabelSettings(isVisible: true))
+                      ],
+                    )
+                  else
+                    ElevatedButton(
+                      onPressed: () => showDatePickerDialog(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          side:
+                          const BorderSide(color: ColorValue.primaryColor),
+                        ),
+                      ),
+                      child: Text(
+                        "Pilih Tanggal",
+                        style: textTheme.bodyText1!.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: ColorValue.primaryColor),
+                      ),
+                    ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -620,16 +715,16 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const IklanPage(
-                                                      selectedCategories: [],
-                                                    )));
+                                                const IklanPage(
+                                                  selectedCategories: [],
+                                                )));
                                       },
                                       style: ElevatedButton.styleFrom(
                                         minimumSize: const Size(88, 80),
                                         primary: ColorValue.primaryColor,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(5),
+                                          BorderRadius.circular(5),
                                         ),
                                       ),
                                       child: Container(
@@ -637,7 +732,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                         //image svg and text
                                         child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                           children: [
                                             SvgPicture.asset(
                                               "assets/svg/advertisement1.svg",
@@ -651,10 +746,10 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                               "Iklan",
                                               style: textTheme.bodyText1!
                                                   .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      fontSize: 14,
-                                                      color: Colors.white),
+                                                  fontWeight:
+                                                  FontWeight.w700,
+                                                  fontSize: 14,
+                                                  color: Colors.white),
                                             ),
                                           ],
                                         ),
@@ -672,9 +767,9 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const PromoPage(
-                                                    selectedCategories: [],
-                                                  )));
+                                              const PromoPage(
+                                                selectedCategories: [],
+                                              )));
                                     },
                                     style: ElevatedButton.styleFrom(
                                       minimumSize: const Size(88, 80),
@@ -685,7 +780,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         SvgPicture.asset(
                                           "assets/svg/promotion1.svg",
@@ -772,33 +867,64 @@ class _DahsboardPageState extends State<DahsboardPage> {
       iconSize: 24,
       elevation: 16,
       style: Theme.of(context).textTheme.subtitle1!.copyWith(
-            fontWeight: FontWeight.w800,
-            fontSize: 16,
-            color: ColorValue.neutralColor,
-          ),
+        fontWeight: FontWeight.w800,
+        fontSize: 16,
+        color: ColorValue.neutralColor,
+      ),
       onChanged: (String? newValue) {
         setState(() {
           dropdownValue = newValue!;
         });
       },
-      items: <String>[
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember'
-      ].map<DropdownMenuItem<String>>((String value) {
+      items: _months.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(value: value, child: Text(value));
       }).toList(),
     );
   }
+
+  final List<String> _months = [
+    "Bulan Ini",
+    "3 Bulan Terakhir",
+    "6 Bulan Terakhir",
+    "1 Tahun Terakhir",
+    "Semua",
+    "Kustomisasi",
+  ];
+
+  Future<void> showDatePickerDialog(BuildContext context) async {
+    //date range picker dialog
+    final DateTimeRange? pickedDate = await showDateRangePicker(
+        context: context,
+        initialDateRange: DateTimeRange(
+            start: DateTime.now().subtract(const Duration(days: 7)),
+            end: DateTime.now()),
+        firstDate: DateTime(2000),
+        lastDate: DateTime.now());
+
+    if (pickedDate != null && pickedDate != selectedDate) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
+  List<SalesData> getSalesDataBulanIni() {
+    // Implement logic to get sales data for the selected month
+    // from Dashboard.dart or any other data source
+    // and return the list of SalesData objects
+    List<SalesData> salesDataList = [
+      //data senin - minggu
+      SalesData('Senin', 35),
+      SalesData('Selasa', 28),
+      SalesData('Rabu', 34),
+      SalesData('Kamis', 32),
+      SalesData('Jumat', 40),
+      SalesData('Sabtu', 35),
+      SalesData('Minggu', 32),
+    ];
+    return salesDataList;
+  }
+
 }
 
 class SalesData {
