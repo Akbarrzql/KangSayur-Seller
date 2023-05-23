@@ -20,10 +20,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
   String dropdownValue = 'Bulan Ini';
   String _selectedMonth = 'Bulan Ini';
   String _selectedMonthGrafik = 'Bulan Ini';
-  DateTimeRange? selectedDate;
-  DateTimeRange? selectedDateGrafik;
-  DateTime _selectedDateAwal = DateTime.now();
-  DateTime _selectedDateAkhir = DateTime.now();
+  DateTimeRange? selectedDate, selectedDateGrafik, selectedDateAnalisa;
 
   ScrollController _scrollController = ScrollController();
   TextEditingController pemasukanController = TextEditingController();
@@ -119,6 +116,15 @@ class _DahsboardPageState extends State<DahsboardPage> {
                         return DropdownMenuItem<String>(
                             value: value, child: Text(value));
                       }).toList(),
+                      onTap: (){
+                        dropdownValue = dropdownValue;
+                        if(dropdownValue == 'Kustomisasi'){
+                          showDatePickerDialog(context, 3);
+                        }else{
+                          dropdownValue = dropdownValue;
+                          selectedDateAnalisa = selectedDateAnalisa;
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -225,6 +231,47 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     "Ulasan Customer", "4.8"),
                               ],
                             )
+                    else if (dropdownValue == "Kustomisasi")
+                      if(selectedDateAnalisa != null)
+                        GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.5,
+                          children: [
+                            card_analytic(
+                                ColorValue.primaryColor, "Penjualan", "800"),
+                            card_analytic(ColorValue.secondaryColor,
+                                "Pengunjung toko", "1.200.000"),
+                            card_analytic(
+                                const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
+                            card_analytic(
+                                const Color(0xFF219EBC), "Produk Terjual", "890"),
+                            card_analytic(
+                                const Color(0xFFF77F00), "Komplain", "1"),
+                            card_analytic(const Color(0xFF354F52),
+                                "Ulasan Customer", "4.8"),
+                          ],
+                        )
+                      else
+                        ElevatedButton(
+                          onPressed: () => showDatePickerDialog(context, 3),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              side: const BorderSide(
+                                  color: ColorValue.primaryColor),
+                            ),
+                          ),
+                          child: Text(
+                            "Pilih Tanggal",
+                            style: textTheme.bodyText1!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: ColorValue.primaryColor),
+                          ),
+                        ),
                   ],
                 ),
                 const SizedBox(
@@ -305,7 +352,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     onTap: () {
                                       _selectedMonth = _selectedMonth;
                                       if (_selectedMonth == "Kustomisasi") {
-                                        showDatePickerDialog(context);
+                                        showDatePickerDialog(context, 1);
                                       } else {
                                         _selectedMonth = _selectedMonth;
                                         selectedDate = selectedDate;
@@ -350,7 +397,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                               text_pemasukan("Rp. 10.000.000,00")
                           else
                             ElevatedButton(
-                              onPressed: () => showDatePickerDialog(context),
+                              onPressed: () => showDatePickerDialog(context, 1),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
                                 elevation: 0,
@@ -446,7 +493,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             onTap: () {
                               _selectedMonthGrafik = _selectedMonthGrafik;
                               if (_selectedMonthGrafik == "Kustomisasi") {
-                                showDatePickerDialogGrafik(context);
+                                showDatePickerDialog(context, 2);
                               } else {
                                 _selectedMonthGrafik = _selectedMonthGrafik;
                                 selectedDateGrafik = selectedDateGrafik;
@@ -644,7 +691,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                     )
                   else
                     ElevatedButton(
-                      onPressed: () => showDatePickerDialogGrafik(context),
+                      onPressed: () => showDatePickerDialog(context, 2),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         elevation: 0,
@@ -894,7 +941,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
     "Kustomisasi",
   ];
 
-  Future<void> showDatePickerDialog(BuildContext context) async {
+  Future<void> showDatePickerDialog(BuildContext context, int variableIndex) async {
     //date range picker dialog
     final DateTimeRange? pickedDate = await showDateRangePicker(
         context: context,
@@ -904,26 +951,21 @@ class _DahsboardPageState extends State<DahsboardPage> {
         firstDate: DateTime(2000),
         lastDate: DateTime.now());
 
-    if (pickedDate != null && pickedDate != selectedDate) {
+    if (pickedDate != null) {
       setState(() {
-        selectedDate = pickedDate;
-      });
-    }
-  }
-
-  Future<void> showDatePickerDialogGrafik(BuildContext context) async {
-    //date range picker dialog
-    final DateTimeRange? pickedDate = await showDateRangePicker(
-        context: context,
-        initialDateRange: DateTimeRange(
-            start: DateTime.now().subtract(const Duration(days: 7)),
-            end: DateTime.now()),
-        firstDate: DateTime(2000),
-        lastDate: DateTime.now());
-
-    if (pickedDate != null && pickedDate != selectedDateGrafik) {
-      setState(() {
-        selectedDateGrafik = pickedDate;
+        switch (variableIndex) {
+          case 1:
+            selectedDate = pickedDate;
+            break;
+          case 2:
+            selectedDateGrafik = pickedDate;
+            break;
+          case 3:
+            selectedDateAnalisa = pickedDate;
+            break;
+          default:
+            break;
+        }
       });
     }
   }
