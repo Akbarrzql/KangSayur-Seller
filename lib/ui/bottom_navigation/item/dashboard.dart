@@ -502,6 +502,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                     onTap: (){
                       Navigator.push(context, MaterialPageRoute(builder: (context) => ChartHorizotalPage(
                         salesData: getSalesDataBulanIni(),
+                        salesDataDateList: getSalesDataTahunan(),
                       )));
                     },
                     child: SfCartesianChart(
@@ -721,7 +722,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                       },
                                       style: ElevatedButton.styleFrom(
                                         minimumSize: const Size(88, 80),
-                                        primary: ColorValue.primaryColor,
+                                        backgroundColor: ColorValue.primaryColor,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                           BorderRadius.circular(5),
@@ -773,7 +774,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       minimumSize: const Size(88, 80),
-                                      primary: ColorValue.primaryColor,
+                                      backgroundColor: ColorValue.primaryColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
                                       ),
@@ -817,10 +818,10 @@ class _DahsboardPageState extends State<DahsboardPage> {
     );
   }
 
-  Widget text_pemasukan(String value_harga) {
+  Widget text_pemasukan(String valueHarga) {
     final textTheme = Theme.of(context).textTheme;
     return Text(
-      value_harga,
+      valueHarga,
       style: textTheme.bodyText1!.copyWith(
           fontWeight: FontWeight.w700,
           fontSize: 24,
@@ -909,11 +910,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
   }
 
   List<SalesData> getSalesDataBulanIni() {
-    // Implement logic to get sales data for the selected month
-    // from Dashboard.dart or any other data source
-    // and return the list of SalesData objects
     List<SalesData> salesDataList = [
-      //data senin - minggu
       SalesData('Senin', 35),
       SalesData('Selasa', 28),
       SalesData('Rabu', 34),
@@ -923,6 +920,24 @@ class _DahsboardPageState extends State<DahsboardPage> {
       SalesData('Minggu', 32),
     ];
     return salesDataList;
+  }
+
+  List<SalesData> getSalesDataTahunan() {
+    List<SalesData> salesDataDateList = [
+      SalesData('Januari', 35),
+      SalesData('Februari', 28),
+      SalesData('Maret', 34),
+      SalesData('April', 32),
+      SalesData('Mei', 40),
+      SalesData('Juni', 35),
+      SalesData('Juli', 32),
+      SalesData('Agustus', 35),
+      SalesData('September', 28),
+      SalesData('Oktober', 34),
+      SalesData('November', 32),
+      SalesData('Desember', 40),
+    ];
+    return salesDataDateList;
   }
 
 }
