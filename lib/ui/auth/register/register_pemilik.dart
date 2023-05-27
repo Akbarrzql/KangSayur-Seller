@@ -161,8 +161,8 @@ class _register_pemilikState extends State<register_pemilik> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const register_toko(
-                            selectedCategories: [],
+                          builder: (context) => register_toko(
+                            selectedCategoriesOperasional: [],
                           ),
                         ),
                       );
