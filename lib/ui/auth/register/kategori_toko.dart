@@ -35,7 +35,7 @@ class _KategoriTokoState extends State<KategoriToko> {
       context,
       MaterialPageRoute(
         builder: (context) => register_toko(
-          selectedCategories: isChecked,
+          selectedCategoriesOperasional: isChecked,
         ),
       ),
     );
@@ -50,7 +50,7 @@ class _KategoriTokoState extends State<KategoriToko> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => register_toko(selectedCategories: [],)),
+              MaterialPageRoute(builder: (context) => register_toko(selectedCategoriesOperasional: [],)),
                   (Route<dynamic> route) => false),
         ),
         backgroundColor: Colors.white,
