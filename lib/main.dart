@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kangsayur_seller/ui/auth/register/map_page.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
 import 'package:kangsayur_seller/ui/bottom_navigation/bottom_navigation.dart';
@@ -19,8 +20,21 @@ import 'package:kangsayur_seller/ui/seller_care/seller_care.dart';
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
 import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 
-void main() {
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
+void main() async {
+  // Menginisialisasi pengaturan format tanggal dan waktu lokal
+  await initializeDateFormatting();
+
+  // Memastikan inisialisasi Flutter sebelum menjalankan aplikasi
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Mengatur preferensi orientasi pada potret (portrait)
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  // Menjalankan aplikasi Flutter
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -43,6 +57,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.green,
       ),
+      debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
     );
   }
