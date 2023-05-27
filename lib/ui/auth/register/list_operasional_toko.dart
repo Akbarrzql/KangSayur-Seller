@@ -12,14 +12,16 @@ class ListOperasionalToko extends StatefulWidget {
 
 class _ListOperasionalTokoState extends State<ListOperasionalToko> {
 
-  List<bool> isChecked = [false, false, false, false, false, false];
+  List<bool> isChecked = [false, false, false, false, false, false, false];
   List<String> categoryHari = [
     "Senin",
     "Selasa",
     "Rabu",
     "Kamis",
     "Jumat",
-    "Sabtu"];
+    "Sabtu",
+    "Setiap Hari"
+  ];
 
 
   @override
@@ -49,6 +51,40 @@ class _ListOperasionalTokoState extends State<ListOperasionalToko> {
       body: SafeArea(
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xffD7FEDF),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                height: 45,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      color: ColorValue.primaryColor,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Text(
+                        "Pilih hari operasional toko kamu atau kamu bisa memilih semua hari pada bagian paling bawah.",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 10,
+                          color: ColorValue.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10,),
             Expanded(
               child: ListView.builder(
                 itemCount: categoryHari.length,

@@ -56,7 +56,9 @@ class _register_tokoState extends State<register_toko> {
     "Rabu",
     "Kamis",
     "Jumat",
-    "Sabtu"];
+    "Sabtu",
+    "Setiap Hari"
+  ];
 
   //list controller
   final List<TextEditingController> _jamBukaOperasionalController = [
@@ -67,6 +69,7 @@ class _register_tokoState extends State<register_toko> {
     TextEditingController(),
     TextEditingController(),
     TextEditingController(),
+    TextEditingController()
   ];
 
   final List<TextEditingController> _jamTutupOperasionalController = [
@@ -77,6 +80,7 @@ class _register_tokoState extends State<register_toko> {
     TextEditingController(),
     TextEditingController(),
     TextEditingController(),
+    TextEditingController()
   ];
 
 
