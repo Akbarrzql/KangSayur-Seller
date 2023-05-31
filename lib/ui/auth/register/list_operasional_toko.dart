@@ -12,6 +12,7 @@ class ListOperasionalToko extends StatefulWidget {
 
 class _ListOperasionalTokoState extends State<ListOperasionalToko> {
 
+  bool _isSetiapHariSelected = false;
   List<bool> isChecked = [false, false, false, false, false, false, false];
   List<String> categoryHari = [
     "Senin",
@@ -22,6 +23,17 @@ class _ListOperasionalTokoState extends State<ListOperasionalToko> {
     "Sabtu",
     "Setiap Hari"
   ];
+
+  void _toggleSetiapHari(bool? value) {
+    setState(() {
+      _isSetiapHariSelected = value ?? false;
+      if (value == true) {
+        for (var i = 0; i < isChecked.length - 1; i++) {
+          isChecked[i] = true;
+        }
+      }
+    });
+  }
 
 
   @override
@@ -89,22 +101,61 @@ class _ListOperasionalTokoState extends State<ListOperasionalToko> {
               child: ListView.builder(
                 itemCount: categoryHari.length,
                 itemBuilder: (context, index) {
-                  return CheckboxListTile(
-                    title: Text(
-                      categoryHari[index],
-                      style: textTheme.bodyText1!.copyWith(
-                        color: ColorValue.neutralColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
+                  if (index == categoryHari.length - 1) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            "Kamu dapat memilih fitur setiap hari",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                        CheckboxListTile(
+                          title: Text(
+                            categoryHari[index],
+                            style: textTheme.bodyText1!.copyWith(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          value: index == 6 ? _isSetiapHariSelected : isChecked[index] && !_isSetiapHariSelected,
+                          onChanged: index == 6
+                              ? _toggleSetiapHari
+                              : (bool? value) {
+                            setState(() {
+                              isChecked[index] = value!;
+                            });
+                          },
+                        ),
+                      ],
+                    );
+                  } else {
+                    return CheckboxListTile(
+                      title: Text(
+                        categoryHari[index],
+                        style: textTheme.bodyText1!.copyWith(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                    ),
-                    value: isChecked[index],
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isChecked[index] = value!;
-                      });
-                    },
-                  );
+                      value: index == 6 ? _isSetiapHariSelected : isChecked[index] && !_isSetiapHariSelected,
+                      onChanged: index == 6
+                          ? _toggleSetiapHari
+                          : (bool? value) {
+                        setState(() {
+                          isChecked[index] = value!;
+                        });
+                      },
+                    );
+                  }
                 },
               ),
             ),
@@ -114,6 +165,12 @@ class _ListOperasionalTokoState extends State<ListOperasionalToko> {
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: ElevatedButton(
                 onPressed: () {
+                  //ketika checkbox setiap hari dipilih maka checkbox dari senin hingga sabtu akan dikirimkan ke register_toko.dart
+                  if (_isSetiapHariSelected) {
+                    for (var i = 0; i < isChecked.length - 1; i++) {
+                      isChecked[i] = true;
+                    }
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
