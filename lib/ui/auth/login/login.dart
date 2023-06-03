@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
+import 'package:http/http.dart' as http;
+import 'package:kangsayur_seller/ui/auth/login/otp.dart';
 
 class login_screen extends StatefulWidget {
   const login_screen({Key? key}) : super(key: key);
@@ -16,6 +18,33 @@ class _login_screenState extends State<login_screen> {
   final _passwordController = TextEditingController();
   bool _emailHasError = false;
 
+
+  postDataLogin() async {
+    var url = Uri.parse('https://kangsayur.nitipaja.online/api/auth/login');
+    var response = await http.post(url,
+        headers: {
+          'Accept': 'application/json',
+        },body: {
+      'email': _emailController.text,
+      'password': _passwordController.text,
+    });
+
+    print(response.body);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const OTP()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email atau password salah'),
+        ),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -158,8 +187,7 @@ class _login_screenState extends State<login_screen> {
                         } else if(_passwordController.text.length < 6) {
                           showErrorDialog(context, 'Password minimal 6 karakter');
                         } else {
-                          print('Email: ${_emailController.text}');
-                          print('Password: ${_passwordController.text}');
+                          postDataLogin();
                         }
                       },
                       child: Text(
