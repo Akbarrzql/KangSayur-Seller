@@ -18,6 +18,7 @@ import 'package:kangsayur_seller/ui/promo/list_promo.dart';
 import 'package:kangsayur_seller/ui/promo/promo.dart';
 import 'package:kangsayur_seller/ui/seller_care/seller_care.dart';
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
+import 'package:kangsayur_seller/ui/transaksi/transaksi.dart';
 import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 
 void main() async {
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: const TranskasiPage(),
     );
   }
 }
