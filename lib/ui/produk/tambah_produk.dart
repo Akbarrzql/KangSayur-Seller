@@ -8,7 +8,7 @@ import 'package:kangsayur_seller/ui/informasi/informasi_tambah_produk.dart';
 import 'package:kangsayur_seller/ui/widget/dialog_alret.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 import 'package:kangsayur_seller/ui/widget/textfiled.dart';
-
+import 'package:http/http.dart' as http;
 import '../../common/color_value.dart';
 
 class TambahProdukPage extends StatefulWidget {
@@ -28,6 +28,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
 
   bool withInputFormatter = false;
   bool _isKetentuanSelected = false;
+  bool _isLoaded = false;
 
   //text controller
   final _namaProdukController = TextEditingController();
