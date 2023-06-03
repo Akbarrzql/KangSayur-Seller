@@ -20,6 +20,7 @@ import 'package:kangsayur_seller/ui/seller_care/seller_care.dart';
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
 import 'package:kangsayur_seller/ui/transaksi/transaksi.dart';
 import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
+import 'package:kangsayur_seller/ui/auth/login/login.dart';
 
 void main() async {
   // Menginisialisasi pengaturan format tanggal dan waktu lokal
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       debugShowCheckedModeBanner: false,
-      home: const TranskasiPage(),
+      home: const login_screen(),
     );
   }
 }
