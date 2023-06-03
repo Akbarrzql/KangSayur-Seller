@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kangsayur_seller/ui/transaksi/item_transaksi/ongoing.dart';
-import 'package:kangsayur_seller/ui/transaksi/item_transaksi/riwayat.dart';
+import 'package:kangsayur_seller/ui/transaksi/item_transaksi/confim_driver.dart';
+import 'package:kangsayur_seller/ui/transaksi/item_transaksi/dikirim.dart';
+import 'package:kangsayur_seller/ui/transaksi/item_transaksi/disiapkan.dart';
+import 'package:kangsayur_seller/ui/transaksi/item_transaksi/pesanan.dart';
+import 'package:kangsayur_seller/ui/transaksi/item_transaksi/selesai_riwayat.dart';
 import '../../common/color_value.dart';
 
 class TranskasiPage extends StatefulWidget {
@@ -17,7 +20,7 @@ class _TranskasiPageState extends State<TranskasiPage> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); // Jumlah tab sesuai kebutuhan Anda
+    _tabController = TabController(length: 5, vsync: this); // Jumlah tab sesuai kebutuhan Anda
   }
 
   @override
@@ -52,23 +55,37 @@ class _TranskasiPageState extends State<TranskasiPage> with SingleTickerProvider
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
                 height: 50, // Ubah tinggi sesuai kebutuhan Anda
-                width: 180,
                 child: AppBar(
                   elevation: 0, // Menghilangkan bayangan di bawah AppBar
                   backgroundColor: Colors.transparent, // Menghilangkan background AppBar
-                  flexibleSpace: TabBar(
-                    unselectedLabelColor: ColorValue.neutralColor, // Warna teks tab yang tidak aktif
-                    labelColor: ColorValue.primaryColor, // Warna teks tab yang aktif
+                  //scrollabe tabbar with controller
+                  bottom: TabBar(
                     controller: _tabController,
+                    isScrollable: true,
+                    indicatorColor: ColorValue.primaryColor,
+                    indicatorWeight: 2,
+                    labelColor: ColorValue.primaryColor,
+                    unselectedLabelColor: ColorValue.neutralColor,
+                    labelStyle: textTheme.bodyText1!.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    unselectedLabelStyle: textTheme.bodyText1!.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
                     tabs: const [
-                      Tab(text: 'Riwayat'),
+                      Tab(text: 'Pesanan'),
+                      Tab(text: 'Disiapkan'),
+                      Tab(text: 'Menunggu Driver'),
                       Tab(text: 'Dikirim'),
+                      Tab(text: 'Selesai'),
                     ],
                   ),
                   automaticallyImplyLeading: false,
@@ -77,11 +94,12 @@ class _TranskasiPageState extends State<TranskasiPage> with SingleTickerProvider
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  children: [
-                    // Widget konten untuk Tab 1
+                  children: const [
+                    PesananPage(),
+                    DisiapkanPage(),
+                    ConfirmDriver(),
+                    OngoingPage(),
                     RiwayatPage(),
-                    // Widget konten untuk Tab 2
-                    OngoingPage()
                   ],
                 ),
               ),
