@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../bottom_navigation/bottom_navigation.dart';
 import '../on_boarding/on_boarding_screen.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 
@@ -19,6 +21,24 @@ class _SplashScreenState extends State<SplashScreen> {
   double _opacity = 1.0;
   double _circleSize = 800.0;
 
+  void getToken() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+      if (token != null) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const BottomNavigation(),
+            ));
+      } else if (token == null) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const OnboardingScreen(),
+            ));
+      }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +50,9 @@ class _SplashScreenState extends State<SplashScreen> {
         _opacity = 0.0;
         _circleSize = 300.0;
       });
-      Timer(const Duration(seconds: 3), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingScreen())));
+      Timer(const Duration(seconds: 3), (){
+        getToken();
+      });
     });
   }
 

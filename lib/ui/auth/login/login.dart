@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
+import 'package:kangsayur_seller/model/login_model.dart';
 import 'package:kangsayur_seller/ui/auth/login/otp.dart';
+import '../../bottom_navigation/bottom_navigation.dart';
 import '../../widget/dialog_alret.dart';
 import 'package:http/http.dart' as http;
 import 'package:kangsayur_seller/ui/auth/login/otp.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class login_screen extends StatefulWidget {
   const login_screen({Key? key}) : super(key: key);
@@ -35,10 +38,14 @@ class _login_screenState extends State<login_screen> {
     print(response.statusCode);
 
     if (response.statusCode == 200) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const OTP()),
-      );
+      LoginModel login = loginModelFromJson(response.body);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      pref.setString('token', login.accesToken);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const BottomNavigation(),
+          ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
