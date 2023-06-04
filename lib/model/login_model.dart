@@ -1,5 +1,13 @@
+// To parse this JSON data, do
+//
+//     final loginModel = loginModelFromJson(jsonString);
+
 import 'package:meta/meta.dart';
 import 'dart:convert';
+
+LoginModel loginModelFromJson(String str) => LoginModel.fromJson(json.decode(str));
+
+String loginModelToJson(LoginModel data) => json.encode(data.toJson());
 
 class LoginModel {
   int status;
@@ -15,10 +23,6 @@ class LoginModel {
     required this.accesToken,
     required this.tokenType,
   });
-
-  factory LoginModel.fromRawJson(String str) => LoginModel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
 
   factory LoginModel.fromJson(Map<String, dynamic> json) => LoginModel(
     status: json["status"],
@@ -60,10 +64,6 @@ class Data {
     required this.linkFoto,
   });
 
-  factory Data.fromRawJson(String str) => Data.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     name: json["name"],
     photo: json["photo"],
@@ -73,7 +73,7 @@ class Data {
     jenisKelamin: json["jenis_kelamin"],
     tanggalLahir: DateTime.parse(json["tanggal_lahir"]),
     address: json["address"],
-    linkFoto: json["link_foto"],
+    linkFoto: json["link_foto"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

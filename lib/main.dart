@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       debugShowCheckedModeBanner: false,
-      home: const TambahProdukPage(),
+      home: const SplashScreen(),
     );
   }
 }
