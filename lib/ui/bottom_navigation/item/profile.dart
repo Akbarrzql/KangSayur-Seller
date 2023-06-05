@@ -12,6 +12,7 @@ import 'package:kangsayur_seller/ui/transaksi/transaksi.dart';
 import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 import 'package:http/http.dart' as http;
+import 'package:shimmer/shimmer.dart';
 import '../../profile/inbox.dart';
 import '../../ulasan/ulasan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,53 +87,58 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 30,
-                        backgroundImage: AssetImage('assets/images/ava_seller.png'),
-                      ),
-                      const SizedBox(width: 16,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userModel!.data.namaToko,
-                            style: Theme.of(context).textTheme.headline6!.copyWith(
-                              color: ColorValue.neutralColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const OptionProfile()));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundImage: Image.network("https://kangsayur.nitipaja.online/${userModel!.data.imgProfile}").image,
+                        ),
+                        const SizedBox(width: 16,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              userModel!.data.namaToko,
+                              style: Theme.of(context).textTheme.headline6!.copyWith(
+                                color: ColorValue.neutralColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          Text(
-                            userModel!.data.email,
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color: ColorValue.hintColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
+                            Text(
+                              userModel!.data.email,
+                              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                color: ColorValue.hintColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const OptionProfile()),
-                      );
-                    },
-                    icon: const Icon(
-                      size: 20,
-                      Icons.arrow_forward_ios_outlined,
-                      color: ColorValue.hintColor,
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const OptionProfile()),
+                        );
+                      },
+                      icon: const Icon(
+                        size: 20,
+                        Icons.arrow_forward_ios_outlined,
+                        color: ColorValue.hintColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 24,),
               Center(
@@ -202,7 +208,137 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
-      ) : const Center(child: CircularProgressIndicator(),),
+      ) :
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                child:  Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.white,
+                            ),
+                            const SizedBox(width: 16,),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 20,
+                                  width: 100,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(height: 8,),
+                                Container(
+                                  height: 15,
+                                  width: 100,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            size: 20,
+                            Icons.arrow_forward_ios_outlined,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24,),
+                    Center(
+                      widthFactor: 2,
+                      child: Container(
+                        height: 280,
+                        width: 315,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              top: 50,
+                              left: 30,
+                              right: 30,
+                              bottom: 30,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: 50,
+                                        width: 50,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(width: 45,),
+                                      Container(
+                                        height: 50,
+                                        width: 50,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(width: 25,),
+                                      Container(
+                                        height: 50,
+                                        width: 50,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 40,),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: 50,
+                                        width: 50,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(width: 50,),
+                                      Container(
+                                        height: 50,
+                                        width: 50,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(width: 50,),
+                                      Container(
+                                        height: 50,
+                                        width: 50,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24,),
+                    Container(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
     );
   }
 

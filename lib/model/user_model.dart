@@ -36,6 +36,7 @@ class UserModel {
 class Data {
   int id;
   String namaToko;
+  String imgProfile;
   String name;
   String email;
   dynamic phoneNumber;
@@ -43,6 +44,7 @@ class Data {
   Data({
     required this.id,
     required this.namaToko,
+    required this.imgProfile,
     required this.name,
     required this.email,
     required this.phoneNumber,
@@ -51,6 +53,7 @@ class Data {
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     id: json["id"],
     namaToko: json["nama_toko"],
+    imgProfile: json["img_profile"],
     name: json["name"],
     email: json["email"],
     phoneNumber: json["phone_number"],
@@ -59,6 +62,7 @@ class Data {
   Map<String, dynamic> toJson() => {
     "id": id,
     "nama_toko": namaToko,
+    "img_profile": imgProfile,
     "name": name,
     "email": email,
     "phone_number": phoneNumber,

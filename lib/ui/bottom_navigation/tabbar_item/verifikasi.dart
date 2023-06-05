@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/ui/widget/card_verifikasi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:shimmer/shimmer.dart';
 import '../../../common/color_value.dart';
 import '../../../model/verifikasi_model.dart';
 import '../../produk/detail_produk.dart';
@@ -128,7 +129,70 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
               )
           ),
         ),
-      ) : const Center(child: CircularProgressIndicator(),),
+      ) : Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        //child shimmer verifikasi card
+        child: SingleChildScrollView(
+          child: SafeArea(
+            child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          width: 150,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: ColorValue.neutralColor,
+                              width: 1,
+                            ),
+                          ),
+                          child: dropDown_Status(),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          width: 150,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: ColorValue.neutralColor,
+                              width: 1,
+                            ),
+                          ),
+                          child: dropDown_Tanggal(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24,),
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: 5,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CardVerifikasi(
+                          jenisVerifikasiProduk: 'Bahan Pokok',
+                          tanggalVerifikasiProduk: 'Tidak tertera Tanggal',
+                          namaVerifikasiProduk: 'Nama Produk',
+                          descVerifikasiProduk: 'Deskripsi Produk',
+                          gambarVerifikasiProduk: 'assets/images/wortel.png',
+                          statusVerifikasiProduk: 'Diproses',
+                          onPressed: (){},
+                        );
+                      },
+                    )
+                  ],
+                )
+            ),
+          ),
+        ),
+      ),
     );
   }
 
