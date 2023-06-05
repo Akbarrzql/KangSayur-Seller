@@ -81,16 +81,16 @@ class _DetailPemasukanPageState extends State<DetailPemasukanPage> {
                 legend: Legend(isVisible: true, position: LegendPosition.bottom),
                 // Enable tooltip
                 tooltipBehavior: TooltipBehavior(enable: true),
-                series: <ChartSeries<SalesData, String>>[
-                  LineSeries<SalesData, String>(
-                      dataSource: <SalesData>[
-                        SalesData('Minggu 1', 35),
-                        SalesData('Minggu 2', 28),
-                        SalesData('Minggu 3', 34),
-                        SalesData('Minggu 4', 32),
+                series: <ChartSeries<DataPenjualan, String>>[
+                  LineSeries<DataPenjualan, String>(
+                      dataSource: <DataPenjualan>[
+                        DataPenjualan('Minggu 1', 35),
+                        DataPenjualan('Minggu 2', 28),
+                        DataPenjualan('Minggu 3', 34),
+                        DataPenjualan('Minggu 4', 32),
                       ],
-                      xValueMapper: (SalesData sales, _) => sales.year,
-                      yValueMapper: (SalesData sales, _) => sales.sales,
+                      xValueMapper: (DataPenjualan sales, _) => sales.date,
+                      yValueMapper: (DataPenjualan sales, _) => sales.total,
                       color: ColorValue.primaryColor,
                       // Enable data label
                       dataLabelSettings: DataLabelSettings(isVisible: true))

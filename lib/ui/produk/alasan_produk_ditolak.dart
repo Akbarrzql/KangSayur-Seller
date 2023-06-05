@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kangsayur_seller/model/verifikasi_model.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 
 import '../../common/color_value.dart';
 import 'detail_produk.dart';
 
 class AlasanDitolakPage extends StatefulWidget {
-  const AlasanDitolakPage({Key? key}) : super(key: key);
+  const AlasanDitolakPage({Key? key, required this.data}) : super(key: key);
+  final Datum? data;
 
   @override
   State<AlasanDitolakPage> createState() => _AlasanDitolakPageState();
 }
 
 class _AlasanDitolakPageState extends State<AlasanDitolakPage> {
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -77,12 +80,7 @@ class _AlasanDitolakPageState extends State<AlasanDitolakPage> {
                 height: 24,
               ),
               main_button("Kembali", context, onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const DetailProduk(),
-                  ),
-                );
+               Navigator.pop(context);
               })
             ],
           ),
