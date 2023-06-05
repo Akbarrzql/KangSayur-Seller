@@ -119,14 +119,17 @@ class CardVerifikasi extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5,),
-                      Text(
-                        descVerifikasiProduk,
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                          color: ColorValue.hintColor,
+                      Container(
+                        width: 200,
+                        child: Text(
+                          descVerifikasiProduk,
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12,
+                            color: ColorValue.hintColor,
+                          ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ],
@@ -144,14 +147,14 @@ class CardVerifikasi extends StatelessWidget {
                     width: 80,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      color: Color(0xFFD7FEDF),
+                      color: statusVerifikasiProduk == "Pending" ? const Color(0xFFFDF2B2) : statusVerifikasiProduk == "Ditolak" ? const Color(0xFFFFEAEF) : const Color(0xFFD7FEDF)
                     ),
                     child: Text(
-                      statusVerifikasiProduk,
+                      statusVerifikasiProduk == "Pending" ? "Diproses" : statusVerifikasiProduk == "Rejected" ? "Ditolak" : "Terverifikasi",
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
                         fontWeight: FontWeight.w500,
                         fontSize: 10,
-                        color: ColorValue.primaryColor,
+                        color: statusVerifikasiProduk == "Pending" ? const Color(0xFFEB6D18) : statusVerifikasiProduk == "Rejected" ? const Color(0xFFD6001C) : ColorValue.primaryColor,
                       ),
                     ),
                   ),
