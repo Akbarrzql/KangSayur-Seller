@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:http/http.dart' as http;
 import '../../../model/pemasukan_model.dart';
+import '../../../model/user_model.dart';
 import '../../pemasukan/pemasukan.dart';
 import '../../promo/promo.dart';
 
@@ -36,6 +37,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
   PemasukanModel? pemasukanModel;
   AnalisaModel? analisaModel;
   GrafikModel? grafikModel;
+  UserModel? userModel;
 
 
   Future _getDataPemasukan(String custom) async {
@@ -45,6 +47,13 @@ class _DahsboardPageState extends State<DahsboardPage> {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString('token');
+
+    final responseUser = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/profile"),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },);
+
 
     final responsePemasukan = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/pemasukan?custom=$custom"),
     headers: {
@@ -67,6 +76,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
     pemasukanModel = PemasukanModel.fromJson(jsonDecode(responsePemasukan.body.toString()));
     analisaModel = AnalisaModel.fromJson(jsonDecode(responseAnalis.body.toString()));
     grafikModel = GrafikModel.fromJson(jsonDecode(responseGrafik.body.toString()));
+    userModel = UserModel.fromJson(jsonDecode(responseUser.body.toString()));
 
     setState(() {
       loadingbgproses = true;
@@ -120,7 +130,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                       width: 10,
                     ),
                     Text(
-                      "Nama Toko",
+                      userModel!.data.namaToko,
                       style: textTheme.bodyText1!.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,

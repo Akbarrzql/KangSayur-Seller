@@ -21,7 +21,7 @@ class _InformasiVerifikasiProdukState extends State<InformasiVerifikasiProduk> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'Daftar Promo',
+          'Menunggu Verifikasi',
           style: Theme.of(context).textTheme.headline6!.copyWith(
             color: ColorValue.neutralColor,
             fontSize: 16,
@@ -64,7 +64,7 @@ class _InformasiVerifikasiProdukState extends State<InformasiVerifikasiProduk> {
                 height: 10,
               ),
               Text(
-                'Barang yang kamu tambahkan sedang diverifikasi, tunggu kabar selanjutnya melalui inbox aplikasi ya.',
+                'Barang yang kamu tambahkan sedang diverifikasi, tunggu kabar selanjutnya melalui inbox aplikasi ya atau kamu dapat melihat status verifikasi kamu pada bagian produk.',
                 textAlign: TextAlign.center,
                 style: textTheme.bodyText1!.copyWith(
                   color: ColorValue.neutralColor,

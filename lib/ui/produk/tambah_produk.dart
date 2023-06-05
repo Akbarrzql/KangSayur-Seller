@@ -9,6 +9,7 @@ import 'package:kangsayur_seller/ui/widget/dialog_alret.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 import 'package:kangsayur_seller/ui/widget/textfiled.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/color_value.dart';
 
 class TambahProdukPage extends StatefulWidget {
@@ -86,6 +87,137 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
     symbol: 'Rp. ',
   );
 
+  Future _addProduct() async {
+
+    setState(() {
+      _isLoaded = false;
+    });
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+    var url = Uri.parse('https://kangsayur.nitipaja.online/api/seller/produk/create');
+    var response = await http.post(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+        ,body: {
+          'nama_produk': _namaProdukController.text,
+          'deskripsi': _deskripsiController.text,
+          'harga_produk': _hargaController.text.replaceAll('Rp. ', '').replaceAll('.', '').toString(),
+          'kategori_id': _listKategori.indexWhere((element) => element.isSelected).toString(),
+          'stok_produk': _stokController.text.toString(),
+        });
+
+    print(response.body);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _isLoaded = true;
+      });
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Berhasil",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Produk berhasil ditambahkan",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const InformasiVerifikasiProduk(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "OK",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      setState(() {
+        _isLoaded = true;
+      });
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Gagal",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Gagal menambahkan produk",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      "OK",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    setState(() {
+      _isLoaded = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -93,7 +225,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'Daftar Promo',
+          'Buat Produk Baru',
           style: Theme.of(context).textTheme.headline6!.copyWith(
             color: ColorValue.neutralColor,
             fontSize: 16,
@@ -276,7 +408,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
                 height: 20,
               ),
               Text(
-                "Harga Produk",
+                "Deksripsi Produk",
                 style: textTheme.subtitle1!.copyWith(
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
@@ -299,7 +431,9 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: TextFormField(
                     controller: _deskripsiController,
-                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.newline,
+                    minLines: 10,
+                    maxLines: 10000,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: "Masukkan Deksripsi Produk",
@@ -558,7 +692,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
               main_button("Tambah Produk", context, onPressed: (){
                 //if checkbox is checked then navigate to next page
                 if(_isKetentuanSelected){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => InformasiVerifikasiProduk()));
+                  _addProduct();
                 }
                 else{
                   showErrorDialog(

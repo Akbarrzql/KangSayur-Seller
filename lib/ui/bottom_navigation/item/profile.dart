@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
+import 'package:kangsayur_seller/model/user_model.dart';
 import 'package:kangsayur_seller/ui/on_boarding/on_boarding_screen.dart';
 import 'package:kangsayur_seller/ui/profile/option_profile.dart';
 import 'package:kangsayur_seller/ui/promo/promo.dart';
@@ -23,6 +26,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
 
   bool isLoadedBg = false;
+  UserModel? userModel;
 
   Future _logout() async {
 
@@ -32,11 +36,35 @@ class _ProfilePageState extends State<ProfilePage> {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString('token');
-    final responsePemasukan = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/auth/logout"),
+    final responseLogout = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/auth/logout"),
       headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
       },);
+
+    print(responseLogout.statusCode);
+
+    setState(() {
+      isLoadedBg = true;
+    });
+  }
+
+  Future _personalInformation() async {
+    setState(() {
+      isLoadedBg = false;
+    });
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+    final responseUser = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/profile"),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },);
+
+    userModel = UserModel.fromJson(jsonDecode(responseUser.body.toString()));
+
+    print(responseUser.statusCode);
 
     setState(() {
       isLoadedBg = true;
@@ -44,9 +72,16 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _personalInformation();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: isLoadedBg ? SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
@@ -65,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Nama Seller',
+                            userModel!.data.namaToko,
                             style: Theme.of(context).textTheme.headline6!.copyWith(
                               color: ColorValue.neutralColor,
                               fontSize: 18,
@@ -73,7 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ),
                           Text(
-                            'Email Seller',
+                            userModel!.data.email,
                             style: Theme.of(context).textTheme.bodyText2!.copyWith(
                               color: ColorValue.hintColor,
                               fontSize: 12,
@@ -167,7 +202,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
-      )
+      ) : const Center(child: CircularProgressIndicator(),),
     );
   }
 
