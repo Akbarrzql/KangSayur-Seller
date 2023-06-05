@@ -6,9 +6,9 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../common/color_value.dart';
 
 class ChartHorizotalPage extends StatefulWidget {
-  const ChartHorizotalPage({Key? key, required this.salesData, required this.salesDataDateList}) : super(key: key);
-  final List<SalesData> salesData;
-  final List<SalesData> salesDataDateList;
+  const ChartHorizotalPage({Key? key, required this.dataPenjualan, required this.dataPenjualanDateList}) : super(key: key);
+  final List<DataPenjualan> dataPenjualan;
+  final List<DataPenjualan> dataPenjualanDateList;
 
   @override
   State<ChartHorizotalPage> createState() => _ChartHorizotalPageState();
@@ -68,36 +68,43 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                   child: SfCartesianChart(
                     enableAxisAnimation: true,
                     primaryXAxis: CategoryAxis(),
+                    // Chart title
+                    title: ChartTitle(
+                        text: 'Data Penjualan Bulan Ini',
+                        textStyle: textTheme.bodyText1!.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: ColorValue.neutralColor)),
                     zoomPanBehavior: ZoomPanBehavior(
                         enablePinching: true,
                         enableDoubleTapZooming: true,
                         enablePanning: true),
-                    // Enable legend and show the legend at the bottom
+                    // Enable legend and show the legend at the right
                     legend: Legend(
                       isVisible: true,
                       position: LegendPosition.right,
                       overflowMode: LegendItemOverflowMode.wrap,
-                      toggleSeriesVisibility: false,
+                      alignment: ChartAlignment.center,
+                      toggleSeriesVisibility: true,
                       legendItemBuilder: (String name, dynamic series, dynamic point, int index) {
-                        List<String> daysOfWeek = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-                        SalesData data = widget.salesData[index];
                         return Container(
-                          width: 100,
-                          height: 37,
+                          width: 150,
+                          height: 30,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                '${daysOfWeek[index]}:',
+                                widget.dataPenjualan[index].date.toString(),
                                 style: textTheme.bodyText1!.copyWith(
                                   color: ColorValue.neutralColor,
                                   fontWeight: FontWeight.w600,
+                                  fontSize: 14,
                                 ),
                               ),
                               SizedBox(width: 4),
                               Text(
-                                '${data.sales}',
+                                widget.dataPenjualan[index].total.toString(),
                                 style: textTheme.bodyText1!.copyWith(
                                   color: ColorValue.primaryColor,
                                   fontWeight: FontWeight.w600,
@@ -110,130 +117,15 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                       },
                     ),
                     // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(
-                      enable: true,
-                      header: 'Penjualan',
-                    ),
-                    series: <ChartSeries<SalesData, String>>[
-                      LineSeries<SalesData, String>(
-                        dataSource: widget.salesData,
-                        xValueMapper: (SalesData sales, _) => sales.year,
-                        yValueMapper: (SalesData sales, _) => sales.sales,
+                    tooltipBehavior: TooltipBehavior(enable: true),
+                    series: <ChartSeries<DataPenjualan, String>>[
+                      LineSeries<DataPenjualan, String>(
+                        dataSource: widget.dataPenjualan,
+                        xValueMapper: (DataPenjualan data, _) => data.date,
+                        yValueMapper: (DataPenjualan data, _) => data.total,
                         color: ColorValue.primaryColor,
                         // Enable data label
-                        dataLabelSettings:
-                        const DataLabelSettings(isVisible: true),
-                        name: 'Senin',
-                        markerSettings: const MarkerSettings(
-                          isVisible: true,
-                          shape: DataMarkerType.circle,
-                          borderWidth: 2,
-                          borderColor: ColorValue.primaryColor,
-                          color: ColorValue.primaryColor,
-                        ),
-                      ),
-                      LineSeries<SalesData, String>(
-                        dataSource: widget.salesData,
-                        xValueMapper: (SalesData sales, _) => sales.year,
-                        yValueMapper: (SalesData sales, _) => sales.sales,
-                        color: ColorValue.primaryColor,
-                        // Enable data label
-                        dataLabelSettings:
-                        const DataLabelSettings(isVisible: true),
-                        name: 'Senin',
-                        markerSettings: const MarkerSettings(
-                          isVisible: true,
-                          shape: DataMarkerType.circle,
-                          borderWidth: 2,
-                          borderColor: ColorValue.primaryColor,
-                          color: ColorValue.primaryColor,
-                        ),
-                      ),
-                      LineSeries<SalesData, String>(
-                        dataSource: widget.salesData,
-                        xValueMapper: (SalesData sales, _) => sales.year,
-                        yValueMapper: (SalesData sales, _) => sales.sales,
-                        color: ColorValue.primaryColor,
-                        // Enable data label
-                        dataLabelSettings:
-                        const DataLabelSettings(isVisible: true),
-                        name: 'Rabu',
-                        markerSettings: const MarkerSettings(
-                          isVisible: true,
-                          shape: DataMarkerType.circle,
-                          borderWidth: 2,
-                          borderColor: ColorValue.primaryColor,
-                          color: ColorValue.primaryColor,
-                        ),
-                      ),
-                      LineSeries<SalesData, String>(
-                        dataSource: widget.salesData,
-                        xValueMapper: (SalesData sales, _) => sales.year,
-                        yValueMapper: (SalesData sales, _) => sales.sales,
-                        color: ColorValue.primaryColor,
-                        // Enable data label
-                        dataLabelSettings:
-                        const DataLabelSettings(isVisible: true),
-                        name: 'Kamis',
-                        markerSettings: const MarkerSettings(
-                          isVisible: true,
-                          shape: DataMarkerType.circle,
-                          borderWidth: 2,
-                          borderColor: ColorValue.primaryColor,
-                          color: ColorValue.primaryColor,
-                        ),
-                      ),
-                      LineSeries<SalesData, String>(
-                        dataSource: widget.salesData,
-                        xValueMapper: (SalesData sales, _) => sales.year,
-                        yValueMapper: (SalesData sales, _) => sales.sales,
-                        color: ColorValue.primaryColor,
-                        // Enable data label
-                        dataLabelSettings:
-                        const DataLabelSettings(isVisible: true),
-                        name: 'Jumat',
-                        markerSettings: const MarkerSettings(
-                          isVisible: true,
-                          shape: DataMarkerType.circle,
-                          borderWidth: 2,
-                          borderColor: ColorValue.primaryColor,
-                          color: ColorValue.primaryColor,
-                        ),
-                      ),
-                      LineSeries<SalesData, String>(
-                        dataSource: widget.salesData,
-                        xValueMapper: (SalesData sales, _) => sales.year,
-                        yValueMapper: (SalesData sales, _) => sales.sales,
-                        color: ColorValue.primaryColor,
-                        // Enable data label
-                        dataLabelSettings:
-                        const DataLabelSettings(isVisible: true),
-                        name: 'Sabtu',
-                        markerSettings: const MarkerSettings(
-                          isVisible: true,
-                          shape: DataMarkerType.circle,
-                          borderWidth: 2,
-                          borderColor: ColorValue.primaryColor,
-                          color: ColorValue.primaryColor,
-                        ),
-                      ),
-                      LineSeries<SalesData, String>(
-                        dataSource: widget.salesData,
-                        xValueMapper: (SalesData sales, _) => sales.year,
-                        yValueMapper: (SalesData sales, _) => sales.sales,
-                        color: ColorValue.primaryColor,
-                        // Enable data label
-                        dataLabelSettings:
-                        const DataLabelSettings(isVisible: true),
-                        name: 'Minggu',
-                        markerSettings: const MarkerSettings(
-                          isVisible: true,
-                          shape: DataMarkerType.circle,
-                          borderWidth: 2,
-                          borderColor: ColorValue.primaryColor,
-                          color: ColorValue.primaryColor,
-                        ),
-                      ),
+                        dataLabelSettings: const DataLabelSettings(isVisible: true),)
                     ],
                   ),
                 ),
@@ -256,7 +148,7 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                         toggleSeriesVisibility: false,
                         legendItemBuilder: (String name, dynamic series, dynamic point, int index) {
                           List<String> daysOfWeek = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-                          SalesData data = widget.salesDataDateList[index];
+                          DataPenjualan data = widget.dataPenjualanDateList[index];
                           return Container(
                             width: 150,
                             height: 30,
@@ -273,7 +165,7 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                                 ),
                                 SizedBox(width: 4),
                                 Text(
-                                  '${data.sales}',
+                                  '${data.total}',
                                   style: textTheme.bodyText1!.copyWith(
                                     color: ColorValue.primaryColor,
                                     fontWeight: FontWeight.w600,
@@ -290,11 +182,11 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                         enable: true,
                         header: 'Penjualan',
                       ),
-                      series: <ChartSeries<SalesData, String>>[
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                      series: <ChartSeries<DataPenjualan, String>>[
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -308,10 +200,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -325,10 +217,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -342,10 +234,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -359,10 +251,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -376,10 +268,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -393,10 +285,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -410,10 +302,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -427,10 +319,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -444,10 +336,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -461,10 +353,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -478,10 +370,10 @@ class _ChartHorizotalPageState extends State<ChartHorizotalPage> {
                             color: ColorValue.primaryColor,
                           ),
                         ),
-                        LineSeries<SalesData, String>(
-                          dataSource: widget.salesDataDateList,
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                        LineSeries<DataPenjualan, String>(
+                          dataSource: widget.dataPenjualan,
+                          xValueMapper: (DataPenjualan sales, _) => sales.date,
+                          yValueMapper: (DataPenjualan sales, _) => sales.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
