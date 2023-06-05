@@ -610,7 +610,7 @@ packages:
     source: hosted
     version: "3.2.1"
   shared_preferences:
-    dependency: "direct main"
+   dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
