@@ -1,11 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kangsayur_seller/Constants/app_constants.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:intl/intl.dart';
+import 'package:kangsayur_seller/model/analisa_model.dart';
+import 'package:kangsayur_seller/model/grafik_model.dart';
 import 'package:kangsayur_seller/ui/chart/chart.dart';
 import 'package:kangsayur_seller/ui/iklan/iklan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
+import 'package:http/http.dart' as http;
+import '../../../model/pemasukan_model.dart';
 import '../../pemasukan/pemasukan.dart';
 import '../../promo/promo.dart';
 
@@ -25,6 +32,47 @@ class _DahsboardPageState extends State<DahsboardPage> {
   ScrollController _scrollController = ScrollController();
   TextEditingController pemasukanController = TextEditingController();
 
+  bool loadingbgproses = false;
+  PemasukanModel? pemasukanModel;
+  AnalisaModel? analisaModel;
+  GrafikModel? grafikModel;
+
+
+  Future _getDataPemasukan(String custom) async {
+    setState(() {
+      loadingbgproses = false;
+    });
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+
+    final responsePemasukan = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/pemasukan?custom=$custom"),
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    },);
+
+    final responseAnalis = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/analysis?custom=$custom"),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },);
+
+    final responseGrafik = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/grafik/penjualan?custom=$custom"),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },);
+
+    pemasukanModel = PemasukanModel.fromJson(jsonDecode(responsePemasukan.body.toString()));
+    analisaModel = AnalisaModel.fromJson(jsonDecode(responseAnalis.body.toString()));
+    grafikModel = GrafikModel.fromJson(jsonDecode(responseGrafik.body.toString()));
+
+    setState(() {
+      loadingbgproses = true;
+    });
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -35,14 +83,20 @@ class _DahsboardPageState extends State<DahsboardPage> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _getDataPemasukan('1');
   }
 
+  //void format angka ke rupiah dengan paramter untuk diisi data api 
+  String formatRupiah(String? data) {
+    return NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(int.parse(data!));
+  }
+  
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-
+    int index = 0;
     return Scaffold(
-      body: SafeArea(
+      body: loadingbgproses ? SafeArea(
         child: Container(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: SingleChildScrollView(
@@ -103,6 +157,24 @@ class _DahsboardPageState extends State<DahsboardPage> {
                       onChanged: (String? newValue) {
                         setState(() {
                           dropdownValue = newValue!;
+                          switch (_selectedMonthGrafik) {
+                            case "Bulan Ini":
+                              _getDataPemasukan('1');
+                              break;
+                            case "3 Bulan Terakhir":
+                              _getDataPemasukan('2');
+                              break;
+                            case "6 Bulan Terakhir":
+                              _getDataPemasukan('3');
+                              break;
+                            case "1 Tahun Terakhir":
+                              _getDataPemasukan('4');
+                              break;
+                            case "Semua":
+                              break;
+                            case "Kustomisasi":
+                              break;
+                          }
                         });
                       },
                       items: <String>[
@@ -138,17 +210,17 @@ class _DahsboardPageState extends State<DahsboardPage> {
                         childAspectRatio: 1.5,
                         children: [
                           card_analytic(
-                              ColorValue.primaryColor, "Penjualan", "67"),
+                              ColorValue.primaryColor, "Penjualan", analisaModel!.data.pesanan.toString()),
                           card_analytic(ColorValue.secondaryColor,
-                              "Pengunjung toko", "120.000"),
+                              "Pengunjung toko", analisaModel!.data.pengunjungToko.toString()),
                           card_analytic(
-                              const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
+                              const Color(0xFFEE6C4D), "Rating Toko", analisaModel!.data.ratingPelayanan.toString()),
                           card_analytic(
-                              const Color(0xFF219EBC), "Produk Terjual", "100"),
+                              const Color(0xFF219EBC), "Produk Terjual", analisaModel!.data.produkTerjual.toString()),
                           card_analytic(
-                              const Color(0xFFF77F00), "Komplain", "0"),
+                              const Color(0xFFF77F00), "Komplain", analisaModel!.data.laporan.toString()),
                           card_analytic(const Color(0xFF354F52),
-                              "Ulasan Customer", "4.5"),
+                              "Ulasan Customer", analisaModel!.data.ratingProduk.toString()),
                         ],
                       )
                     else if (dropdownValue == '3 Bulan Terakhir')
@@ -158,17 +230,17 @@ class _DahsboardPageState extends State<DahsboardPage> {
                         childAspectRatio: 1.5,
                         children: [
                           card_analytic(
-                              ColorValue.primaryColor, "Penjualan", "200"),
+                              ColorValue.primaryColor, "Penjualan", analisaModel!.data.pesanan.toString()),
                           card_analytic(ColorValue.secondaryColor,
-                              "Pengunjung toko", "350.000"),
+                              "Pengunjung toko", analisaModel!.data.pengunjungToko.toString()),
                           card_analytic(
-                              const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
+                              const Color(0xFFEE6C4D), "Rating Toko", analisaModel!.data.ratingPelayanan.toString()),
                           card_analytic(
-                              const Color(0xFF219EBC), "Produk Terjual", "180"),
+                              const Color(0xFF219EBC), "Produk Terjual", analisaModel!.data.produkTerjual.toString()),
                           card_analytic(
-                              const Color(0xFFF77F00), "Komplain", "2"),
+                              const Color(0xFFF77F00), "Komplain", analisaModel!.data.laporan.toString()),
                           card_analytic(const Color(0xFF354F52),
-                              "Ulasan Customer", "4.2"),
+                              "Ulasan Customer", analisaModel!.data.ratingProduk.toString()),
                         ],
                       )
                     else if (dropdownValue == "6 Bulan Terakhir")
@@ -178,17 +250,17 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           childAspectRatio: 1.5,
                           children: [
                             card_analytic(
-                                ColorValue.primaryColor, "Penjualan", "250"),
+                                ColorValue.primaryColor, "Penjualan", analisaModel!.data.pesanan.toString()),
                             card_analytic(ColorValue.secondaryColor,
-                                "Pengunjung toko", "550.000"),
+                                "Pengunjung toko", analisaModel!.data.pengunjungToko.toString()),
                             card_analytic(
-                                const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
+                                const Color(0xFFEE6C4D), "Rating Toko", analisaModel!.data.ratingPelayanan.toString()),
                             card_analytic(
-                                const Color(0xFF219EBC), "Produk Terjual", "340"),
+                                const Color(0xFF219EBC), "Produk Terjual", analisaModel!.data.produkTerjual.toString()),
                             card_analytic(
-                                const Color(0xFFF77F00), "Komplain", "5"),
+                                const Color(0xFFF77F00), "Komplain", analisaModel!.data.laporan.toString()),
                             card_analytic(const Color(0xFF354F52),
-                                "Ulasan Customer", "4.8"),
+                                "Ulasan Customer", analisaModel!.data.ratingProduk.toString()),
                           ],
                         )
                       else if (dropdownValue == "1 Tahun Terakhir")
@@ -198,17 +270,17 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             childAspectRatio: 1.5,
                             children: [
                               card_analytic(
-                                  ColorValue.primaryColor, "Penjualan", "600"),
+                                  ColorValue.primaryColor, "Penjualan", analisaModel!.data.pesanan.toString()),
                               card_analytic(ColorValue.secondaryColor,
-                                  "Pengunjung toko", "1.000.000"),
+                                  "Pengunjung toko", analisaModel!.data.pengunjungToko.toString()),
                               card_analytic(
-                                  const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
+                                  const Color(0xFFEE6C4D), "Rating Toko", analisaModel!.data.ratingPelayanan.toString()),
                               card_analytic(
-                                  const Color(0xFF219EBC), "Produk Terjual", "460"),
+                                  const Color(0xFF219EBC), "Produk Terjual", analisaModel!.data.produkTerjual.toString()),
                               card_analytic(
-                                  const Color(0xFFF77F00), "Komplain", "1"),
+                                  const Color(0xFFF77F00), "Komplain", analisaModel!.data.laporan.toString()),
                               card_analytic(const Color(0xFF354F52),
-                                  "Ulasan Customer", "4.6"),
+                                  "Ulasan Customer", analisaModel!.data.ratingProduk.toString()),
                             ],
                           )
                         else if (dropdownValue == "Semua")
@@ -231,47 +303,47 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     "Ulasan Customer", "4.8"),
                               ],
                             )
-                    else if (dropdownValue == "Kustomisasi")
-                      if(selectedDateAnalisa != null)
-                        GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 3,
-                          childAspectRatio: 1.5,
-                          children: [
-                            card_analytic(
-                                ColorValue.primaryColor, "Penjualan", "800"),
-                            card_analytic(ColorValue.secondaryColor,
-                                "Pengunjung toko", "1.200.000"),
-                            card_analytic(
-                                const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
-                            card_analytic(
-                                const Color(0xFF219EBC), "Produk Terjual", "890"),
-                            card_analytic(
-                                const Color(0xFFF77F00), "Komplain", "1"),
-                            card_analytic(const Color(0xFF354F52),
-                                "Ulasan Customer", "4.8"),
-                          ],
-                        )
-                      else
-                        ElevatedButton(
-                          onPressed: () => showDatePickerDialog(context, 3),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              side: const BorderSide(
-                                  color: ColorValue.primaryColor),
-                            ),
-                          ),
-                          child: Text(
-                            "Pilih Tanggal",
-                            style: textTheme.bodyText1!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                color: ColorValue.primaryColor),
-                          ),
-                        ),
+                          else if (dropdownValue == "Kustomisasi")
+                              if(selectedDateAnalisa != null)
+                                GridView.count(
+                                  shrinkWrap: true,
+                                  crossAxisCount: 3,
+                                  childAspectRatio: 1.5,
+                                  children: [
+                                    card_analytic(
+                                        ColorValue.primaryColor, "Penjualan", "800"),
+                                    card_analytic(ColorValue.secondaryColor,
+                                        "Pengunjung toko", "1.200.000"),
+                                    card_analytic(
+                                        const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
+                                    card_analytic(
+                                        const Color(0xFF219EBC), "Produk Terjual", "890"),
+                                    card_analytic(
+                                        const Color(0xFFF77F00), "Komplain", "1"),
+                                    card_analytic(const Color(0xFF354F52),
+                                        "Ulasan Customer", "4.8"),
+                                  ],
+                                )
+                              else
+                                ElevatedButton(
+                                  onPressed: () => showDatePickerDialog(context, 3),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      side: const BorderSide(
+                                          color: ColorValue.primaryColor),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Pilih Tanggal",
+                                    style: textTheme.bodyText1!.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: ColorValue.primaryColor),
+                                  ),
+                                ),
                   ],
                 ),
                 const SizedBox(
@@ -295,7 +367,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           color: ColorValue.hintColor),
                     ),
                     Text(
-                      "Rp. 20.000.000,00",
+                      formatRupiah(pemasukanModel!.pemasukan.totalKeseluruhan.toString()),
                       style: textTheme.bodyText1!.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
@@ -328,6 +400,24 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     onChanged: (String? newValue) {
                                       setState(() {
                                         _selectedMonth = newValue!;
+                                        switch (_selectedMonthGrafik) {
+                                          case "Bulan Ini":
+                                            _getDataPemasukan('1');
+                                            break;
+                                          case "3 Bulan Terakhir":
+                                            _getDataPemasukan('2');
+                                            break;
+                                          case "6 Bulan Terakhir":
+                                            _getDataPemasukan('3');
+                                            break;
+                                          case "1 Tahun Terakhir":
+                                            _getDataPemasukan('4');
+                                            break;
+                                          case "Semua":
+                                            break;
+                                          case "Kustomisasi":
+                                            break;
+                                        }
                                       });
                                     },
                                     underline: Container(
@@ -379,13 +469,13 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           ],
                         ),
                         if (_selectedMonth == "Bulan Ini")
-                          text_pemasukan("Rp. 5.000.000,00"),
+                          text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())),
                         if (_selectedMonth == "3 Bulan Terakhir")
-                          text_pemasukan("Rp. 4.000.000,00"),
+                          text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())),
                         if (_selectedMonth == "6 Bulan Terakhir")
-                          text_pemasukan("Rp. 3.000.000,00"),
+                          text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())),
                         if (_selectedMonth == "1 Tahun Terakhir")
-                          text_pemasukan("Rp. 6.000.000,00"),
+                          text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())),
                         if (_selectedMonth == "Semua")
                           text_pemasukan("Rp. 20.000.000,00"),
                         if (_selectedMonth == "Kustomisasi")
@@ -473,6 +563,25 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             onChanged: (String? newValue) {
                               setState(() {
                                 _selectedMonthGrafik = newValue!;
+                                //switch case
+                                switch (_selectedMonthGrafik) {
+                                  case "Bulan Ini":
+                                    _getDataPemasukan('1');
+                                    break;
+                                  case "3 Bulan Terakhir":
+                                    _getDataPemasukan('2');
+                                    break;
+                                  case "6 Bulan Terakhir":
+                                    _getDataPemasukan('3');
+                                    break;
+                                  case "1 Tahun Terakhir":
+                                    _getDataPemasukan('4');
+                                    break;
+                                  case "Semua":
+                                    break;
+                                  case "Kustomisasi":
+                                    break;
+                                }
                               });
                             },
                             underline: Container(
@@ -551,8 +660,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                   InkWell(
                     onTap: (){
                       Navigator.push(context, MaterialPageRoute(builder: (context) => ChartHorizotalPage(
-                        salesData: getSalesDataBulanIni(),
-                        salesDataDateList: getSalesDataTahunan(),
+                        dataPenjualan: getSalesData(),
+                        dataPenjualanDateList: getSalesData(),
                       )));
                     },
                     child: SfCartesianChart(
@@ -565,24 +674,21 @@ class _DahsboardPageState extends State<DahsboardPage> {
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
                               color: ColorValue.neutralColor)),
-                      zoomPanBehavior: ZoomPanBehavior(
+                          zoomPanBehavior: ZoomPanBehavior(
                           enablePinching: true,
                           enableDoubleTapZooming: true,
                           enablePanning: true),
-                      // Enable legend and show the legend at the bottom
-                      legend: Legend(
-                          isVisible: true, position: LegendPosition.bottom),
                       // Enable tooltip
                       tooltipBehavior: TooltipBehavior(enable: true),
-                      series: <ChartSeries<SalesData, String>>[
-                        LineSeries<SalesData, String>(
-                            dataSource: getSalesDataBulanIni(),
-                            xValueMapper: (SalesData sales, _) => sales.year,
-                            yValueMapper: (SalesData sales, _) => sales.sales,
+                      series: <ChartSeries<DataPenjualan, String>>[
+                        LineSeries<DataPenjualan, String>(
+                            dataSource: getSalesData(),
+                            xValueMapper: (DataPenjualan data, _) => data.date,
+                            yValueMapper: (DataPenjualan data, _) => data.total,
                             color: ColorValue.primaryColor,
                             // Enable data label
                             dataLabelSettings:
-                            const DataLabelSettings(isVisible: true))
+                            const DataLabelSettings(isVisible: true),)
                       ],
                     ),
                   ),
@@ -606,16 +712,11 @@ class _DahsboardPageState extends State<DahsboardPage> {
                         enablePanning: true),
                     // Enable tooltip
                     tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<SalesData, String>>[
-                      LineSeries<SalesData, String>(
-                          dataSource: <SalesData>[
-                            SalesData('Minggu 1', 40),
-                            SalesData('Minggu 2', 60),
-                            SalesData('Minggu 3', 20),
-                            SalesData('Minggu 4', 30),
-                          ],
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                    series: <ChartSeries<DataPenjualan, String>>[
+                      LineSeries<DataPenjualan, String>(
+                          dataSource: getSalesData(),
+                          xValueMapper: (DataPenjualan data, _) => data.date,
+                          yValueMapper: (DataPenjualan data, _) => data.total,
                           color: ColorValue.primaryColor,
                           // Enable data label
                           dataLabelSettings:
@@ -639,16 +740,38 @@ class _DahsboardPageState extends State<DahsboardPage> {
                         enableDoubleTapZooming: true,
                         enablePanning: true),
                     tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<SalesData, String>>[
-                      LineSeries<SalesData, String>(
-                          dataSource: <SalesData>[
-                            SalesData('Minggu 1', 80),
-                            SalesData('Minggu 2', 20),
-                            SalesData('Minggu 3', 40),
-                            SalesData('Minggu 4', 50),
-                          ],
-                          xValueMapper: (SalesData sales, _) => sales.year,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
+                    series: <ChartSeries<DataPenjualan, String>>[
+                      LineSeries<DataPenjualan, String>(
+                          dataSource: getSalesData(),
+                          xValueMapper: (DataPenjualan data, _) => data.date,
+                          yValueMapper: (DataPenjualan data, _) => data.total,
+                          color: ColorValue.primaryColor,
+                          dataLabelSettings:
+                          const DataLabelSettings(isVisible: true))
+                    ],
+                  ),
+                if (_selectedMonthGrafik == "1 Tahun Terakhir")
+                  SfCartesianChart(
+                    enableAxisAnimation: true,
+                    primaryXAxis: CategoryAxis(),
+                    title: ChartTitle(
+                        text: 'Data Penjualan 1 Tahun Terakhir',
+                        textStyle: textTheme.bodyText1!.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: ColorValue.neutralColor)),
+                    legend: Legend(
+                        isVisible: true, position: LegendPosition.bottom),
+                    zoomPanBehavior: ZoomPanBehavior(
+                        enablePinching: true,
+                        enableDoubleTapZooming: true,
+                        enablePanning: true),
+                    tooltipBehavior: TooltipBehavior(enable: true),
+                    series: <ChartSeries<DataPenjualan, String>>[
+                      LineSeries<DataPenjualan, String>(
+                          dataSource: getSalesData(),
+                          xValueMapper: (DataPenjualan data, _) => data.date,
+                          yValueMapper: (DataPenjualan data, _) => data.total,
                           color: ColorValue.primaryColor,
                           dataLabelSettings:
                           const DataLabelSettings(isVisible: true))
@@ -675,16 +798,16 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           enableDoubleTapZooming: true,
                           enablePanning: true),
                       tooltipBehavior: TooltipBehavior(enable: true),
-                      series: <ChartSeries<SalesData, String>>[
-                        LineSeries<SalesData, String>(
-                            dataSource: <SalesData>[
-                              SalesData('Minggu 1', 80),
-                              SalesData('Minggu 2', 20),
-                              SalesData('Minggu 3', 40),
-                              SalesData('Minggu 4', 50),
+                      series: <ChartSeries<DataPenjualan, String>>[
+                        LineSeries<DataPenjualan, String>(
+                            dataSource: <DataPenjualan>[
+                              DataPenjualan('Minggu 1', 80),
+                              DataPenjualan('Minggu 2', 20),
+                              DataPenjualan('Minggu 3', 40),
+                              DataPenjualan('Minggu 4', 50),
                             ],
-                            xValueMapper: (SalesData sales, _) => sales.year,
-                            yValueMapper: (SalesData sales, _) => sales.sales,
+                            xValueMapper: (DataPenjualan data, _) => data.date,
+                            yValueMapper: (DataPenjualan data, _) => data.total,
                             color: ColorValue.primaryColor,
                             dataLabelSettings:
                             const DataLabelSettings(isVisible: true))
@@ -864,7 +987,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
             ),
           ),
         ),
-      ),
+      ) : const Center(child: CircularProgressIndicator()),
     );
   }
 
@@ -971,42 +1094,42 @@ class _DahsboardPageState extends State<DahsboardPage> {
     }
   }
 
-  List<SalesData> getSalesDataBulanIni() {
-    List<SalesData> salesDataList = [
-      SalesData('Senin', 35),
-      SalesData('Selasa', 28),
-      SalesData('Rabu', 34),
-      SalesData('Kamis', 32),
-      SalesData('Jumat', 40),
-      SalesData('Sabtu', 35),
-      SalesData('Minggu', 32),
-    ];
+  List<DataPenjualan> getSalesData() {
+    List<DataPenjualan> salesDataList = [];
+
+    if (grafikModel != null && grafikModel!.grafikPenjualan != null) {
+      for (int i = 0; i < grafikModel!.grafikPenjualan.length; i++) {
+        GrafikPenjualan? grafikPenjualan = grafikModel!.grafikPenjualan[i];
+
+        if (grafikPenjualan != null && grafikPenjualan.date != null && grafikPenjualan.total != null) {
+          salesDataList.add(
+            DataPenjualan(
+              grafikPenjualan.date.toString(),
+              grafikPenjualan.total.toDouble(),
+            ),
+          );
+        } else {
+          salesDataList.add(
+            DataPenjualan("Tidak ada Data", 0.0),
+          );
+        }
+      }
+    } else {
+      salesDataList.add(
+        DataPenjualan("Tidak ada Data", 0.0),
+      );
+    }
+
     return salesDataList;
   }
 
-  List<SalesData> getSalesDataTahunan() {
-    List<SalesData> salesDataDateList = [
-      SalesData('Januari', 35),
-      SalesData('Februari', 28),
-      SalesData('Maret', 34),
-      SalesData('April', 32),
-      SalesData('Mei', 40),
-      SalesData('Juni', 35),
-      SalesData('Juli', 32),
-      SalesData('Agustus', 35),
-      SalesData('September', 28),
-      SalesData('Oktober', 34),
-      SalesData('November', 32),
-      SalesData('Desember', 40),
-    ];
-    return salesDataDateList;
-  }
+
 
 }
 
-class SalesData {
-  SalesData(this.year, this.sales);
+class DataPenjualan {
+  DataPenjualan(this.date, this.total);
 
-  final String year;
-  final double sales;
+  final String date;
+  final double total;
 }
