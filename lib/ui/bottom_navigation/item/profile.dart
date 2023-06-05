@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
+import 'package:kangsayur_seller/ui/on_boarding/on_boarding_screen.dart';
 import 'package:kangsayur_seller/ui/profile/option_profile.dart';
 import 'package:kangsayur_seller/ui/promo/promo.dart';
 import 'package:kangsayur_seller/ui/seller_care/seller_care.dart';
 import 'package:kangsayur_seller/ui/transaksi/transaksi.dart';
 import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
-
+import 'package:http/http.dart' as http;
 import '../../profile/inbox.dart';
 import '../../ulasan/ulasan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -19,6 +21,28 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  bool isLoadedBg = false;
+
+  Future _logout() async {
+
+    setState(() {
+      isLoadedBg = false;
+    });
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+    final responsePemasukan = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/auth/logout"),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },);
+
+    setState(() {
+      isLoadedBg = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,7 +156,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const SizedBox(height: 24,),
-              main_button("Keluar", context, onPressed: (){}),
+              main_button("Keluar", context, onPressed: (){
+                _logout();
+                SharedPreferences.getInstance().then((prefs) {
+                  prefs.remove('token');
+                  prefs.clear();
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnboardingScreen()));
+                });
+              }),
             ],
           ),
         ),
