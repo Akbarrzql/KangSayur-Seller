@@ -11,8 +11,14 @@ import 'package:kangsayur_seller/ui/auth/register/register_pemilik.dart';
 import '../../widget/textfiled.dart';
 
 class register_toko extends StatefulWidget {
-  const register_toko({Key? key, required this.selectedCategoriesOperasional}) : super(key: key);
+  register_toko({Key? key, required this.selectedCategoriesOperasional, required this.namaPemilik, required this.emailPemilik, required this.alamatPemilik, required this.noHpPemilik, required this.sandi}) : super(key: key);
   final List<bool> selectedCategoriesOperasional;
+  final TextEditingController namaPemilik;
+  final TextEditingController emailPemilik;
+  final TextEditingController noHpPemilik;
+  final TextEditingController alamatPemilik;
+  final TextEditingController sandi;
+
 
   @override
   State<register_toko> createState() => _register_tokoState();
@@ -45,10 +51,14 @@ class _register_tokoState extends State<register_toko> {
     );
 
     if (pickedTime != null) {
+      // format the selected time as HH:mm
+      String formattedTime = pickedTime.format(context);
+
       // update the text field with the selected time
-      controller.text = pickedTime.format(context);
+      controller.text = formattedTime;
     }
   }
+
 
   List<String> categoryHari = [
     "Senin",
@@ -63,24 +73,10 @@ class _register_tokoState extends State<register_toko> {
   //list controller
   final List<TextEditingController> _jamBukaOperasionalController = [
     TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController()
   ];
 
   final List<TextEditingController> _jamTutupOperasionalController = [
     TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController()
   ];
 
 
@@ -278,7 +274,9 @@ class _register_tokoState extends State<register_toko> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: TextFormField(
                     controller: _deskripsiController,
-                    keyboardType: TextInputType.text,
+                    minLines: 1,
+                    maxLines: 10,
+                    textInputAction: TextInputAction.newline,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: "Deksripsi toko",
@@ -383,6 +381,8 @@ class _register_tokoState extends State<register_toko> {
                                         keyboardType: TextInputType.text,
                                         onTap: (){
                                           _selectTime(context, _jamBukaOperasionalController[i]);
+                                          print(_jamBukaOperasionalController[i].text);
+                                          print("jam buka");
                                         },
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
@@ -455,7 +455,13 @@ class _register_tokoState extends State<register_toko> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ListOperasionalToko()));
+                            builder: (context) => ListOperasionalToko(
+                              namaPemilik: widget.namaPemilik,
+                              emailPemilik: widget.emailPemilik,
+                              noHpPemilik: widget.noHpPemilik,
+                              alamatPemilik: widget.alamatPemilik,
+                              sandi: widget.sandi,
+                            )));
                   },
                   child: Text(
                     "Pilih Jam Operasional",
@@ -476,7 +482,18 @@ class _register_tokoState extends State<register_toko> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const MapScreen(),
+                        builder: (context) => MapScreen(
+                          namaPemilik: widget.namaPemilik,
+                          emailPemilik: widget.emailPemilik,
+                          noHpPemilik: widget.noHpPemilik,
+                          alamatPemilik: widget.alamatPemilik,
+                          namaToko: _namaTokoController,
+                          deskripsiToko: _deskripsiController,
+                          alamatToko: _alamatController,
+                          sandi: widget.sandi,
+                          jamBuka: _jamBukaOperasionalController,
+                          jamTutup: _jamTutupOperasionalController,
+                        ),
                       ),
                     );
                   },

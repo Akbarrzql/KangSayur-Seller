@@ -4,7 +4,12 @@ import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
 import '../../../common/color_value.dart';
 
 class ListOperasionalToko extends StatefulWidget {
-  const ListOperasionalToko({Key? key}) : super(key: key);
+  const ListOperasionalToko({Key? key, required this.namaPemilik, required this.emailPemilik, required this.noHpPemilik, required this.alamatPemilik, required this.sandi}) : super(key: key);
+  final namaPemilik;
+  final emailPemilik;
+  final noHpPemilik;
+  final alamatPemilik;
+  final sandi;
 
   @override
   State<ListOperasionalToko> createState() => _ListOperasionalTokoState();
@@ -174,7 +179,14 @@ class _ListOperasionalTokoState extends State<ListOperasionalToko> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => register_toko(selectedCategoriesOperasional: isChecked),
+                      builder: (context) => register_toko(
+                          namaPemilik: widget.namaPemilik,
+                          emailPemilik: widget.emailPemilik,
+                          noHpPemilik: widget.noHpPemilik,
+                          alamatPemilik: widget.alamatPemilik,
+                          sandi: widget.sandi,
+                          selectedCategoriesOperasional: isChecked,
+                      ),
                     ),
                   );
                 },

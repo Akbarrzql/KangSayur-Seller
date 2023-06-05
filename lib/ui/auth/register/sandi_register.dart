@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/map_page.dart';
+import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
 import '../../widget/dialog_alret.dart';
 import '../../widget/main_button.dart';
 
 class KataSandiRegister extends StatefulWidget {
-  const KataSandiRegister({Key? key}) : super(key: key);
+  KataSandiRegister({Key? key, required this.namaPemilik, required this.emailPemilik, required this.noHpPemilik, required this.alamatPemilik}) : super(key: key);
+  final TextEditingController namaPemilik;
+  final TextEditingController emailPemilik;
+  final TextEditingController noHpPemilik;
+  final TextEditingController alamatPemilik;
+
 
   @override
   State<KataSandiRegister> createState() => _KataSandiRegisterState();
@@ -119,7 +125,14 @@ class _KataSandiRegisterState extends State<KataSandiRegister> {
                 } else {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MapScreen()),
+                    MaterialPageRoute(builder: (context) => register_toko(
+                      selectedCategoriesOperasional: [],
+                      namaPemilik: widget.namaPemilik,
+                      emailPemilik: widget.emailPemilik,
+                      noHpPemilik: widget.noHpPemilik,
+                      alamatPemilik: widget.alamatPemilik,
+                      sandi: _sandiController,
+                    )),
                   );
                 }
               }),
