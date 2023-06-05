@@ -1,18 +1,34 @@
+import 'dart:convert';
+import 'dart:core';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:kangsayur_seller/model/register_model.dart';
 import 'package:kangsayur_seller/ui/auth/register/sandi_register.dart';
 import 'package:kangsayur_seller/ui/bottom_navigation/bottom_navigation.dart';
 import 'package:kangsayur_seller/ui/bottom_navigation/item/dashboard.dart';
 import 'package:location/location.dart' as loc;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Constants/app_constants.dart';
 import 'package:latlong2/latlong.dart';
-
+import 'package:http/http.dart' as http;
 import '../../../common/color_value.dart';
 import '../../widget/main_button.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+  MapScreen({Key? key, required this.namaPemilik, required this.emailPemilik, required this.noHpPemilik, required this.alamatPemilik, required this.sandi, required this.namaToko, required this.alamatToko, required this.deskripsiToko, required this.jamBuka, required this.jamTutup}) : super(key: key);
+  final TextEditingController namaPemilik;
+  final TextEditingController emailPemilik;
+  final TextEditingController noHpPemilik;
+  final TextEditingController alamatPemilik;
+  final TextEditingController sandi;
+  final TextEditingController namaToko;
+  final TextEditingController deskripsiToko;
+  final TextEditingController alamatToko;
+  //jam buka tutup dari list operasioanl toko class
+  List<TextEditingController> jamBuka = [];
+  List<TextEditingController> jamTutup = [];
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -110,6 +126,75 @@ class _MapScreenState extends State<MapScreen> {
     mapController.move(_currentPosition, 14.0); // Sesuaikan level zoom jika perlu
   }
 
+  // //list jam buka tutup
+  // List<String> convertToTimeString(List<TextEditingController> controllers) {
+  //   List<String> timeStrings = [];
+  //   for (var controller in controllers) {
+  //     String time = controller.text;
+  //     time = time.replaceAll("┤", "").replaceAll("├", "");
+  //     timeStrings.add(time);
+  //   }
+  //   return timeStrings;
+  // }
+
+  String convertToTimeString(List<TextEditingController> controllers) {
+    String timeString = '';
+    for (var controller in controllers) {
+      String time = controller.text.replaceAll("┤", "").replaceAll("├", "");
+      timeString += (time.isNotEmpty) ? time + ', ' : '';
+    }
+    if (timeString.isNotEmpty) {
+      timeString = timeString.substring(0, timeString.length - 2);
+    }
+    return timeString;
+  }
+
+
+  String convertToText(TextEditingController controller) {
+    String text = controller.text;
+    text = text.replaceAll("┤", "").replaceAll("├", "");
+    return text;
+  }
+
+  postRegister() async {
+
+    var url = Uri.parse('https://kangsayur.nitipaja.online/api/auth/seller/register');
+    var response = await http.post(url,
+        headers: {
+          'Accept': 'application/json',
+        },body: {
+          'email': convertToText(widget.emailPemilik),
+          'password': convertToText(widget.sandi),
+          'owner_name': convertToText(widget.namaPemilik),
+          'phone_number': convertToText(widget.noHpPemilik),
+          'owner_address': convertToText(widget.alamatPemilik),
+          'store_name': convertToText(widget.namaToko),
+          'description': convertToText(widget.deskripsiToko),
+          'store_address': convertToText(widget.alamatToko),
+          'store_longitude': _currentPosition.longitude.toDouble().toString(),
+          'store_latitude': _currentPosition.latitude.toDouble().toString(),
+          'open': convertToTimeString(widget.jamBuka).toString(),
+          'close': convertToTimeString(widget.jamTutup).toString(),
+        });
+
+
+    print(response.body);
+    print(response.statusCode);
+
+    if(response.statusCode == 200) {
+      RegisterModel register = registerModelFromJson(response.body);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      pref.setString('token', register.accesToken);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gagal Register'),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -127,9 +212,7 @@ class _MapScreenState extends State<MapScreen> {
           style: TextStyle(color: Colors.black, fontSize: 18),),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => KataSandiRegister()),
-                  (Route<dynamic> route) => false),
+          onPressed: () => Navigator.pop(context)
         ),
         backgroundColor: Colors.white,
       ),
@@ -194,9 +277,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   const SizedBox(height: 15),
                   main_button("Daftar", context, onPressed: (){
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => BottomNavigation()),
-                            (Route<dynamic> route) => false);
+                    postRegister();
                   }),
                 ],
               ),
