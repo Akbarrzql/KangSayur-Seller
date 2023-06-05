@@ -123,6 +123,7 @@ class CardVerifikasi extends StatelessWidget {
                         width: 200,
                         child: Text(
                           descVerifikasiProduk,
+                          maxLines: 2,
                           style: Theme.of(context).textTheme.subtitle1!.copyWith(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
