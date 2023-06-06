@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -29,6 +30,7 @@ class MapScreen extends StatefulWidget {
   //jam buka tutup dari list operasioanl toko class
   List<TextEditingController> jamBuka = [];
   List<TextEditingController> jamTutup = [];
+  File imageFile = File('');
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -185,11 +187,17 @@ class _MapScreenState extends State<MapScreen> {
       RegisterModel register = registerModelFromJson(response.body);
       SharedPreferences pref = await SharedPreferences.getInstance();
       pref.setString('token', register.accesToken);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
+      //loading and navigate to home
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Berhasil Mendaftar!'),
+        ),
+      );
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Gagal Register'),
+          content: Text('Terdapat kesalahan, silahkan coba lagi!'),
         ),
       );
     }

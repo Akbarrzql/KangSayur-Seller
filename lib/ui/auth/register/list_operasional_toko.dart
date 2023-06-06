@@ -180,12 +180,12 @@ class _ListOperasionalTokoState extends State<ListOperasionalToko> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => register_toko(
-                          namaPemilik: widget.namaPemilik,
-                          emailPemilik: widget.emailPemilik,
-                          noHpPemilik: widget.noHpPemilik,
-                          alamatPemilik: widget.alamatPemilik,
-                          sandi: widget.sandi,
-                          selectedCategoriesOperasional: isChecked,
+                        namaPemilik: widget.namaPemilik,
+                        emailPemilik: widget.emailPemilik,
+                        noHpPemilik: widget.noHpPemilik,
+                        alamatPemilik: widget.alamatPemilik,
+                        sandi: widget.sandi,
+                        selectedCategoriesOperasional: [],
                       ),
                     ),
                   );

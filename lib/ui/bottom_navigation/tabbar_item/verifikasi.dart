@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/ui/widget/card_verifikasi.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
@@ -61,6 +62,7 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: isLoadedBg ? SingleChildScrollView(
         child: SafeArea(
@@ -68,39 +70,63 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
               padding: const EdgeInsets.all(24),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        width: 150,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            color: ColorValue.neutralColor,
-                            width: 1,
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          width: 150,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: ColorValue.neutralColor,
+                              width: 1,
+                            ),
                           ),
+                          child: dropDown_Status(),
                         ),
-                        child: dropDown_Status(),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        width: 150,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            color: ColorValue.neutralColor,
-                            width: 1,
+                        Container(
+                          alignment: Alignment.center,
+                          width: 150,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: ColorValue.neutralColor,
+                              width: 1,
+                            ),
                           ),
+                          child: dropDown_Tanggal(),
                         ),
-                        child: dropDown_Tanggal(),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 24,),
-                  ListView.builder(
+                  verifikasiModel!.data.length == 0 ? Center(
+                    //lotie loading
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 50,),
+                        Lottie.network("https://assets4.lottiefiles.com/packages/lf20_eogwvdor.json", width: 300, height: 300),
+                        const SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Saat ini belum ada produk yang sedang diverifikasi',
+                            textAlign: TextAlign.center,
+                            style: textTheme.headline6!.copyWith(
+                                color: ColorValue.primaryColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ) : ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: verifikasiModel!.data.length,

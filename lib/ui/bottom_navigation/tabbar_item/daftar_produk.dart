@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/ui/widget/card_produk.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
@@ -18,6 +19,7 @@ class DaftarProdukPage extends StatefulWidget {
 class _DaftarProdukPageState extends State<DaftarProdukPage> {
 
   bool isLoadedBg = false;
+  bool produkLoaded = false;
   ProdukModel? produkModel;
   TextEditingController controllersearch = TextEditingController();
   List<Datum> filteredProdukModel = [];
@@ -83,6 +85,7 @@ class _DaftarProdukPageState extends State<DaftarProdukPage> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: isLoadedBg ? Center(
         child: Column(
@@ -118,7 +121,28 @@ class _DaftarProdukPageState extends State<DaftarProdukPage> {
             ),
             //list produk
             Expanded(
-              child: GridView.builder(
+              child: produkModel!.data.isEmpty ? Center(
+                //lotie loading
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.network("https://assets2.lottiefiles.com/packages/lf20_md6cjjSl1R.json", height: 200, width: 200),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Text(
+                        'Jutaan mimpi dimulai dari satu langkah pertama. Yuk tambah produk pertamamu sekarang!',
+                        textAlign: TextAlign.center,
+                        style: textTheme.headline6!.copyWith(
+                          color: ColorValue.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ) : GridView.builder(
                 padding: const EdgeInsets.all(24),
                 itemCount: filteredProdukModel.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -135,7 +159,7 @@ class _DaftarProdukPageState extends State<DaftarProdukPage> {
                     isSelected: index == selectedProdukIndex,
                   );
                 },
-              ),
+              )
             ),
           ],
         ),

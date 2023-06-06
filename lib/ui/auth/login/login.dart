@@ -41,11 +41,12 @@ class _login_screenState extends State<login_screen> {
       LoginModel login = loginModelFromJson(response.body);
       SharedPreferences pref = await SharedPreferences.getInstance();
       pref.setString('token', login.accesToken);
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const BottomNavigation(),
-          ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Berhasil Mendaftar!'),
+        ),
+      );
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

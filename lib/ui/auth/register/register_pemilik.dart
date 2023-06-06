@@ -77,6 +77,37 @@ class _register_pemilikState extends State<register_pemilik> {
                       ),
                       textfield(context, "Masukkan Email", _emailPemilikController, TextInputType.emailAddress),
                       SizedBox(height: 20,),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffD7FEDF),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        height: 55,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.info_outline,
+                              color: ColorValue.primaryColor,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "No handphone menggunakan fomat +62 anda tidak perlu menambahkan angka 0 di awal.",
+                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                  color: ColorValue.primaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20,),
                       Text(
                         'Nomor HP Pemilik',
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
@@ -109,6 +140,12 @@ class _register_pemilikState extends State<register_pemilik> {
                             color: ColorValue.hintColor,
                           ),
                         ),
+                        validator: (value) {
+                          if (value != null && value.startsWith('0')) {
+                            return 'Angka 0 tidak boleh digunakan di awal';
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ),

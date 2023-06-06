@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/model/user_model.dart';
+import 'package:kangsayur_seller/ui/auth/login/login.dart';
 import 'package:kangsayur_seller/ui/on_boarding/on_boarding_screen.dart';
 import 'package:kangsayur_seller/ui/profile/option_profile.dart';
 import 'package:kangsayur_seller/ui/promo/promo.dart';
@@ -199,11 +200,34 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 24,),
               main_button("Keluar", context, onPressed: (){
                 _logout();
-                SharedPreferences.getInstance().then((prefs) {
-                  prefs.remove('token');
-                  prefs.clear();
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnboardingScreen()));
-                });
+                //show dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Keluar"),
+                      content: const Text("Apakah anda yakin ingin keluar?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Tidak"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            SharedPreferences.getInstance().then((prefs) {
+                              prefs.remove('token');
+                              prefs.clear();
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const login_screen()), (route) => false);
+                            });
+                          },
+                          child: const Text("Ya"),
+                        ),
+                      ],
+                    );
+                  },
+                );
               }),
             ],
           ),

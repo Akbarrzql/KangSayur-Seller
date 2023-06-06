@@ -36,7 +36,7 @@ class UserModel {
 class Data {
   int id;
   String namaToko;
-  String imgProfile;
+  String? imgProfile;
   String name;
   String email;
   dynamic phoneNumber;

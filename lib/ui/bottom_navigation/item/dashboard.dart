@@ -120,7 +120,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
     },);
 
     pemasukanModel = PemasukanModel.fromJson(jsonDecode(responsePemasukan.body.toString()));
-
+    print(responsePemasukan.body.toString());
     setState(() {
       loadingbgproses = true;
     });
@@ -164,7 +164,9 @@ class _DahsboardPageState extends State<DahsboardPage> {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundImage: Image.network("https://kangsayur.nitipaja.online/${userModel!.data.imgProfile}").image,
+                      backgroundImage: Image.network(
+                          "https://kangsayur.nitipaja.online/${userModel!.data.imgProfile}" == null ? "https://avatars.githubusercontent.com/u/60261133?v=4" : "https://kangsayur.nitipaja.online/${userModel!.data.imgProfile}"
+                      ).image,
                     ),
                     const SizedBox(
                       width: 10,
@@ -182,7 +184,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                   highlightColor: Colors.grey[100]!,
                   child: Row(
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 20,
                         backgroundColor: Colors.white,
                       ),
@@ -226,23 +228,16 @@ class _DahsboardPageState extends State<DahsboardPage> {
                       onChanged: (String? newValue) {
                         setState(() {
                           dropdownValue = newValue!;
-                          switch (_selectedMonthGrafik) {
-                            case "Bulan Ini":
-                              _getAnalisa('1');
-                              break;
-                            case "3 Bulan Terakhir":
-                              _getAnalisa('2');
-                              break;
-                            case "6 Bulan Terakhir":
-                              _getAnalisa('3');
-                              break;
-                            case "1 Tahun Terakhir":
-                              _getAnalisa('4');
-                              break;
-                            case "Semua":
-                              break;
-                            case "Kustomisasi":
-                              break;
+                          if(dropdownValue == "Bulan Ini"){
+                            _getAnalisa('1');
+                          } else if (dropdownValue == "3 Bulan Terakhir"){
+                            _getAnalisa('2');
+                          } else if (dropdownValue == "6 Bulan Terakhir"){
+                            _getAnalisa('3');
+                          } else if (dropdownValue == "1 Tahun Terakhir"){
+                            _getAnalisa('4');
+                          } else if (dropdownValue == "Bulan ini"){
+                            _getAnalisa('1');
                           }
                         });
                       },
@@ -535,8 +530,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                     ) : Shimmer(
                       gradient: LinearGradient(
                         colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                        begin: Alignment(-1.0, -0.5),
-                        end: Alignment(1.0, -0.5),
+                        begin: const Alignment(-1.0, -0.5),
+                        end: const Alignment(1.0, -0.5),
                         stops: const [0.0, 0.5, 1.0],
                       ),
                       child: Container(
@@ -575,23 +570,14 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     onChanged: (String? newValue) {
                                       setState(() {
                                         _selectedMonth = newValue!;
-                                        switch (_selectedMonthGrafik) {
-                                          case "Bulan Ini":
-                                            _getDataPemasukan('1');
-                                            break;
-                                          case "3 Bulan Terakhir":
-                                            _getDataPemasukan('2');
-                                            break;
-                                          case "6 Bulan Terakhir":
-                                            _getDataPemasukan('3');
-                                            break;
-                                          case "1 Tahun Terakhir":
-                                            _getDataPemasukan('4');
-                                            break;
-                                          case "Semua":
-                                            break;
-                                          case "Kustomisasi":
-                                            break;
+                                        if(_selectedMonth == "Bulan Ini"){
+                                          _getDataPemasukan('1');
+                                        } else if (_selectedMonth == "3 Bulan Terakhir"){
+                                          _getDataPemasukan('2');
+                                        } else if (_selectedMonth == "6 Bulan Terakhir"){
+                                          _getDataPemasukan('3');
+                                        } else if (_selectedMonth == "1 Tahun Terakhir"){
+                                          _getDataPemasukan('4');
                                         }
                                       });
                                     },
@@ -647,8 +633,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           loadingbgproses ? text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())) : Shimmer(
                             gradient: LinearGradient(
                               colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                              begin: Alignment(-1.0, -0.5),
-                              end: Alignment(1.0, -0.5),
+                              begin: const Alignment(-1.0, -0.5),
+                              end: const Alignment(1.0, -0.5),
                               stops: const [0.0, 0.5, 1.0],
                             ),
                             child: Container(
@@ -664,8 +650,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           loadingbgproses ? text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())) : Shimmer(
                             gradient: LinearGradient(
                               colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                              begin: Alignment(-1.0, -0.5),
-                              end: Alignment(1.0, -0.5),
+                              begin: const Alignment(-1.0, -0.5),
+                              end: const Alignment(1.0, -0.5),
                               stops: const [0.0, 0.5, 1.0],
                             ),
                             child: Container(
@@ -681,8 +667,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           loadingbgproses ? text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())) : Shimmer(
                             gradient: LinearGradient(
                               colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                              begin: Alignment(-1.0, -0.5),
-                              end: Alignment(1.0, -0.5),
+                              begin: const Alignment(-1.0, -0.5),
+                              end: const Alignment(1.0, -0.5),
                               stops: const [0.0, 0.5, 1.0],
                             ),
                             child: Container(
@@ -698,8 +684,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           loadingbgproses ? text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())) : Shimmer(
                             gradient: LinearGradient(
                               colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                              begin: Alignment(-1.0, -0.5),
-                              end: Alignment(1.0, -0.5),
+                              begin: const Alignment(-1.0, -0.5),
+                              end: const Alignment(1.0, -0.5),
                               stops: const [0.0, 0.5, 1.0],
                             ),
                             child: Container(
@@ -799,23 +785,14 @@ class _DahsboardPageState extends State<DahsboardPage> {
                               setState(() {
                                 _selectedMonthGrafik = newValue!;
                                 //switch case
-                                switch (_selectedMonthGrafik) {
-                                  case "Bulan Ini":
-                                    _getGrafik('1');
-                                    break;
-                                  case "3 Bulan Terakhir":
-                                    _getGrafik('2');
-                                    break;
-                                  case "6 Bulan Terakhir":
-                                    _getGrafik('3');
-                                    break;
-                                  case "1 Tahun Terakhir":
-                                    _getGrafik('4');
-                                    break;
-                                  case "Semua":
-                                    break;
-                                  case "Kustomisasi":
-                                    break;
+                                if(_selectedMonthGrafik == "Bulan Ini"){
+                                  _getGrafik('1');
+                                } else if (_selectedMonthGrafik == "3 Bulan Terakhir"){
+                                  _getGrafik('2');
+                                } else if (_selectedMonthGrafik == "6 Bulan Terakhir"){
+                                  _getGrafik('3');
+                                } else if (_selectedMonthGrafik == "1 Tahun Terakhir"){
+                                  _getGrafik('4');
                                 }
                               });
                             },

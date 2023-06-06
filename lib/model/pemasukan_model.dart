@@ -39,8 +39,8 @@ class Pemasukan {
   });
 
   factory Pemasukan.fromJson(Map<String, dynamic> json) => Pemasukan(
-    totalKeseluruhan: json["total_keseluruhan"],
-    pemasukanPilihan: json["pemasukan_pilihan"],
+    totalKeseluruhan: json["total_keseluruhan"] ?? 0,
+    pemasukanPilihan: json["pemasukan_pilihan"] ?? 0,
   );
 
   Map<String, dynamic> toJson() => {
