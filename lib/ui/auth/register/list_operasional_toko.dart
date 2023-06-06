@@ -185,7 +185,7 @@ class _ListOperasionalTokoState extends State<ListOperasionalToko> {
                         noHpPemilik: widget.noHpPemilik,
                         alamatPemilik: widget.alamatPemilik,
                         sandi: widget.sandi,
-                        selectedCategoriesOperasional: [],
+                        selectedCategoriesOperasional: isChecked,
                       ),
                     ),
                   );

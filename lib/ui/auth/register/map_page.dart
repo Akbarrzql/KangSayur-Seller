@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:core';
-import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -30,7 +29,6 @@ class MapScreen extends StatefulWidget {
   //jam buka tutup dari list operasioanl toko class
   List<TextEditingController> jamBuka = [];
   List<TextEditingController> jamTutup = [];
-  File imageFile = File('');
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -187,17 +185,11 @@ class _MapScreenState extends State<MapScreen> {
       RegisterModel register = registerModelFromJson(response.body);
       SharedPreferences pref = await SharedPreferences.getInstance();
       pref.setString('token', register.accesToken);
-      //loading and navigate to home
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Berhasil Mendaftar!'),
-        ),
-      );
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Terdapat kesalahan, silahkan coba lagi!'),
+          content: Text('Gagal Register'),
         ),
       );
     }
@@ -219,8 +211,8 @@ class _MapScreenState extends State<MapScreen> {
         title: const Text("Pinpoint Lokasi",
           style: TextStyle(color: Colors.black, fontSize: 18),),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context)
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.pop(context)
         ),
         backgroundColor: Colors.white,
       ),
@@ -245,7 +237,7 @@ class _MapScreenState extends State<MapScreen> {
               MarkerLayer(
                 markers: [
                   Marker(
-                  width: 80.0,
+                    width: 80.0,
                     height: 80.0,
                     point: _currentPosition,
                     builder: (ctx) => const Icon(

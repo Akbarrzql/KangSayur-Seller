@@ -131,10 +131,10 @@ class _register_tokoState extends State<register_toko> {
               Text(
                 "Foto Toko",
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: ColorValue.neutralColor,
-                    ),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
+                ),
               ),
               const SizedBox(
                 height: 10,
@@ -179,10 +179,10 @@ class _register_tokoState extends State<register_toko> {
                       Text(
                         "Unggah Foto Toko",
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: ColorValue.neutralColor,
-                            ),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: ColorValue.neutralColor,
+                        ),
                       ),
                       const SizedBox(
                         height: 10,
@@ -236,10 +236,10 @@ class _register_tokoState extends State<register_toko> {
                       child: Text(
                         "Nama toko tidak dapat diubah setelah lapak terverifikasi.",
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: ColorValue.primaryColor,
-                            ),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: ColorValue.primaryColor,
+                        ),
                       ),
                     ),
                   ],
@@ -251,10 +251,10 @@ class _register_tokoState extends State<register_toko> {
               Text(
                 "Nama Toko",
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: ColorValue.neutralColor,
-                    ),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
+                ),
               ),
               const SizedBox(
                 height: 10,
@@ -266,10 +266,10 @@ class _register_tokoState extends State<register_toko> {
               Text(
                 "Deskripsi Toko",
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: ColorValue.neutralColor,
-                    ),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
+                ),
               ),
               const SizedBox(
                 height: 10,
@@ -294,9 +294,9 @@ class _register_tokoState extends State<register_toko> {
                       border: InputBorder.none,
                       hintText: "Deksripsi toko",
                       hintStyle:
-                          Theme.of(context).textTheme.bodyText1!.copyWith(
-                                color: ColorValue.hintColor,
-                              ),
+                      Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: ColorValue.hintColor,
+                      ),
                     ),
                   ),
                 ),
@@ -307,10 +307,10 @@ class _register_tokoState extends State<register_toko> {
               Text(
                 "Alamat Toko",
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: ColorValue.neutralColor,
-                    ),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
+                ),
               ),
               const SizedBox(
                 height: 10,
@@ -333,9 +333,9 @@ class _register_tokoState extends State<register_toko> {
                       border: InputBorder.none,
                       hintText: "Alamat toko",
                       hintStyle:
-                          Theme.of(context).textTheme.bodyText1!.copyWith(
-                                color: ColorValue.hintColor,
-                              ),
+                      Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: ColorValue.hintColor,
+                      ),
                     ),
                   ),
                 ),
@@ -346,10 +346,10 @@ class _register_tokoState extends State<register_toko> {
               Text(
                 "Jam Operasional",
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: ColorValue.neutralColor,
-                    ),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: ColorValue.neutralColor,
+                ),
               ),
               const SizedBox(
                 height: 10,
@@ -520,9 +520,9 @@ class _register_tokoState extends State<register_toko> {
                   child: Text(
                     'Selanjutnya',
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.normal,
-                        ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                 ),
               ),
@@ -546,10 +546,10 @@ class _register_tokoState extends State<register_toko> {
                 Text(
                   "Pilih Foto",
                   style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: ColorValue.neutralColor,
-                      ),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: ColorValue.neutralColor,
+                  ),
                 ),
                 const SizedBox(
                   height: 30,
@@ -574,11 +574,11 @@ class _register_tokoState extends State<register_toko> {
                           Text(
                             "Kamera",
                             style:
-                                Theme.of(context).textTheme.subtitle1!.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: ColorValue.neutralColor,
-                                    ),
+                            Theme.of(context).textTheme.subtitle1!.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: ColorValue.neutralColor,
+                            ),
                           ),
                         ],
                       ),
@@ -600,11 +600,11 @@ class _register_tokoState extends State<register_toko> {
                           Text(
                             "Galeri",
                             style:
-                                Theme.of(context).textTheme.subtitle1!.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: ColorValue.neutralColor,
-                                    ),
+                            Theme.of(context).textTheme.subtitle1!.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: ColorValue.neutralColor,
+                            ),
                           ),
                         ],
                       ),
