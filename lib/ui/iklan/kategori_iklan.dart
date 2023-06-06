@@ -50,9 +50,7 @@ class _KategoriIklanState extends State<KategoriIklan> {
           style: TextStyle(color: Colors.black, fontSize: 18),),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => IklanPage(selectedCategories: [],)),
-                  (Route<dynamic> route) => false),
+          onPressed: () => Navigator.pop(context)
         ),
         backgroundColor: Colors.white,
       ),

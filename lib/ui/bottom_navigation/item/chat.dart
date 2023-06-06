@@ -28,6 +28,7 @@ class _ChatPageState extends State<ChatPage> {
                 fontWeight: FontWeight.w700,
               ),
         ),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () {
