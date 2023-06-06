@@ -73,9 +73,22 @@ class _register_tokoState extends State<register_toko> {
   //list controller
   final List<TextEditingController> _jamBukaOperasionalController = [
     TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
   ];
 
   final List<TextEditingController> _jamTutupOperasionalController = [
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
     TextEditingController(),
   ];
 
@@ -604,3 +617,5 @@ class _register_tokoState extends State<register_toko> {
         });
   }
 }
+
+
