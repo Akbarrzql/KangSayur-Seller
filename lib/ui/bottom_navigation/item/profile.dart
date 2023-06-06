@@ -219,7 +219,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             SharedPreferences.getInstance().then((prefs) {
                               prefs.remove('token');
                               prefs.clear();
-                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const login_screen()), (route) => false);
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const OnboardingScreen()), (route) => false);
                             });
                           },
                           child: const Text("Ya"),

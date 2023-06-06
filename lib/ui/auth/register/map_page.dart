@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -17,7 +18,7 @@ import '../../../common/color_value.dart';
 import '../../widget/main_button.dart';
 
 class MapScreen extends StatefulWidget {
-  MapScreen({Key? key, required this.namaPemilik, required this.emailPemilik, required this.noHpPemilik, required this.alamatPemilik, required this.sandi, required this.namaToko, required this.alamatToko, required this.deskripsiToko, required this.jamBuka, required this.jamTutup}) : super(key: key);
+  MapScreen({Key? key, required this.namaPemilik, required this.emailPemilik, required this.noHpPemilik, required this.alamatPemilik, required this.sandi, required this.namaToko, required this.alamatToko, required this.deskripsiToko, required this.jamBuka, required this.jamTutup, required this.image}) : super(key: key);
   final TextEditingController namaPemilik;
   final TextEditingController emailPemilik;
   final TextEditingController noHpPemilik;
@@ -29,6 +30,7 @@ class MapScreen extends StatefulWidget {
   //jam buka tutup dari list operasioanl toko class
   List<TextEditingController> jamBuka = [];
   List<TextEditingController> jamTutup = [];
+  File? image;
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -158,31 +160,40 @@ class _MapScreenState extends State<MapScreen> {
 
   postRegister() async {
 
+    List<int> imageBytes = await File(widget.image!.path).readAsBytes();
+    var multipartFile = http.MultipartFile.fromBytes(
+      'photo',
+      imageBytes,
+      filename: widget.image!.path.split('/').last,
+    );
+
     var url = Uri.parse('https://kangsayur.nitipaja.online/api/auth/seller/register');
-    var response = await http.post(url,
-        headers: {
-          'Accept': 'application/json',
-        },body: {
-          'email': convertToText(widget.emailPemilik),
-          'password': convertToText(widget.sandi),
-          'owner_name': convertToText(widget.namaPemilik),
-          'phone_number': convertToText(widget.noHpPemilik),
-          'owner_address': convertToText(widget.alamatPemilik),
-          'store_name': convertToText(widget.namaToko),
-          'description': convertToText(widget.deskripsiToko),
-          'store_address': convertToText(widget.alamatToko),
-          'store_longitude': _currentPosition.longitude.toDouble().toString(),
-          'store_latitude': _currentPosition.latitude.toDouble().toString(),
-          'open': convertToTimeString(widget.jamBuka).toString(),
-          'close': convertToTimeString(widget.jamTutup).toString(),
-        });
+    var request = http.MultipartRequest('POST', url);
+    request.headers['Accept'] = 'application/json';
 
+    request.fields['email'] = convertToText(widget.emailPemilik);
+    request.fields['password'] = convertToText(widget.sandi);
+    request.fields['owner_name'] = convertToText(widget.namaPemilik);
+    request.fields['phone_number'] = convertToText(widget.noHpPemilik);
+    request.fields['owner_address'] = convertToText(widget.alamatPemilik);
+    request.fields['store_name'] = convertToText(widget.namaToko);
+    request.fields['description'] = convertToText(widget.deskripsiToko);
+    request.fields['store_address'] = convertToText(widget.alamatToko);
+    request.fields['store_longitude'] = _currentPosition.longitude.toDouble().toString();
+    request.fields['store_latitude'] = _currentPosition.latitude.toDouble().toString();
+    request.fields['open'] = convertToTimeString(widget.jamBuka).toString();
+    request.fields['close'] = convertToTimeString(widget.jamTutup).toString();
+    request.files.add(multipartFile);
 
-    print(response.body);
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+
+    print(responseBody);
     print(response.statusCode);
+    print(multipartFile.filename);
 
     if(response.statusCode == 200) {
-      RegisterModel register = registerModelFromJson(response.body);
+      RegisterModel register = registerModelFromJson(responseBody);
       SharedPreferences pref = await SharedPreferences.getInstance();
       pref.setString('token', register.accesToken);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
@@ -201,6 +212,7 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     _getAddressFromLatLng();
     _getCurrentLocation();
+    print(widget.image!.path.split('/').last);
     mapController = MapController(); // Initialize the mapController
   }
 

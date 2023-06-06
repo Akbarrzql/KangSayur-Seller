@@ -506,6 +506,7 @@ class _register_tokoState extends State<register_toko> {
                           sandi: widget.sandi,
                           jamBuka: _jamBukaOperasionalController,
                           jamTutup: _jamTutupOperasionalController,
+                          image: _imageFile,
                         ),
                       ),
                     );
