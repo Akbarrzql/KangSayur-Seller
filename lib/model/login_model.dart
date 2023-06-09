@@ -47,8 +47,6 @@ class Data {
   String email;
   dynamic phoneNumber;
   dynamic emailVerifiedAt;
-  int jenisKelamin;
-  DateTime tanggalLahir;
   dynamic address;
   String linkFoto;
 
@@ -58,8 +56,6 @@ class Data {
     required this.email,
     required this.phoneNumber,
     required this.emailVerifiedAt,
-    required this.jenisKelamin,
-    required this.tanggalLahir,
     required this.address,
     required this.linkFoto,
   });
@@ -70,8 +66,6 @@ class Data {
     email: json["email"],
     phoneNumber: json["phone_number"],
     emailVerifiedAt: json["email_verified_at"],
-    jenisKelamin: json["jenis_kelamin"],
-    tanggalLahir: DateTime.parse(json["tanggal_lahir"]),
     address: json["address"],
     linkFoto: json["link_foto"] ?? '',
   );
@@ -82,8 +76,6 @@ class Data {
     "email": email,
     "phone_number": phoneNumber,
     "email_verified_at": emailVerifiedAt,
-    "jenis_kelamin": jenisKelamin,
-    "tanggal_lahir": tanggalLahir.toIso8601String(),
     "address": address,
     "link_foto": linkFoto,
   };

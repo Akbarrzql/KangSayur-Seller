@@ -1,7 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kangsayur_seller/bloc/bloc/verifikasi_bloc.dart';
+import 'package:kangsayur_seller/bloc/event/verifikasi_event.dart';
+import 'package:kangsayur_seller/bloc/state/verifikasi_state.dart';
+import 'package:kangsayur_seller/repository/verifikasi_repository.dart';
 import 'package:kangsayur_seller/ui/widget/card_verifikasi.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,46 +30,18 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
   bool isLoadedBg = false;
   VerifikasiModel? verifikasiModel;
 
-  Future _produkVerfikasi() async {
-    setState(() {
-      isLoadedBg = false;
-    });
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString('token');
-
-    final responseProduk = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/produk/display/verify"),
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },);
-
-    if (responseProduk.statusCode == 200) {
-      final data = jsonDecode(responseProduk.body);
-      setState(() {
-        verifikasiModel = VerifikasiModel.fromJson(data);
-      });
-    } else {
-      print('gagal');
-    }
-
-    setState(() {
-      isLoadedBg = true;
-    });
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _produkVerfikasi();
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      body: isLoadedBg ? SingleChildScrollView(
+      body:SingleChildScrollView(
         child: SafeArea(
           child: Padding(
               padding: const EdgeInsets.all(24),
@@ -104,118 +81,143 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
                     ),
                   ),
                   const SizedBox(height: 24,),
-                  verifikasiModel!.data.length == 0 ? Center(
-                    //lotie loading
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 50,),
-                        Lottie.network("https://assets4.lottiefiles.com/packages/lf20_eogwvdor.json", width: 300, height: 300),
-                        const SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Saat ini belum ada produk yang sedang diverifikasi',
-                            textAlign: TextAlign.center,
-                            style: textTheme.headline6!.copyWith(
-                                color: ColorValue.primaryColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ) : ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: verifikasiModel!.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CardVerifikasi(
-                        jenisVerifikasiProduk: 'Bahan Pokok',
-                        tanggalVerifikasiProduk: verifikasiModel!.data[index].tanggalVerivikasi == null ? 'Tidak tertera Tanggal' : verifikasiModel!.data[index].tanggalVerivikasi.toString(),
-                        namaVerifikasiProduk: verifikasiModel!.data[index].namaProduk.toString(),
-                        descVerifikasiProduk: verifikasiModel!.data[index].deskripsi.toString(),
-                        gambarVerifikasiProduk: 'assets/images/wortel.png',
-                        statusVerifikasiProduk: verifikasiModel!.data[index].status.toString(),
-                        onPressed: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailProduk(
-                                verifikasiModel: verifikasiModel!.data[index],
+                  BlocProvider(
+                    create: (context) => VerifikasiBloc(verifikasiPageRepository: VerifikasiRepository())..add(GetVerifikasi()),
+                    child: BlocBuilder<VerifikasiBloc, VerifikasiPageState>(
+                      builder: (context, state){
+                        if(state is VerifikasiPageLoading){
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            //child shimmer verifikasi card
+                            child: SingleChildScrollView(
+                              child: SafeArea(
+                                child: Column(
+                                  children: [
+                                    ListView.builder(
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: 5,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return CardVerifikasi(
+                                          jenisVerifikasiProduk: 'Bahan Pokok',
+                                          tanggalVerifikasiProduk: 'Tidak tertera Tanggal',
+                                          namaVerifikasiProduk: 'Nama Produk',
+                                          descVerifikasiProduk: 'Deskripsi Produk',
+                                          gambarVerifikasiProduk: 'assets/images/wortel.png',
+                                          statusVerifikasiProduk: 'Diproses',
+                                          onPressed: (){},
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           );
-                        },
-                      );
-                    },
+                        }
+                        else if (state is VerifikasiPageLoaded){
+                          return Center(
+                            child: state.verifikasiModel.data.length == 0 ? Center(
+                              //lotie loading
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 50,),
+                                  Lottie.network("https://assets4.lottiefiles.com/packages/lf20_eogwvdor.json", width: 300, height: 300),
+                                  const SizedBox(height: 16),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Saat ini belum ada produk yang sedang diverifikasi',
+                                      textAlign: TextAlign.center,
+                                      style: textTheme.headline6!.copyWith(
+                                          color: ColorValue.primaryColor,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ) : ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: state.verifikasiModel!.data.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return CardVerifikasi(
+                                    jenisVerifikasiProduk: 'Bahan Pokok',
+                                    tanggalVerifikasiProduk: state.verifikasiModel!.data[index].tanggalVerivikasi == null ? 'Tidak tertera Tanggal' : state.verifikasiModel!.data[index].tanggalVerivikasi.toString(),
+                                    namaVerifikasiProduk: state.verifikasiModel!.data[index].namaProduk.toString(),
+                                    descVerifikasiProduk: state.verifikasiModel!.data[index].deskripsi.toString(),
+                                    gambarVerifikasiProduk: 'assets/images/wortel.png',
+                                    statusVerifikasiProduk: state.verifikasiModel!.data[index].status.toString(),
+                                    onPressed: (){
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailProduk(
+                                            verifikasiModel: state.verifikasiModel!.data[index],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                            ),
+                          );
+                        }
+                        else if (state is VerifikasiPageError){
+                          return Center(
+                            child: Text(
+                              'Terjadi kesalahan, silahkan coba lagi',
+                              style: textTheme.headline6!.copyWith(
+                                  color: ColorValue.primaryColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14
+                              ),
+                            ),
+                          );
+                        }
+                        else{
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            //child shimmer verifikasi card
+                            child: SingleChildScrollView(
+                              child: SafeArea(
+                                child: Padding(
+                                    padding: const EdgeInsets.all(24),
+                                    child: Column(
+                                      children: [
+                                        ListView.builder(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: 5,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            return CardVerifikasi(
+                                              jenisVerifikasiProduk: 'Bahan Pokok',
+                                              tanggalVerifikasiProduk: 'Tidak tertera Tanggal',
+                                              namaVerifikasiProduk: 'Nama Produk',
+                                              descVerifikasiProduk: 'Deskripsi Produk',
+                                              gambarVerifikasiProduk: 'assets/images/wortel.png',
+                                              statusVerifikasiProduk: 'Diproses',
+                                              onPressed: (){},
+                                            );
+                                          },
+                                        )
+                                      ],
+                                    )
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   )
                 ],
               )
-          ),
-        ),
-      ) : Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        //child shimmer verifikasi card
-        child: SingleChildScrollView(
-          child: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          width: 150,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: ColorValue.neutralColor,
-                              width: 1,
-                            ),
-                          ),
-                          child: dropDown_Status(),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: 150,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: ColorValue.neutralColor,
-                              width: 1,
-                            ),
-                          ),
-                          child: dropDown_Tanggal(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24,),
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: 5,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CardVerifikasi(
-                          jenisVerifikasiProduk: 'Bahan Pokok',
-                          tanggalVerifikasiProduk: 'Tidak tertera Tanggal',
-                          namaVerifikasiProduk: 'Nama Produk',
-                          descVerifikasiProduk: 'Deskripsi Produk',
-                          gambarVerifikasiProduk: 'assets/images/wortel.png',
-                          statusVerifikasiProduk: 'Diproses',
-                          onPressed: (){},
-                        );
-                      },
-                    )
-                  ],
-                )
-            ),
           ),
         ),
       ),

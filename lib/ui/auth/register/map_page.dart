@@ -223,7 +223,7 @@ class _MapScreenState extends State<MapScreen> {
         title: const Text("Pinpoint Lokasi",
           style: TextStyle(color: Colors.black, fontSize: 18),),
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black),
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.pop(context)
         ),
         backgroundColor: Colors.white,

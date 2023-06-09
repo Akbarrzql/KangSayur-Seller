@@ -1,20 +1,31 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kangsayur_seller/Constants/app_constants.dart';
+import 'package:kangsayur_seller/bloc/bloc/dashboard_bloc.dart';
+import 'package:kangsayur_seller/bloc/bloc/profile_bloc.dart';
+import 'package:kangsayur_seller/bloc/event/profile_event.dart';
+import 'package:kangsayur_seller/bloc/state/dashboard_state.dart';
+import 'package:kangsayur_seller/bloc/state/profile_state.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:intl/intl.dart';
 import 'package:kangsayur_seller/model/analisa_model.dart';
 import 'package:kangsayur_seller/model/grafik_model.dart';
+import 'package:kangsayur_seller/repository/analisa_repository.dart';
+import 'package:kangsayur_seller/repository/pemasukan_repository.dart';
+import 'package:kangsayur_seller/repository/profile_repository.dart';
 import 'package:kangsayur_seller/ui/chart/chart.dart';
 import 'package:kangsayur_seller/ui/iklan/iklan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:http/http.dart' as http;
+import '../../../bloc/event/dashboard_event.dart';
 import '../../../model/pemasukan_model.dart';
 import '../../../model/user_model.dart';
+import '../../../repository/grafik_repository.dart';
 import '../../pemasukan/pemasukan.dart';
 import '../../promo/promo.dart';
 
@@ -34,97 +45,13 @@ class _DahsboardPageState extends State<DahsboardPage> {
   ScrollController _scrollController = ScrollController();
   TextEditingController pemasukanController = TextEditingController();
 
-  bool loadingbgproses = false;
-  bool loadingAnalisa = false;
-  bool loadingUser = false;
-  bool loadingGrafik = false;
   PemasukanModel? pemasukanModel;
   AnalisaModel? analisaModel;
   GrafikModel? grafikModel;
   UserModel? userModel;
+  late DashboardPageBloc dashboardPageBloc;
 
-  Future _getUser() async{
-    setState(() {
-      loadingUser = false;
-    });
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString('token');
-
-    final responseUser = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/profile"),
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },);
-
-    userModel = UserModel.fromJson(jsonDecode(responseUser.body.toString()));
-
-    setState(() {
-      loadingUser = true;
-    });
-  }
-
-  Future _getAnalisa(String custom) async{
-    setState(() {
-      loadingAnalisa = false;
-    });
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString('token');
-    final responseAnalis = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/analysis?custom=$custom"),
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },);
-
-    analisaModel = AnalisaModel.fromJson(jsonDecode(responseAnalis.body.toString()));
-
-    setState(() {
-      loadingAnalisa = true;
-    });
-}
-
-  Future _getGrafik(String custom) async{
-    setState(() {
-      loadingGrafik = false;
-    });
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString('token');
-
-    final responseGrafik = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/grafik/penjualan?custom=$custom"),
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },);
-
-    grafikModel = GrafikModel.fromJson(jsonDecode(responseGrafik.body.toString()));
-
-    setState(() {
-      loadingGrafik = true;
-    });
-  }
-
-  Future _getDataPemasukan(String custom) async {
-    setState(() {
-      loadingbgproses = false;
-    });
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString('token');
-
-    final responsePemasukan = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/pemasukan?custom=$custom"),
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
-    },);
-
-    pemasukanModel = PemasukanModel.fromJson(jsonDecode(responsePemasukan.body.toString()));
-    print(responsePemasukan.body.toString());
-    setState(() {
-      loadingbgproses = true;
-    });
-  }
 
   @override
   void dispose() {
@@ -136,10 +63,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _getDataPemasukan('1');
-    _getAnalisa('1');
-    _getGrafik('1');
-    _getUser();
+    dashboardPageBloc = DashboardPageBloc(pemasukanRepository: PemasukanRepository(), analisaRepository: AnalisaRepository(), grafikRepository: GrafikRepository());
   }
 
   //void format angka ke rupiah dengan paramter untuk diisi data api 
@@ -160,44 +84,74 @@ class _DahsboardPageState extends State<DahsboardPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                loadingUser ? Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: Image.network(
-                          "https://kangsayur.nitipaja.online/${userModel!.data.imgProfile}" == null ? "https://avatars.githubusercontent.com/u/60261133?v=4" : "https://kangsayur.nitipaja.online/${userModel!.data.imgProfile}"
-                      ).image,
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      userModel!.data.namaToko,
-                      style: textTheme.bodyText1!.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          color: ColorValue.neutralColor),
-                    ),
-                  ],
-                ) : Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.white,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        height: 20,
-                        width: 100,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
+                BlocProvider(
+                  create: (context) => ProfilePageBloc(profilePageRepository: ProfileRepository())..add(GetProfile()),
+                  child: BlocBuilder<ProfilePageBloc, ProfilePageState>(
+                    builder: (context, state){
+                      if (state is ProfilePageLoading) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.white,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                height: 20,
+                                width: 100,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      else if (state is ProfilePageLoaded){
+                        return Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundImage: Image.network(
+                                  "https://kangsayur.nitipaja.online/${state.userModel.data.imgProfile}" == null ? "https://avatars.githubusercontent.com/u/60261133?v=4" : "https://kangsayur.nitipaja.online/${state.userModel.data.imgProfile}"
+                              ).image,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              state.userModel.data.namaToko,
+                              style: textTheme.bodyText1!.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: ColorValue.neutralColor),
+                            ),
+                          ],
+                        );
+                      }
+                      else if (state is ProfilePageError){
+                        return Text(
+                          "Kesalahan dalam mengambil data",
+                          style: textTheme.bodyText1!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: ColorValue.neutralColor),
+                        );
+                      }
+                      else{
+                        return Text(
+                          "Kesalahan dalam mengambil data",
+                          style: textTheme.bodyText1!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: ColorValue.neutralColor),
+                        );
+                      }
+                    },
+                  )
                 ),
                 const SizedBox(
                   height: 30,
@@ -213,233 +167,142 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           color: ColorValue.neutralColor),
                     ),
                     DropdownButton<String>(
-                      value: dropdownValue,
-                      icon: const Icon(Icons.arrow_drop_down),
-                      iconSize: 24,
-                      elevation: 16,
-                      //underline transparent
-                      underline: Container(
-                        color: Colors.transparent,
-                      ),
-                      style: textTheme.subtitle1!.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: ColorValue.neutralColor),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownValue = newValue!;
-                          if(dropdownValue == "Bulan Ini"){
-                            _getAnalisa('1');
-                          } else if (dropdownValue == "3 Bulan Terakhir"){
-                            _getAnalisa('2');
-                          } else if (dropdownValue == "6 Bulan Terakhir"){
-                            _getAnalisa('3');
-                          } else if (dropdownValue == "1 Tahun Terakhir"){
-                            _getAnalisa('4');
-                          } else if (dropdownValue == "Bulan ini"){
-                            _getAnalisa('1');
+                        menuMaxHeight: 150,
+                        value: _selectedMonth,
+                        iconEnabledColor: ColorValue.neutralColor,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedMonth = newValue!;
+                            if (_selectedMonth == "Bulan Ini") {
+                              dashboardPageBloc.add(GetData(custom: '1'));
+                            } else if (_selectedMonth == "3 Bulan Terakhir") {
+                              dashboardPageBloc.add(GetData(custom: '2'));
+                            } else if (_selectedMonth == "6 Bulan Terakhir") {
+                              dashboardPageBloc.add(GetData(custom: '3'));
+                            } else if (_selectedMonth == "1 Tahun Terakhir") {
+                              dashboardPageBloc.add(GetData(custom: '4'));
+                            }
+                          });
+                        },
+                        underline: Container(
+                          height: 0,
+                          color: Colors.transparent,
+                        ),
+                        autofocus: true,
+                        items: _months
+                            .map<DropdownMenuItem<String>>(
+                                (String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value,
+                                style: textTheme.subtitle1!.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14,
+                                    color: ColorValue.neutralColor),)
+                              );
+                            }).toList(),
+                        onTap: () {
+                          _selectedMonth = _selectedMonth;
+                          if (_selectedMonth == "Kustomisasi") {
+                            showDatePickerDialog(context, 1);
+                          } else {
+                            _selectedMonth = _selectedMonth;
+                            selectedDate = selectedDate;
                           }
-                        });
-                      },
-                      items: <String>[
-                        'Bulan Ini',
-                        '3 Bulan Terakhir',
-                        '6 Bulan Terakhir',
-                        '1 Tahun Terakhir',
-                        'Semua',
-                        'Kustomisasi'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                            value: value, child: Text(value));
-                      }).toList(),
-                      onTap: (){
-                        dropdownValue = dropdownValue;
-                        if(dropdownValue == 'Kustomisasi'){
-                          showDatePickerDialog(context, 3);
-                        }else{
-                          dropdownValue = dropdownValue;
-                          selectedDateAnalisa = selectedDateAnalisa;
-                        }
-                      },
-                    ),
+                        }),
                   ],
                 ),
-                Column(
-                  children: [
-                    if (dropdownValue == 'Bulan Ini')
-                      loadingAnalisa ? GridView.count(
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.5,
-                        children: [
-                          card_analytic(
-                              ColorValue.primaryColor, "Penjualan", analisaModel!.data.pesanan.toString()),
-                          card_analytic(ColorValue.secondaryColor,
-                              "Pengunjung toko", analisaModel!.data.pengunjungToko.toString()),
-                          card_analytic(
-                              const Color(0xFFEE6C4D), "Rating Toko", analisaModel!.data.ratingPelayanan.toString()),
-                          card_analytic(
-                              const Color(0xFF219EBC), "Produk Terjual", analisaModel!.data.produkTerjual.toString()),
-                          card_analytic(
-                              const Color(0xFFF77F00), "Komplain", analisaModel!.data.laporan.toString()),
-                          card_analytic(const Color(0xFF354F52),
-                              "Ulasan Customer", analisaModel!.data.ratingProduk.toString()),
-                        ],
-                      ) : Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        child: GridView.count(
+                BlocProvider(
+                  create: (context) => dashboardPageBloc..add(GetData(custom: '1')),
+                  child: BlocBuilder<DashboardPageBloc, DashboardPageState>(
+                    builder: (context, state) {
+                      if (state is DashboardPageLoading) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: GridView.count(
+                            shrinkWrap: true,
+                            crossAxisCount: 3,
+                            childAspectRatio: 1.5,
+                            children: [
+                              card_analytic(
+                                  ColorValue.primaryColor, "Penjualan", "0"),
+                              card_analytic(ColorValue.secondaryColor,
+                                  "Pengunjung toko", "0"),
+                              card_analytic(
+                                  const Color(0xFFEE6C4D), "Rating Toko", "0"),
+                              card_analytic(
+                                  const Color(0xFF219EBC), "Produk Terjual", "0"),
+                              card_analytic(
+                                  const Color(0xFFF77F00), "Komplain", "0"),
+                              card_analytic(const Color(0xFF354F52),
+                                  "Ulasan Customer", "0"),
+                            ],
+                          ),
+                        );
+                      } else if (state is DashboardPageLoaded) {
+                        return GridView.count(
                           shrinkWrap: true,
                           crossAxisCount: 3,
                           childAspectRatio: 1.5,
                           children: [
                             card_analytic(
-                                ColorValue.primaryColor, "Penjualan", "0"),
+                                ColorValue.primaryColor, "Penjualan", state.analisaModel.data.pesanan.toString()),
                             card_analytic(ColorValue.secondaryColor,
-                                "Pengunjung toko", "0"),
+                                "Pengunjung toko", state.analisaModel.data.pengunjungToko.toString()),
                             card_analytic(
-                                const Color(0xFFEE6C4D), "Rating Toko", "0"),
+                                const Color(0xFFEE6C4D), "Rating Toko", state.analisaModel.data.ratingPelayanan.toString()),
                             card_analytic(
-                                const Color(0xFF219EBC), "Produk Terjual", "0"),
+                                const Color(0xFF219EBC), "Produk Terjual", state.analisaModel.data.produkTerjual.toString()),
                             card_analytic(
-                                const Color(0xFFF77F00), "Komplain", "0"),
+                                const Color(0xFFF77F00), "Komplain", state.analisaModel.data.laporan.toString()),
                             card_analytic(const Color(0xFF354F52),
-                                "Ulasan Customer", "0"),
+                                "Ulasan Customer", state.analisaModel.data.ratingProduk.toString()),
                           ],
-                        ),
-                      ),
-                    if (dropdownValue == '3 Bulan Terakhir')
-                      loadingAnalisa ? GridView.count(
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.5,
-                        children: [
-                          card_analytic(
-                              ColorValue.primaryColor, "Penjualan", analisaModel!.data.pesanan.toString()),
-                          card_analytic(ColorValue.secondaryColor,
-                              "Pengunjung toko", analisaModel!.data.pengunjungToko.toString()),
-                          card_analytic(
-                              const Color(0xFFEE6C4D), "Rating Toko", analisaModel!.data.ratingPelayanan.toString()),
-                          card_analytic(
-                              const Color(0xFF219EBC), "Produk Terjual", analisaModel!.data.produkTerjual.toString()),
-                          card_analytic(
-                              const Color(0xFFF77F00), "Komplain", analisaModel!.data.laporan.toString()),
-                          card_analytic(const Color(0xFF354F52),
-                              "Ulasan Customer", analisaModel!.data.ratingProduk.toString()),
-                        ],
-                      ) : Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        child: GridView.count(
+                        );
+                      } else if (state is DashboardPageError) {
+                        return Text(
+                          "Error",
+                          style: textTheme.bodyText1!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                              color: ColorValue.primaryColor),
+                        );
+                      } else {
+                        return Text(
+                          "Rp. 0",
+                          style: textTheme.bodyText1!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                              color: ColorValue.primaryColor),
+                        );
+                      }
+                    },
+                  ),
+                ),
+                if (dropdownValue == "Semua")
+                  GridView.count(
                           shrinkWrap: true,
                           crossAxisCount: 3,
                           childAspectRatio: 1.5,
                           children: [
                             card_analytic(
-                                ColorValue.primaryColor, "Penjualan", "0"),
+                                ColorValue.primaryColor, "Penjualan", "800"),
                             card_analytic(ColorValue.secondaryColor,
-                                "Pengunjung toko", "0"),
+                                "Pengunjung toko", "1.200.000"),
                             card_analytic(
-                                const Color(0xFFEE6C4D), "Rating Toko", "0"),
+                                const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
                             card_analytic(
-                                const Color(0xFF219EBC), "Produk Terjual", "0"),
+                                const Color(0xFF219EBC), "Produk Terjual", "890"),
                             card_analytic(
-                                const Color(0xFFF77F00), "Komplain", "0"),
+                                const Color(0xFFF77F00), "Komplain", "1"),
                             card_analytic(const Color(0xFF354F52),
-                                "Ulasan Customer", "0"),
+                                "Ulasan Customer", "4.8"),
                           ],
                         ),
-                      ),
-                    if (dropdownValue == "6 Bulan Terakhir")
-                      loadingAnalisa ? GridView.count(
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.5,
-                        children: [
-                          card_analytic(
-                              ColorValue.primaryColor, "Penjualan", analisaModel!.data.pesanan.toString()),
-                          card_analytic(ColorValue.secondaryColor,
-                              "Pengunjung toko", analisaModel!.data.pengunjungToko.toString()),
-                          card_analytic(
-                              const Color(0xFFEE6C4D), "Rating Toko", analisaModel!.data.ratingPelayanan.toString()),
-                          card_analytic(
-                              const Color(0xFF219EBC), "Produk Terjual", analisaModel!.data.produkTerjual.toString()),
-                          card_analytic(
-                              const Color(0xFFF77F00), "Komplain", analisaModel!.data.laporan.toString()),
-                          card_analytic(const Color(0xFF354F52),
-                              "Ulasan Customer", analisaModel!.data.ratingProduk.toString()),
-                        ],
-                      ) : Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        child: GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 3,
-                          childAspectRatio: 1.5,
-                          children: [
-                            card_analytic(
-                                ColorValue.primaryColor, "Penjualan", "0"),
-                            card_analytic(ColorValue.secondaryColor,
-                                "Pengunjung toko", "0"),
-                            card_analytic(
-                                const Color(0xFFEE6C4D), "Rating Toko", "0"),
-                            card_analytic(
-                                const Color(0xFF219EBC), "Produk Terjual", "0"),
-                            card_analytic(
-                                const Color(0xFFF77F00), "Komplain", "0"),
-                            card_analytic(const Color(0xFF354F52),
-                                "Ulasan Customer", "0"),
-                          ],
-                        ),
-                      ),
-                    if (dropdownValue == "1 Tahun Terakhir")
-                      loadingAnalisa ? GridView.count(
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.5,
-                        children: [
-                          card_analytic(
-                              ColorValue.primaryColor, "Penjualan", analisaModel!.data.pesanan.toString()),
-                          card_analytic(ColorValue.secondaryColor,
-                              "Pengunjung toko", analisaModel!.data.pengunjungToko.toString()),
-                          card_analytic(
-                              const Color(0xFFEE6C4D), "Rating Toko", analisaModel!.data.ratingPelayanan.toString()),
-                          card_analytic(
-                              const Color(0xFF219EBC), "Produk Terjual", analisaModel!.data.produkTerjual.toString()),
-                          card_analytic(
-                              const Color(0xFFF77F00), "Komplain", analisaModel!.data.laporan.toString()),
-                          card_analytic(const Color(0xFF354F52),
-                              "Ulasan Customer", analisaModel!.data.ratingProduk.toString()),
-                        ],
-                      ) : Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        child: GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 3,
-                          childAspectRatio: 1.5,
-                          children: [
-                            card_analytic(
-                                ColorValue.primaryColor, "Penjualan", "0"),
-                            card_analytic(ColorValue.secondaryColor,
-                                "Pengunjung toko", "0"),
-                            card_analytic(
-                                const Color(0xFFEE6C4D), "Rating Toko", "0"),
-                            card_analytic(
-                                const Color(0xFF219EBC), "Produk Terjual", "0"),
-                            card_analytic(
-                                const Color(0xFFF77F00), "Komplain", "0"),
-                            card_analytic(const Color(0xFF354F52),
-                                "Ulasan Customer", "0"),
-                          ],
-                        ),
-                      ),
-                    if (dropdownValue == "Semua")
-                            GridView.count(
+                if (dropdownValue == "Kustomisasi")
+                  if(selectedDateAnalisa != null)
+                    GridView.count(
                               shrinkWrap: true,
                               crossAxisCount: 3,
                               childAspectRatio: 1.5,
@@ -458,49 +321,26 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     "Ulasan Customer", "4.8"),
                               ],
                             )
-                          else if (dropdownValue == "Kustomisasi")
-                              if(selectedDateAnalisa != null)
-                                GridView.count(
-                                  shrinkWrap: true,
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 1.5,
-                                  children: [
-                                    card_analytic(
-                                        ColorValue.primaryColor, "Penjualan", "800"),
-                                    card_analytic(ColorValue.secondaryColor,
-                                        "Pengunjung toko", "1.200.000"),
-                                    card_analytic(
-                                        const Color(0xFFEE6C4D), "Rating Toko", "4.5"),
-                                    card_analytic(
-                                        const Color(0xFF219EBC), "Produk Terjual", "890"),
-                                    card_analytic(
-                                        const Color(0xFFF77F00), "Komplain", "1"),
-                                    card_analytic(const Color(0xFF354F52),
-                                        "Ulasan Customer", "4.8"),
-                                  ],
-                                )
-                              else
-                                ElevatedButton(
-                                  onPressed: () => showDatePickerDialog(context, 3),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      side: const BorderSide(
-                                          color: ColorValue.primaryColor),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "Pilih Tanggal",
-                                    style: textTheme.bodyText1!.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14,
-                                        color: ColorValue.primaryColor),
-                                  ),
+                  else
+                    ElevatedButton(
+                              onPressed: () => showDatePickerDialog(context, 3),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  side: const BorderSide(
+                                      color: ColorValue.primaryColor),
                                 ),
-                  ],
-                ),
+                              ),
+                              child: Text(
+                                "Pilih Tanggal",
+                                style: textTheme.bodyText1!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: ColorValue.primaryColor),
+                              ),
+                            ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -521,28 +361,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           fontSize: 14,
                           color: ColorValue.hintColor),
                     ),
-                    loadingbgproses ? Text(
-                      formatRupiah(pemasukanModel!.pemasukan.totalKeseluruhan.toString()),
-                      style: textTheme.bodyText1!.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: ColorValue.neutralColor),
-                    ) : Shimmer(
-                      gradient: LinearGradient(
-                        colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                        begin: const Alignment(-1.0, -0.5),
-                        end: const Alignment(1.0, -0.5),
-                        stops: const [0.0, 0.5, 1.0],
-                      ),
-                      child: Container(
-                        height: 20,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
+                    blocPemasukanTotal('1')
                   ],
                 ),
                 const SizedBox(
@@ -570,14 +389,14 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                     onChanged: (String? newValue) {
                                       setState(() {
                                         _selectedMonth = newValue!;
-                                        if(_selectedMonth == "Bulan Ini"){
-                                          _getDataPemasukan('1');
-                                        } else if (_selectedMonth == "3 Bulan Terakhir"){
-                                          _getDataPemasukan('2');
-                                        } else if (_selectedMonth == "6 Bulan Terakhir"){
-                                          _getDataPemasukan('3');
-                                        } else if (_selectedMonth == "1 Tahun Terakhir"){
-                                          _getDataPemasukan('4');
+                                        if (_selectedMonth == "Bulan Ini") {
+                                          dashboardPageBloc.add(GetData(custom: '1'));
+                                        } else if (_selectedMonth == "3 Bulan Terakhir") {
+                                          dashboardPageBloc.add(GetData(custom: '2'));
+                                        } else if (_selectedMonth == "6 Bulan Terakhir") {
+                                          dashboardPageBloc.add(GetData(custom: '3'));
+                                        } else if (_selectedMonth == "1 Tahun Terakhir") {
+                                          dashboardPageBloc.add(GetData(custom: '4'));
                                         }
                                       });
                                     },
@@ -629,74 +448,53 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             )
                           ],
                         ),
-                        if (_selectedMonth == "Bulan Ini")
-                          loadingbgproses ? text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())) : Shimmer(
-                            gradient: LinearGradient(
-                              colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                              begin: const Alignment(-1.0, -0.5),
-                              end: const Alignment(1.0, -0.5),
-                              stops: const [0.0, 0.5, 1.0],
-                            ),
-                            child: Container(
-                              height: 20,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                              ),
-                            ),
+                        BlocProvider(
+                          create: (context) => dashboardPageBloc..add(GetData(custom: '1')),
+                          child: BlocBuilder<DashboardPageBloc, DashboardPageState>(
+                            builder: (context, state) {
+                              if (state is DashboardPageLoading) {
+                                return Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: Container(
+                                    height: 20,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                );
+                              } else if (state is DashboardPageLoaded) {
+                                return Text(
+                                  NumberFormat.currency(
+                                      locale: 'id', symbol: 'Rp. ', decimalDigits: 0)
+                                      .format(state.pemasukanModel.pemasukan.pemasukanPilihan),
+                                  style: textTheme.bodyText1!.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 24,
+                                      color: ColorValue.neutralColor),
+                                );
+                              } else if (state is DashboardPageError) {
+                                return Text(
+                                  "Error",
+                                  style: textTheme.bodyText1!.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      color: ColorValue.primaryColor),
+                                );
+                              } else {
+                                return Text(
+                                  "Rp. 0",
+                                  style: textTheme.bodyText1!.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      color: ColorValue.primaryColor),
+                                );
+                              }
+                            },
                           ),
-                        if (_selectedMonth == "3 Bulan Terakhir")
-                          loadingbgproses ? text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())) : Shimmer(
-                            gradient: LinearGradient(
-                              colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                              begin: const Alignment(-1.0, -0.5),
-                              end: const Alignment(1.0, -0.5),
-                              stops: const [0.0, 0.5, 1.0],
-                            ),
-                            child: Container(
-                              height: 20,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        if (_selectedMonth == "6 Bulan Terakhir")
-                          loadingbgproses ? text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())) : Shimmer(
-                            gradient: LinearGradient(
-                              colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                              begin: const Alignment(-1.0, -0.5),
-                              end: const Alignment(1.0, -0.5),
-                              stops: const [0.0, 0.5, 1.0],
-                            ),
-                            child: Container(
-                              height: 20,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        if (_selectedMonth == "1 Tahun Terakhir")
-                          loadingbgproses ? text_pemasukan(formatRupiah(pemasukanModel!.pemasukan.pemasukanPilihan.toString())) : Shimmer(
-                            gradient: LinearGradient(
-                              colors: [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3), Colors.grey.withOpacity(0.5)],
-                              begin: const Alignment(-1.0, -0.5),
-                              end: const Alignment(1.0, -0.5),
-                              stops: const [0.0, 0.5, 1.0],
-                            ),
-                            child: Container(
-                              height: 20,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                        ),
                         if (_selectedMonth == "Semua")
                           text_pemasukan("Rp. 20.000.000,00"),
                         if (_selectedMonth == "Kustomisasi")
@@ -779,20 +577,19 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             color: const Color(0xFFE5E5E5),
                           ),
                           child: DropdownButton<String>(
-                            value: _selectedMonthGrafik,
+                            value: _selectedMonth,
                             iconEnabledColor: ColorValue.neutralColor,
                             onChanged: (String? newValue) {
                               setState(() {
-                                _selectedMonthGrafik = newValue!;
-                                //switch case
-                                if(_selectedMonthGrafik == "Bulan Ini"){
-                                  _getGrafik('1');
-                                } else if (_selectedMonthGrafik == "3 Bulan Terakhir"){
-                                  _getGrafik('2');
-                                } else if (_selectedMonthGrafik == "6 Bulan Terakhir"){
-                                  _getGrafik('3');
-                                } else if (_selectedMonthGrafik == "1 Tahun Terakhir"){
-                                  _getGrafik('4');
+                                _selectedMonth = newValue!;
+                                if (_selectedMonth == "Bulan Ini") {
+                                  dashboardPageBloc.add(GetData(custom: '1'));
+                                } else if (_selectedMonth == "3 Bulan Terakhir") {
+                                  dashboardPageBloc.add(GetData(custom: '2'));
+                                } else if (_selectedMonth == "6 Bulan Terakhir") {
+                                  dashboardPageBloc.add(GetData(custom: '3'));
+                                } else if (_selectedMonth == "1 Tahun Terakhir") {
+                                  dashboardPageBloc.add(GetData(custom: '4'));
                                 }
                               });
                             },
@@ -868,194 +665,82 @@ class _DahsboardPageState extends State<DahsboardPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                if (_selectedMonthGrafik == "Bulan Ini")
-                  loadingGrafik ? InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ChartHorizotalPage(
-                        dataPenjualan: getSalesData(),
-                        dataPenjualanDateList: getSalesData(),
-                      )));
-                    },
-                    child: SfCartesianChart(
-                      enableAxisAnimation: true,
-                      primaryXAxis: CategoryAxis(),
-                      // Chart title
-                      title: ChartTitle(
-                          text: 'Data Penjualan Bulan Ini',
-                          textStyle: textTheme.bodyText1!.copyWith(
+                BlocProvider(
+                  create: (context) => dashboardPageBloc..add(GetData(custom: '1')),
+                  child: BlocBuilder<DashboardPageBloc, DashboardPageState>(
+                    builder: (context, state) {
+                      if (state is DashboardPageLoading) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            height: 200,
+                            width: 300,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      } else if (state is DashboardPageLoaded) {
+                        return InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ChartHorizotalPage(
+                              dataPenjualan: getSalesData(),
+                              dataPenjualanDateList: getSalesData(),
+                            )));
+                          },
+                          child: SfCartesianChart(
+                            enableAxisAnimation: true,
+                            primaryXAxis: CategoryAxis(),
+                            // Chart title
+                            title: ChartTitle(
+                                text: 'Data Penjualan Bulan Ini',
+                                textStyle: textTheme.bodyText1!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: ColorValue.neutralColor)),
+                            zoomPanBehavior: ZoomPanBehavior(
+                                enablePinching: true,
+                                enableDoubleTapZooming: true,
+                                enablePanning: true),
+                            // Enable tooltip
+                            tooltipBehavior: TooltipBehavior(enable: true),
+                            series: <ChartSeries<DataPenjualan, String>>[
+                              LineSeries<DataPenjualan, String>(
+                                dataSource: <DataPenjualan>[
+                                  for(var i = 0; i < state.grafikModel.grafikPenjualan.length ; i++)
+                                    DataPenjualan(state.grafikModel.grafikPenjualan[i].date, state.grafikModel.grafikPenjualan[i].total.toDouble())
+                                ],
+                                xValueMapper: (DataPenjualan data, _) => data.date,
+                                yValueMapper: (DataPenjualan data, _) => data.total,
+                                color: ColorValue.primaryColor,
+                                // Enable data label
+                                dataLabelSettings:
+                                const DataLabelSettings(isVisible: true),)
+                            ],
+                          ),
+                        );
+                      } else if (state is DashboardPageError) {
+                        return Text(
+                          "Error",
+                          style: textTheme.bodyText1!.copyWith(
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
-                              color: ColorValue.neutralColor)),
-                      zoomPanBehavior: ZoomPanBehavior(
-                          enablePinching: true,
-                          enableDoubleTapZooming: true,
-                          enablePanning: true),
-                      // Enable tooltip
-                      tooltipBehavior: TooltipBehavior(enable: true),
-                      series: <ChartSeries<DataPenjualan, String>>[
-                        LineSeries<DataPenjualan, String>(
-                          dataSource: getSalesData(),
-                          xValueMapper: (DataPenjualan data, _) => data.date,
-                          yValueMapper: (DataPenjualan data, _) => data.total,
-                          color: ColorValue.primaryColor,
-                          // Enable data label
-                          dataLabelSettings:
-                          const DataLabelSettings(isVisible: true),)
-                      ],
-                    ),
-                  ) : Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      height: 200,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                if (_selectedMonthGrafik == "3 Bulan Terakhir")
-                  loadingGrafik ? InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ChartHorizotalPage(
-                        dataPenjualan: getSalesData(),
-                        dataPenjualanDateList: getSalesData(),
-                      )));
-                    },
-                    child: SfCartesianChart(
-                      enableAxisAnimation: true,
-                      primaryXAxis: CategoryAxis(),
-                      // Chart title
-                      title: ChartTitle(
-                          text: 'Data Penjualan 3 Bulan Terakhir',
-                          textStyle: textTheme.bodyText1!.copyWith(
+                              color: ColorValue.primaryColor),
+                        );
+                      } else {
+                        return Text(
+                          "Rp. 0",
+                          style: textTheme.bodyText1!.copyWith(
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
-                              color: ColorValue.neutralColor)),
-                      zoomPanBehavior: ZoomPanBehavior(
-                          enablePinching: true,
-                          enableDoubleTapZooming: true,
-                          enablePanning: true),
-                      // Enable tooltip
-                      tooltipBehavior: TooltipBehavior(enable: true),
-                      series: <ChartSeries<DataPenjualan, String>>[
-                        LineSeries<DataPenjualan, String>(
-                          dataSource: getSalesData(),
-                          xValueMapper: (DataPenjualan data, _) => data.date,
-                          yValueMapper: (DataPenjualan data, _) => data.total,
-                          color: ColorValue.primaryColor,
-                          // Enable data label
-                          dataLabelSettings:
-                          const DataLabelSettings(isVisible: true),)
-                      ],
-                    ),
-                  ) : Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      height: 200,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                if (_selectedMonthGrafik == "6 Bulan Terakhir")
-                  loadingGrafik ? InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ChartHorizotalPage(
-                        dataPenjualan: getSalesData(),
-                        dataPenjualanDateList: getSalesData(),
-                      )));
+                              color: ColorValue.primaryColor),
+                        );
+                      }
                     },
-                    child: SfCartesianChart(
-                      enableAxisAnimation: true,
-                      primaryXAxis: CategoryAxis(),
-                      // Chart title
-                      title: ChartTitle(
-                          text: 'Data Penjualan 6 Bulan Terakhir',
-                          textStyle: textTheme.bodyText1!.copyWith(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                              color: ColorValue.neutralColor)),
-                      zoomPanBehavior: ZoomPanBehavior(
-                          enablePinching: true,
-                          enableDoubleTapZooming: true,
-                          enablePanning: true),
-                      // Enable tooltip
-                      tooltipBehavior: TooltipBehavior(enable: true),
-                      series: <ChartSeries<DataPenjualan, String>>[
-                        LineSeries<DataPenjualan, String>(
-                          dataSource: getSalesData(),
-                          xValueMapper: (DataPenjualan data, _) => data.date,
-                          yValueMapper: (DataPenjualan data, _) => data.total,
-                          color: ColorValue.primaryColor,
-                          // Enable data label
-                          dataLabelSettings:
-                          const DataLabelSettings(isVisible: true),)
-                      ],
-                    ),
-                  ) : Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      height: 200,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.white,
-                      ),
-                    ),
                   ),
-                if (_selectedMonthGrafik == "1 Tahun Terakhir")
-                  loadingGrafik ? InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ChartHorizotalPage(
-                        dataPenjualan: getSalesData(),
-                        dataPenjualanDateList: getSalesData(),
-                      )));
-                    },
-                    child: SfCartesianChart(
-                      enableAxisAnimation: true,
-                      primaryXAxis: CategoryAxis(),
-                      // Chart title
-                      title: ChartTitle(
-                          text: 'Data Penjualan 1 Tahun Terakhir',
-                          textStyle: textTheme.bodyText1!.copyWith(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                              color: ColorValue.neutralColor)),
-                      zoomPanBehavior: ZoomPanBehavior(
-                          enablePinching: true,
-                          enableDoubleTapZooming: true,
-                          enablePanning: true),
-                      // Enable tooltip
-                      tooltipBehavior: TooltipBehavior(enable: true),
-                      series: <ChartSeries<DataPenjualan, String>>[
-                        LineSeries<DataPenjualan, String>(
-                          dataSource: getSalesData(),
-                          xValueMapper: (DataPenjualan data, _) => data.date,
-                          yValueMapper: (DataPenjualan data, _) => data.total,
-                          color: ColorValue.primaryColor,
-                          // Enable data label
-                          dataLabelSettings:
-                          const DataLabelSettings(isVisible: true),)
-                      ],
-                    ),
-                  ) : Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      height: 200,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                ),
                 if (_selectedMonthGrafik == "Kustomisasi")
                   if (selectedDateGrafik != null)
                     SfCartesianChart(
@@ -1310,6 +995,57 @@ class _DahsboardPageState extends State<DahsboardPage> {
               ),
             ],
           )),
+    );
+  }
+
+  Widget blocPemasukanTotal(String custom){
+    final textTheme = Theme.of(context).textTheme;
+    return BlocProvider(
+      create: (context) => DashboardPageBloc(pemasukanRepository: PemasukanRepository(), analisaRepository: AnalisaRepository(), grafikRepository: GrafikRepository())..add(GetData(custom: '1')),
+      child: BlocBuilder<DashboardPageBloc, DashboardPageState>(
+        builder: (context, state) {
+          if (state is DashboardPageLoading) {
+            return Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                height: 20,
+                width: 100,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+            );
+          } else if (state is DashboardPageLoaded) {
+            return Text(
+              NumberFormat.currency(
+                  locale: 'id', symbol: 'Rp. ', decimalDigits: 0)
+                  .format(state.pemasukanModel.pemasukan.totalKeseluruhan),
+              style: textTheme.bodyText1!.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: ColorValue.primaryColor),
+            );
+          } else if (state is DashboardPageError) {
+            return Text(
+              "Error",
+              style: textTheme.bodyText1!.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: ColorValue.primaryColor),
+            );
+          } else {
+            return Text(
+              "Rp. 0",
+              style: textTheme.bodyText1!.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: ColorValue.primaryColor),
+            );
+          }
+        },
+      ),
     );
   }
 

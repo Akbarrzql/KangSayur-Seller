@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/model/user_model.dart';
@@ -14,6 +15,10 @@ import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
+import '../../../bloc/bloc/profile_bloc.dart';
+import '../../../bloc/event/profile_event.dart';
+import '../../../bloc/state/profile_state.dart';
+import '../../../repository/profile_repository.dart';
 import '../../profile/inbox.dart';
 import '../../ulasan/ulasan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -82,64 +87,136 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: isLoadedBg ? SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             children: [
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const OptionProfile()));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: Image.network("https://kangsayur.nitipaja.online/${userModel!.data.imgProfile}").image,
-                        ),
-                        const SizedBox(width: 16,),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              userModel!.data.namaToko,
-                              style: Theme.of(context).textTheme.headline6!.copyWith(
-                                color: ColorValue.neutralColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+              BlocProvider(
+                  create: (context) => ProfilePageBloc(profilePageRepository: ProfileRepository())..add(GetProfile()),
+                  child: BlocBuilder<ProfilePageBloc, ProfilePageState>(
+                    builder: (context, state){
+                      if (state is ProfilePageLoading) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  const SizedBox(width: 16,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 20,
+                                        width: 100,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(height: 8,),
+                                      Container(
+                                        height: 15,
+                                        width: 100,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ),
-                            Text(
-                              userModel!.data.email,
-                              style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                                color: ColorValue.hintColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
+                              IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  size: 20,
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const OptionProfile()),
+                            ],
+                          ),
                         );
-                      },
-                      icon: const Icon(
-                        size: 20,
-                        Icons.arrow_forward_ios_outlined,
-                        color: ColorValue.hintColor,
-                      ),
-                    ),
-                  ],
-                ),
+                      }
+                      else if (state is ProfilePageLoaded){
+                        return GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const OptionProfile()));
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: Image.network("https://kangsayur.nitipaja.online/${state.userModel!.data.imgProfile}").image,
+                                  ),
+                                  const SizedBox(width: 16,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        state.userModel!.data.namaToko,
+                                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                                          color: ColorValue.neutralColor,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        state.userModel!.data.email,
+                                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                          color: ColorValue.hintColor,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const OptionProfile()),
+                                  );
+                                },
+                                icon: const Icon(
+                                  size: 20,
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: ColorValue.hintColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      else if (state is ProfilePageError){
+                        return Text(
+                          "Kesalahan dalam mengambil data",
+                          style: textTheme.bodyText1!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: ColorValue.neutralColor),
+                        );
+                      }
+                      else{
+                        return Text(
+                          "Kesalahan dalam mengambil data",
+                          style: textTheme.bodyText1!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: ColorValue.neutralColor),
+                        );
+                      }
+                    },
+                  )
               ),
               const SizedBox(height: 24,),
               Center(
@@ -199,8 +276,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 24,),
               main_button("Keluar", context, onPressed: (){
-                _logout();
-                //show dialog
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
