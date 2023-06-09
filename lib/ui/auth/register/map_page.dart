@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:kangsayur_seller/bloc/bloc/register_bloc.dart';
+import 'package:kangsayur_seller/bloc/state/register_state.dart';
 import 'package:kangsayur_seller/model/register_model.dart';
 import 'package:kangsayur_seller/ui/auth/register/sandi_register.dart';
 import 'package:kangsayur_seller/ui/bottom_navigation/bottom_navigation.dart';
@@ -14,8 +17,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Constants/app_constants.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
+import '../../../bloc/event/register_event.dart';
 import '../../../common/color_value.dart';
+import '../../../repository/register_repository.dart';
 import '../../widget/main_button.dart';
+import 'package:image/image.dart' as img;
+
 
 class MapScreen extends StatefulWidget {
   MapScreen({Key? key, required this.namaPemilik, required this.emailPemilik, required this.noHpPemilik, required this.alamatPemilik, required this.sandi, required this.namaToko, required this.alamatToko, required this.deskripsiToko, required this.jamBuka, required this.jamTutup, required this.image}) : super(key: key);
@@ -128,6 +135,7 @@ class _MapScreenState extends State<MapScreen> {
     mapController.move(_currentPosition, 14.0); // Sesuaikan level zoom jika perlu
   }
 
+
   // //list jam buka tutup
   // List<String> convertToTimeString(List<TextEditingController> controllers) {
   //   List<String> timeStrings = [];
@@ -158,53 +166,23 @@ class _MapScreenState extends State<MapScreen> {
     return text;
   }
 
-  postRegister() async {
+  Future<File> compressImage(File imageFile) async {
+    final tempDir = await Directory.systemTemp.createTemp();
+    final tempFilePath = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-    List<int> imageBytes = await File(widget.image!.path).readAsBytes();
-    var multipartFile = http.MultipartFile.fromBytes(
-      'photo',
-      imageBytes,
-      filename: widget.image!.path.split('/').last,
-    );
+    img.Image? image = img.decodeImage(imageFile.readAsBytesSync());
 
-    var url = Uri.parse('https://kangsayur.nitipaja.online/api/auth/seller/register');
-    var request = http.MultipartRequest('POST', url);
-    request.headers['Accept'] = 'application/json';
-
-    request.fields['email'] = convertToText(widget.emailPemilik);
-    request.fields['password'] = convertToText(widget.sandi);
-    request.fields['owner_name'] = convertToText(widget.namaPemilik);
-    request.fields['phone_number'] = convertToText(widget.noHpPemilik);
-    request.fields['owner_address'] = convertToText(widget.alamatPemilik);
-    request.fields['store_name'] = convertToText(widget.namaToko);
-    request.fields['description'] = convertToText(widget.deskripsiToko);
-    request.fields['store_address'] = convertToText(widget.alamatToko);
-    request.fields['store_longitude'] = _currentPosition.longitude.toDouble().toString();
-    request.fields['store_latitude'] = _currentPosition.latitude.toDouble().toString();
-    request.fields['open'] = convertToTimeString(widget.jamBuka).toString();
-    request.fields['close'] = convertToTimeString(widget.jamTutup).toString();
-    request.files.add(multipartFile);
-
-    var response = await request.send();
-    var responseBody = await response.stream.bytesToString();
-
-    print(responseBody);
-    print(response.statusCode);
-    print(multipartFile.filename);
-
-    if(response.statusCode == 200) {
-      RegisterModel register = registerModelFromJson(responseBody);
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      pref.setString('token', register.accesToken);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gagal Register'),
-        ),
-      );
+    // Mengubah ukuran gambar jika ukurannya melebihi batas maksimum
+    while (image!.length > 2 * 1024 * 1024) {
+      image = img.copyResize(image, width: image.width ~/ 2, height: image.height ~/ 2);
     }
+
+    final compressedImageFile = File(tempFilePath)
+      ..writeAsBytesSync(img.encodeJpg(image, quality: 80));
+
+    return compressedImageFile;
   }
+
 
   @override
   void initState() {
@@ -228,75 +206,168 @@ class _MapScreenState extends State<MapScreen> {
         ),
         backgroundColor: Colors.white,
       ),
-      body: Stack(
+      body: BlocProvider(
+        create: (context) => RegisterPageBloc(registerRepository: RegisterRepository()),
+        child: BlocConsumer<RegisterPageBloc, RegisterPageState>(
+          listener: (context, state) {},
+          builder: (context, state){
+            if(state is InitialRegisterPageState) {
+              return buildInitailLayout(context);
+            } else if(state is RegisterPageLoading) {
+              return buildLoadingLayout(context);
+            } else if(state is RegisterPageLoaded) {
+              return buildLoadedLayout();
+            } else if(state is RegisterPageError) {
+              return buildInitailLayout(context);
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
+      )
+    );
+  }
+
+  Widget buildInitailLayout(BuildContext context) => Stack(
+    children: [
+      FlutterMap(
+        options: MapOptions(
+          center: AppConstants.myLocation,
+          zoom: 14.0,
+          onTap: _handleTap,
+        ),
+        mapController: mapController,
         children: [
-          FlutterMap(
-            options: MapOptions(
-              center: AppConstants.myLocation,
-              zoom: 14.0,
-              onTap: _handleTap,
-            ),
-            mapController: mapController,
-            children: [
-              TileLayer(
-                urlTemplate: AppConstants.mapBoxStyleId,
-                additionalOptions: const {
-                  'accessToken': AppConstants.mapBoxAccessToken,
-                  'id': 'mapbox.mapbox-streets-v8',
-                  'mapStyleId': AppConstants.mapBoxStyleId
-                },
+          TileLayer(
+            urlTemplate: AppConstants.mapBoxStyleId,
+            additionalOptions: const {
+              'accessToken': AppConstants.mapBoxAccessToken,
+              'id': 'mapbox.mapbox-streets-v8',
+              'mapStyleId': AppConstants.mapBoxStyleId
+            },
+          ),
+          MarkerLayer(
+            markers: [
+              Marker(
+                width: 80.0,
+                height: 80.0,
+                point: _currentPosition,
+                builder: (ctx) => const Icon(
+                  Icons.location_pin,
+                  size: 50,
+                  color: ColorValue.primaryColor,
+                ),
               ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    width: 80.0,
-                    height: 80.0,
-                    point: _currentPosition,
-                    builder: (ctx) => const Icon(
-                      Icons.location_pin,
-                      size: 50,
-                      color: ColorValue.primaryColor,
-                    ),
-                  ),
-                ],
-              )
+            ],
+          )
+        ],
+      ),
+      Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Alamat: $_currentAddress',
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: ColorValue.neutralColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Latitude: ${_currentPosition.latitude.toStringAsFixed(6)}',
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Longitude: ${_currentPosition.longitude.toStringAsFixed(6)}',
+              ),
+              const SizedBox(height: 15),
+              main_button("Daftar", context, onPressed: () async {
+                File? selectedImage = await compressImage(widget.image!);
+
+                  BlocProvider.of<RegisterPageBloc>(context).add(RegisterButtonPressed(
+                    email: convertToText(widget.emailPemilik),
+                    password: convertToText(widget.sandi),
+                    ownerName: convertToText(widget.namaPemilik),
+                    phoneNumber: convertToText(widget.noHpPemilik),
+                    ownerAddress: convertToText(widget.alamatPemilik),
+                    storeName: convertToText(widget.namaToko),
+                    description: convertToText(widget.deskripsiToko),
+                    storeAddress: convertToText(widget.alamatToko),
+                    storeLongitude: _currentPosition.longitude.toDouble().toString(),
+                    storeLatitude: _currentPosition.latitude.toDouble().toString(),
+                    open: convertToTimeString(widget.jamBuka).toString(),
+                    close: convertToTimeString(widget.jamTutup).toString(),
+                    photo: selectedImage,
+                  ));
+              }),
             ],
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              color: Colors.white,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Alamat: $_currentAddress',
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: ColorValue.neutralColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Latitude: ${_currentPosition.latitude.toStringAsFixed(6)}',
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Longitude: ${_currentPosition.longitude.toStringAsFixed(6)}',
-                  ),
-                  const SizedBox(height: 15),
-                  main_button("Daftar", context, onPressed: (){
-                    postRegister();
-                  }),
-                ],
+        ),
+      ),
+    ],
+  );
+
+  Widget buildLoadingLayout(BuildContext context) => const Center(
+    child: CircularProgressIndicator(),
+  );
+
+  Widget buildLoadedLayout() => Center(
+    child: Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Selamat Datang',
+            style: Theme.of(context).textTheme.headline5!.copyWith(
+              fontWeight: FontWeight.bold,
+              color: ColorValue.secondaryColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Text(
+            'Anda telah berhasil masuk',
+            style: Theme.of(context).textTheme.subtitle1!.copyWith(
+              fontWeight: FontWeight.w800,
+              color: const Color(0xff1E1E1E),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Container(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
+              },
+              style: ElevatedButton.styleFrom(
+                primary: ColorValue.primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              ),
+              child: Text(
+                'Lanjutkan',
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
 }

@@ -28,39 +28,6 @@ class _login_screenState extends State<login_screen> {
   final _passwordController = TextEditingController();
   bool _emailHasError = false;
 
-
-  postDataLogin() async {
-    var url = Uri.parse('https://kangsayur.nitipaja.online/api/auth/login');
-    var response = await http.post(url,
-        headers: {
-          'Accept': 'application/json',
-        },body: {
-      'email': _emailController.text,
-      'password': _passwordController.text,
-    });
-
-    print(response.body);
-    print(response.statusCode);
-
-    if (response.statusCode == 200) {
-      LoginModel login = loginModelFromJson(response.body);
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      pref.setString('token', login.accesToken);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Berhasil Mendaftar!'),
-        ),
-      );
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email atau password salah'),
-        ),
-      );
-    }
-  }
-
   @override
   void dispose() {
     _emailController.dispose();
