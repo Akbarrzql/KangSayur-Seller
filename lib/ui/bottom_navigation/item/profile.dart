@@ -243,17 +243,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                 KategoriProfile("Inbox", "assets/svg/inbox.svg",32, 32, onTap: (){
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const InboxPage()));
                                 }),
-                                KategoriProfile("Kelola Ulasan", "assets/svg/kelola_ulasan.svg", 32, 32),
-                                KategoriProfile("Seller Care", "assets/svg/seller.svg", 32, 32),
+                                KategoriProfile("Kelola Ulasan", "assets/svg/kelola_ulasan.svg", 32, 32,  onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const UlasanPage()));
+                                }),
+                                KategoriProfile("Seller Care", "assets/svg/seller.svg", 32, 32,  onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SellerCarePage()));
+                                }),
                               ],
                             ),
                             const SizedBox(height: 40,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", 32, 32),
-                                KategoriProfile("Promo", "assets/svg/promo_profile.svg", 32, 32),
-                                KategoriProfile("Toko", "assets/svg/store.svg", 32, 32),
+                                KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", 32, 32,  onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const TranskasiPage()));
+                                }),
+                                KategoriProfile("Promo", "assets/svg/promo_profile.svg", 32, 32,  onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoPage(selectedCategories: [])));
+                                }),
+                                KategoriProfile("Toko", "assets/svg/store.svg", 32, 32, ),
                               ],
                             ),
                             const SizedBox(height: 40,),
