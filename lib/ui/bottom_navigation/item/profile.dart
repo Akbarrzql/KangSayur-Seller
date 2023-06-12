@@ -220,9 +220,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 24,),
               Center(
-                widthFactor: 2,
                 child: Container(
-                  height: 280,
+                  height: 330,
                   width: 315,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
@@ -231,40 +230,37 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: 50,
+                        top: 30,
                         left: 30,
                         right: 30,
-                        bottom: 30,
+                        bottom: 0,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                KategoriProfile("Inbox", "assets/svg/inbox.svg", onTap: (){
+                                KategoriProfile("Inbox", "assets/svg/inbox.svg",32, 32, onTap: (){
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const InboxPage()));
                                 }),
-                                const SizedBox(width: 45,),
-                                KategoriProfile("Kelola Ulasan", "assets/svg/kelola_ulasan.svg", onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ReviewUlasanPage()));
-                                }),
-                                const SizedBox(width: 25,),
-                                KategoriProfile("Seller Care", "assets/svg/seller.svg", onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SellerCarePage()));
-                                }),
+                                KategoriProfile("Kelola Ulasan", "assets/svg/kelola_ulasan.svg", 32, 32),
+                                KategoriProfile("Seller Care", "assets/svg/seller.svg", 32, 32),
                               ],
                             ),
                             const SizedBox(height: 40,),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const TranskasiPage()));
-                                }),
-                                const SizedBox(width: 50,),
-                                KategoriProfile("Promo", "assets/svg/promo_profile.svg", onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoPage(selectedCategories: [])));
-                                },),
-                                const SizedBox(width: 50,),
-                                KategoriProfile("Toko", "assets/svg/toko.svg"),
+                                KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", 32, 32),
+                                KategoriProfile("Promo", "assets/svg/promo_profile.svg", 32, 32),
+                                KategoriProfile("Toko", "assets/svg/store.svg", 32, 32),
+                              ],
+                            ),
+                            const SizedBox(height: 40,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                KategoriProfile("Driver", "assets/svg/shipment.svg", 32, 32),
                               ],
                             ),
                           ],
@@ -441,22 +437,26 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget KategoriProfile(String title, String image, {VoidCallback? onTap}){
+  Widget KategoriProfile(String title, String image, double width, double height, {VoidCallback? onTap}){
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        children: [
-          SvgPicture.asset(image),
-          const SizedBox(height: 10,),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodyText2!.copyWith(
-              color: ColorValue.neutralColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+      child: Container(
+        width: 55,
+        child: Column(
+          children: [
+            SvgPicture.asset(image, width: width, height: height,),
+            const SizedBox(height: 10,),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                color: ColorValue.neutralColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
