@@ -31,14 +31,14 @@ class _KategoriTokoState extends State<KategoriToko> {
   ];
 
   void _navigateToRegisterToko() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => register_toko(
-          selectedCategories: isChecked,
-        ),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => register_toko(
+    //       selectedCategoriesOperasional: isChecked,
+    //     ),
+    //   ),
+    // );
   }
 
   @override
@@ -49,9 +49,7 @@ class _KategoriTokoState extends State<KategoriToko> {
           style: TextStyle(color: Colors.black, fontSize: 18),),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => register_toko(selectedCategories: [],)),
-                  (Route<dynamic> route) => false),
+          onPressed: () => Navigator.pop(context)
         ),
         backgroundColor: Colors.white,
       ),

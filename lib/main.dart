@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:kangsayur_seller/ui/auth/register/map_page.dart';
-import 'package:kangsayur_seller/ui/bottom_navigation/bottom_navigation.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:kangsayur_seller/ui/bottom_navigation/item/dashboard.dart';
-import 'package:kangsayur_seller/ui/bottom_navigation/item/profile.dart';
-import 'package:kangsayur_seller/ui/chat/detail_chat.dart';
-import 'package:kangsayur_seller/ui/chat/pengaturan_chat.dart';
-import 'package:kangsayur_seller/ui/iklan/detail_iklan.dart';
-import 'package:kangsayur_seller/ui/informasi/informasi.dart';
-import 'package:kangsayur_seller/ui/produk/alasan_produk_ditolak.dart';
-import 'package:kangsayur_seller/ui/produk/detail_produk.dart';
-import 'package:kangsayur_seller/ui/produk/tambah_produk.dart';
-import 'package:kangsayur_seller/ui/profile/inbox.dart';
-import 'package:kangsayur_seller/ui/promo/list_promo.dart';
-import 'package:kangsayur_seller/ui/promo/promo.dart';
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
 
-void main() {
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
+void main() async {
+  // Menginisialisasi pengaturan format tanggal dan waktu lokal
+  await initializeDateFormatting();
+
+  // Memastikan inisialisasi Flutter sebelum menjalankan aplikasi
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Mengatur preferensi orientasi pada potret (portrait)
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  // Menjalankan aplikasi Flutter
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.green,
       ),
-      home: const ProfilePage(),
+      debugShowCheckedModeBanner: false,
+      home: const SplashScreen(),
     );
   }
 }

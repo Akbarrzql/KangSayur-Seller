@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:kangsayur_seller/model/verifikasi_model.dart';
+import 'package:kangsayur_seller/ui/widget/main_button.dart';
 import '../../common/color_value.dart';
+import 'alasan_produk_ditolak.dart';
+import 'package:intl/intl.dart';
 
 class DetailProduk extends StatefulWidget {
-  const DetailProduk({Key? key}) : super(key: key);
+  const DetailProduk({Key? key, required this.verifikasiModel}) : super(key: key);
+  final Datum verifikasiModel;
 
   @override
   State<DetailProduk> createState() => _DetailProdukState();
 }
 
 class _DetailProdukState extends State<DetailProduk> {
+
+  String formatRupiah(String? data) {
+    return NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(int.parse(data!));
+  }
+  
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -71,7 +80,7 @@ class _DetailProdukState extends State<DetailProduk> {
                               height: 4,
                             ),
                             Text(
-                              '2 Maret 2023',
+                              widget.verifikasiModel.tanggalVerivikasi == null ? "Tidak tertera Tanggal" : widget.verifikasiModel.tanggalVerivikasi.toString(),
                               style: textTheme.headline6!.copyWith(
                                 color: ColorValue.hintColor,
                                 fontSize: 10,
@@ -87,15 +96,15 @@ class _DetailProdukState extends State<DetailProduk> {
                       height: 30,
                       width: 120,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: const Color(0xFFD7FEDF),
+                          borderRadius: BorderRadius.circular(5),
+                          color: widget.verifikasiModel.status == "Pending" ? const Color(0xFFFDF2B2) : widget.verifikasiModel.status == "Ditolak" ? const Color(0xFFFFEAEF) : const Color(0xFFD7FEDF)
                       ),
                       child: Text(
-                        "Terverifikasi",
+                        widget.verifikasiModel.status == "Pending" ? "Diproses" : widget.verifikasiModel.status == "Rejected" ? "Ditolak" : "Terverifikasi",
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
-                          color: ColorValue.primaryColor,
+                          color: widget.verifikasiModel.status == "Pending" ? const Color(0xFFEB6D18) : widget.verifikasiModel.status == "Rejected" ? const Color(0xFFD6001C) : ColorValue.primaryColor,
                         ),
                       ),
                     ),
@@ -120,12 +129,13 @@ class _DetailProdukState extends State<DetailProduk> {
               ),
               const SizedBox(height: 10,),
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 15, 24, 0),
+                padding: const EdgeInsets.fromLTRB(24,0, 24, 0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Wortel 1/KG",
+                      widget.verifikasiModel.namaProduk == null ? "Tidak tertera Nama Produk" : widget.verifikasiModel.namaProduk.toString(),
                       style: textTheme.headline6!.copyWith(
                         color: ColorValue.neutralColor,
                         fontSize: 24,
@@ -134,7 +144,7 @@ class _DetailProdukState extends State<DetailProduk> {
                     ),
                     const SizedBox(height: 5,),
                     Text(
-                      "Rp. 10.000",
+                      widget.verifikasiModel.hargaProduk == null ? "Tidak tertera Harga" : formatRupiah(widget.verifikasiModel.hargaProduk.toString()),
                       style: textTheme.headline6!.copyWith(
                         color: ColorValue.bluePricecolor,
                         fontSize: 20,
@@ -143,7 +153,7 @@ class _DetailProdukState extends State<DetailProduk> {
                     ),
                     const SizedBox(height: 15,),
                     Text(
-                      "Wortel yang kami tawarkan adalah segar dan berkualitas, serta dipanen dengan teliti untuk memastikan kualitas terbaik. Dapatkan wortel segar dengan harga yang terjangkau hanya di toko bu Endah.",
+                      widget.verifikasiModel.deskripsi == null ? "Tidak tertera Deskripsi" : widget.verifikasiModel.deskripsi.toString(),
                       style: textTheme.headline6!.copyWith(
                         color: ColorValue.hintColor,
                         fontSize: 14,
@@ -165,8 +175,8 @@ class _DetailProdukState extends State<DetailProduk> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
+                      children: [
+                        const Text(
                           "Ketersediaan",
                           style: TextStyle(
                             color: ColorValue.neutralColor,
@@ -174,10 +184,10 @@ class _DetailProdukState extends State<DetailProduk> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(height: 5,),
+                        const SizedBox(height: 5,),
                         Text(
-                          "100 KG",
-                          style: TextStyle(
+                          widget.verifikasiModel.stokProduk == null ? "Tidak tertera Ketersediaan" : "${widget.verifikasiModel.stokProduk.toString()} Stock",
+                          style: const TextStyle(
                             color: ColorValue.hintColor,
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -215,6 +225,12 @@ class _DetailProdukState extends State<DetailProduk> {
                 color: ColorValue.hintColor,
                 thickness: 0.5,
               ),
+              if(widget.verifikasiModel.status == "Rejected")
+                main_button("Lihat alasan ditolak", context, onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AlasanDitolakPage(
+                    data: widget.verifikasiModel,
+                  )));
+                })
             ],
           ),
         ),

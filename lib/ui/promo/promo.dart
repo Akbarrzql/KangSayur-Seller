@@ -23,7 +23,9 @@ class _PromoPageState extends State<PromoPage> {
   bool sesi4 = false;
 
   bool _isCategorySelected = false;
-  final _hargaPromoController = TextEditingController();
+  final List<TextEditingController> _hargaPromoController = [
+    TextEditingController(),
+  ];
   bool withInputFormatter = false;
 
   List<String> categoryNames = [
@@ -83,6 +85,9 @@ class _PromoPageState extends State<PromoPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // Check if any category is already selected
+    _hargaPromoController.addAll(List.generate(widget.selectedCategories.length, (_) => TextEditingController()));
+
     // Check if any category is already selected
     for (var i = 0; i < widget.selectedCategories.length; i++) {
       if (widget.selectedCategories[i]) {
@@ -401,7 +406,7 @@ class _PromoPageState extends State<PromoPage> {
                                             child: Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 16),
                                               child: TextFormField(
-                                                controller: _hargaPromoController,
+                                                controller: _hargaPromoController[i],
                                                 keyboardType: TextInputType.number,
                                                 inputFormatters: [_formatter],
                                                 decoration: InputDecoration(

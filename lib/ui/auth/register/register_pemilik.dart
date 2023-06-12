@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/nama_toko.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
+import 'package:kangsayur_seller/ui/auth/register/sandi_register.dart';
 import 'package:kangsayur_seller/ui/on_boarding/on_boarding_screen.dart';
 import '../../widget/textfiled.dart';
 
@@ -15,11 +16,9 @@ class register_pemilik extends StatefulWidget {
 class _register_pemilikState extends State<register_pemilik> {
 
   final _namaPemilikController = TextEditingController();
-  final _emailSellerController = TextEditingController();
+  final _emailPemilikController = TextEditingController();
   final _noHpController = TextEditingController();
   final _alamatController = TextEditingController();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +75,38 @@ class _register_pemilikState extends State<register_pemilik> {
                       SizedBox(
                         height: 10,
                       ),
-                      textfield(context, "Masukkan Email", _emailSellerController, TextInputType.name),
+                      textfield(context, "Masukkan Email", _emailPemilikController, TextInputType.emailAddress),
+                      SizedBox(height: 20,),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffD7FEDF),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        height: 55,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.info_outline,
+                              color: ColorValue.primaryColor,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "No handphone menggunakan fomat +62 anda tidak perlu menambahkan angka 0 di awal.",
+                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                  color: ColorValue.primaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(height: 20,),
                       Text(
                         'Nomor HP Pemilik',
@@ -102,7 +132,7 @@ class _register_pemilikState extends State<register_pemilik> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: TextFormField(
                         controller: _noHpController,
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Masukkan no handphone",
@@ -110,6 +140,12 @@ class _register_pemilikState extends State<register_pemilik> {
                             color: ColorValue.hintColor,
                           ),
                         ),
+                        validator: (value) {
+                          if (value != null && value.startsWith('0')) {
+                            return 'Angka 0 tidak boleh digunakan di awal';
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ),
@@ -139,7 +175,9 @@ class _register_pemilikState extends State<register_pemilik> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: TextFormField(
                             controller: _alamatController,
-                            keyboardType: TextInputType.name,
+                            minLines: 1,
+                            maxLines: 10,
+                            textInputAction: TextInputAction.newline,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Masukkan alamat",
@@ -160,11 +198,12 @@ class _register_pemilikState extends State<register_pemilik> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const register_toko(
-                            selectedCategories: [],
-                          ),
-                        ),
+                        MaterialPageRoute(builder: (context) => KataSandiRegister(
+                          namaPemilik: _namaPemilikController,
+                          emailPemilik: _emailPemilikController,
+                          noHpPemilik: _noHpController,
+                          alamatPemilik: _alamatController,
+                        )),
                       );
                     },
                     style: ElevatedButton.styleFrom(

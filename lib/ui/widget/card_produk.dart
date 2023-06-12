@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 
 class CardProduk extends StatelessWidget {
-  const CardProduk({Key? key, required this.imageProduk, required this.jarakProduk, required this.namaProduk, required this.penjualProduk, required this.hargaProduk}) : super(key: key);
+  const CardProduk({Key? key, required this.imageProduk, required this.namaProduk, required this.penjualProduk, required this.hargaProduk, required this.isSelected}) : super(key: key);
   final String imageProduk;
-  final String jarakProduk;
   final String namaProduk;
   final String penjualProduk;
   final String hargaProduk;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +58,6 @@ class CardProduk extends StatelessWidget {
                               children: [
                                 const SizedBox(
                                   height: 9,
-                                ),
-                                Text(
-                                    jarakProduk,
-                                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                      fontSize: 10,
-                                      color: ColorValue.neutralColor,
-                                    )
                                 ),
                                 const SizedBox(
                                   height: 5,

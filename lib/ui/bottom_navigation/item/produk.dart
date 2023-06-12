@@ -11,14 +11,15 @@ class ProdukPage extends StatefulWidget {
   State<ProdukPage> createState() => _ProdukPageState();
 }
 
-class _ProdukPageState extends State<ProdukPage>  with SingleTickerProviderStateMixin {
-
+class _ProdukPageState extends State<ProdukPage>
+    with SingleTickerProviderStateMixin {
   TabController? _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); // Jumlah tab sesuai kebutuhan Anda
+    _tabController = TabController(
+        length: 2, vsync: this); // Jumlah tab sesuai kebutuhan Anda
   }
 
   @override
@@ -36,11 +37,15 @@ class _ProdukPageState extends State<ProdukPage>  with SingleTickerProviderState
             SizedBox(
               height: 50, // Ubah tinggi sesuai kebutuhan Anda
               child: AppBar(
-                elevation: 0, // Menghilangkan bayangan di bawah AppBar
-                backgroundColor: Colors.white, // Menghilangkan background AppBar
+                elevation: 0,
+                // Menghilangkan bayangan di bawah AppBar
+                backgroundColor: Colors.white,
+                // Menghilangkan background AppBar
                 flexibleSpace: TabBar(
-                  unselectedLabelColor: ColorValue.neutralColor, // Warna teks tab yang tidak aktif
-                  labelColor: ColorValue.primaryColor, // Warna teks tab yang aktif
+                  unselectedLabelColor: ColorValue.neutralColor,
+                  // Warna teks tab yang tidak aktif
+                  labelColor: ColorValue.primaryColor,
+                  // Warna teks tab yang aktif
                   controller: _tabController,
                   tabs: const [
                     Tab(text: 'Daftar Produk'),
@@ -66,7 +71,10 @@ class _ProdukPageState extends State<ProdukPage>  with SingleTickerProviderState
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Aksi ketika FAB ditekan
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const TambahProdukPage()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const TambahProdukPage()));
         },
         child: Icon(Icons.add),
         backgroundColor: ColorValue.primaryColor,
