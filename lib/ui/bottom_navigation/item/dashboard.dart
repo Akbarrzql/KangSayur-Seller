@@ -704,7 +704,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                 enablePinching: true,
                                 enableDoubleTapZooming: true,
                                 enablePanning: true),
-                            // Enable tooltip
+                            // Enable tooltipz
                             tooltipBehavior: TooltipBehavior(enable: true),
                             series: <ChartSeries<DataPenjualan, String>>[
                               LineSeries<DataPenjualan, String>(

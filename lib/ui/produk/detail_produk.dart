@@ -144,7 +144,7 @@ class _DetailProdukState extends State<DetailProduk> {
                     ),
                     const SizedBox(height: 5,),
                     Text(
-                      widget.verifikasiModel.hargaProduk == null ? "Tidak tertera Harga" : formatRupiah(widget.verifikasiModel.hargaProduk.toString()),
+                      widget.verifikasiModel.hargaVariant == null ? "Tidak tertera Harga" : formatRupiah(widget.verifikasiModel.hargaVariant.toString()),
                       style: textTheme.headline6!.copyWith(
                         color: ColorValue.bluePricecolor,
                         fontSize: 20,
@@ -186,7 +186,7 @@ class _DetailProdukState extends State<DetailProduk> {
                         ),
                         const SizedBox(height: 5,),
                         Text(
-                          widget.verifikasiModel.stokProduk == null ? "Tidak tertera Ketersediaan" : "${widget.verifikasiModel.stokProduk.toString()} Stock",
+                          widget.verifikasiModel.stok == null ? "Tidak tertera Ketersediaan" : "${widget.verifikasiModel.stok.toString()} Stock",
                           style: const TextStyle(
                             color: ColorValue.hintColor,
                             fontSize: 14,
