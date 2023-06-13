@@ -37,23 +37,23 @@ class Datum {
   int id;
   String namaToko;
   String namaProduk;
-  int hargaProduk;
   String alamat;
-  dynamic imgId;
+  dynamic variantImg;
+  int hargaVariant;
+  int stok;
   String deskripsi;
-  int stokProduk;
-  String? tanggalVerivikasi;
+  DateTime tanggalVerivikasi;
   String status;
 
   Datum({
     required this.id,
     required this.namaToko,
     required this.namaProduk,
-    required this.hargaProduk,
     required this.alamat,
-    required this.imgId,
+    required this.variantImg,
+    required this.hargaVariant,
+    required this.stok,
     required this.deskripsi,
-    required this.stokProduk,
     required this.tanggalVerivikasi,
     required this.status,
   });
@@ -62,12 +62,12 @@ class Datum {
     id: json["id"],
     namaToko: json["nama_toko"],
     namaProduk: json["nama_produk"],
-    hargaProduk: json["harga_produk"],
     alamat: json["alamat"],
-    imgId: json["img_id"],
+    variantImg: json["variant_img"],
+    hargaVariant: json["harga_variant"],
+    stok: json["stok"],
     deskripsi: json["deskripsi"],
-    stokProduk: json["stok_produk"],
-    tanggalVerivikasi: json["tanggal_verivikasi"],
+    tanggalVerivikasi: DateTime.parse(json["tanggal_verivikasi"]),
     status: json["status"],
   );
 
@@ -75,12 +75,12 @@ class Datum {
     "id": id,
     "nama_toko": namaToko,
     "nama_produk": namaProduk,
-    "harga_produk": hargaProduk,
     "alamat": alamat,
-    "img_id": imgId,
+    "variant_img": variantImg,
+    "harga_variant": hargaVariant,
+    "stok": stok,
     "deskripsi": deskripsi,
-    "stok_produk": stokProduk,
-    "tanggal_verivikasi": tanggalVerivikasi,
+    "tanggal_verivikasi": tanggalVerivikasi.toIso8601String(),
     "status": status,
   };
 }

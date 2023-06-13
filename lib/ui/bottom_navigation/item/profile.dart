@@ -19,6 +19,9 @@ import '../../../bloc/bloc/profile_bloc.dart';
 import '../../../bloc/event/profile_event.dart';
 import '../../../bloc/state/profile_state.dart';
 import '../../../repository/profile_repository.dart';
+import '../../informasi_driver/list_driver.dart';
+import '../../auth/register/driver/register_driver.dart';
+import '../../auth/register/driver/register_kendaraan.dart';
 import '../../profile/inbox.dart';
 import '../../ulasan/ulasan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,40 +59,28 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  Future _personalInformation() async {
-    setState(() {
-      isLoadedBg = false;
-    });
-
+  Future<bool> hasRegisteredBefore() async {
+    //shared preferences set if user has registered before
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString('token');
-    final responseUser = await http.get(Uri.parse("https://kangsayur.nitipaja.online/api/seller/profile"),
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },);
-
-    userModel = UserModel.fromJson(jsonDecode(responseUser.body.toString()));
-
-    print(responseUser.statusCode);
-
-    setState(() {
-      isLoadedBg = true;
-    });
+    bool? hasRegistered = pref.getBool('hasRegistered');
+    if (hasRegistered == null) {
+      return false;
+    } else {
+      return hasRegistered;
+    }
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _personalInformation();
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      body: isLoadedBg ? SafeArea(
+      body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
@@ -268,7 +259,24 @@ class _ProfilePageState extends State<ProfilePage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                KategoriProfile("Driver", "assets/svg/shipment.svg", 32, 32),
+                                KategoriProfile("Driver", "assets/svg/shipment.svg", 32, 32,  onTap: () async {
+                                  bool hasRegistered = await hasRegisteredBefore();
+                                  if (hasRegistered) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const ListDriver(),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const RegisterDriver(),
+                                      ),
+                                    );
+                                  }
+                                }),
                               ],
                             ),
                           ],
@@ -311,137 +319,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
-      ) :
-          Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                child:  Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Colors.white,
-                            ),
-                            const SizedBox(width: 16,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 20,
-                                  width: 100,
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(height: 8,),
-                                Container(
-                                  height: 15,
-                                  width: 100,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            size: 20,
-                            Icons.arrow_forward_ios_outlined,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24,),
-                    Center(
-                      widthFactor: 2,
-                      child: Container(
-                        height: 280,
-                        width: 315,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white,
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              top: 50,
-                              left: 30,
-                              right: 30,
-                              bottom: 30,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        color: Colors.white,
-                                      ),
-                                      const SizedBox(width: 45,),
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        color: Colors.white,
-                                      ),
-                                      const SizedBox(width: 25,),
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        color: Colors.white,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 40,),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        color: Colors.white,
-                                      ),
-                                      const SizedBox(width: 50,),
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        color: Colors.white,
-                                      ),
-                                      const SizedBox(width: 50,),
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        color: Colors.white,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24,),
-                    Container(
-                      height: 50,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )
+      )
     );
   }
 

@@ -250,7 +250,11 @@ class _login_screenState extends State<login_screen> {
           Container(
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BottomNavigation()),
+                      (route) => false,
+                );
               },
               style: ElevatedButton.styleFrom(
                 primary: ColorValue.primaryColor,

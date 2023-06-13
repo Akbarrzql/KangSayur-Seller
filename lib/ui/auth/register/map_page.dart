@@ -172,7 +172,6 @@ class _MapScreenState extends State<MapScreen> {
 
     img.Image? image = img.decodeImage(imageFile.readAsBytesSync());
 
-    // Mengubah ukuran gambar jika ukurannya melebihi batas maksimum
     while (image!.length > 2 * 1024 * 1024) {
       image = img.copyResize(image, width: image.width ~/ 2, height: image.height ~/ 2);
     }
