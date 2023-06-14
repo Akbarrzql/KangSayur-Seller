@@ -34,53 +34,41 @@ class VerifikasiModel {
 }
 
 class Datum {
-  int id;
-  String namaToko;
   String namaProduk;
-  String alamat;
+  int produkId;
   dynamic variantImg;
   int hargaVariant;
-  int stok;
-  String deskripsi;
   DateTime tanggalVerivikasi;
   String status;
+  int stok;
 
   Datum({
-    required this.id,
-    required this.namaToko,
     required this.namaProduk,
-    required this.alamat,
+    required this.produkId,
     required this.variantImg,
     required this.hargaVariant,
-    required this.stok,
-    required this.deskripsi,
     required this.tanggalVerivikasi,
     required this.status,
+    required this.stok,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: json["id"],
-    namaToko: json["nama_toko"],
     namaProduk: json["nama_produk"],
-    alamat: json["alamat"],
+    produkId: json["produk_id"],
     variantImg: json["variant_img"],
     hargaVariant: json["harga_variant"],
-    stok: json["stok"],
-    deskripsi: json["deskripsi"],
     tanggalVerivikasi: DateTime.parse(json["tanggal_verivikasi"]),
     status: json["status"],
+    stok: json["stok"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "nama_toko": namaToko,
     "nama_produk": namaProduk,
-    "alamat": alamat,
+    "produk_id": produkId,
     "variant_img": variantImg,
     "harga_variant": hargaVariant,
-    "stok": stok,
-    "deskripsi": deskripsi,
     "tanggal_verivikasi": tanggalVerivikasi.toIso8601String(),
     "status": status,
+    "stok": stok,
   };
 }

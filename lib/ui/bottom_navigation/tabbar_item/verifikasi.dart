@@ -149,7 +149,7 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
                                     jenisVerifikasiProduk: 'Bahan Pokok',
                                     tanggalVerifikasiProduk: state.verifikasiModel!.data[index].tanggalVerivikasi == null ? 'Tidak tertera Tanggal' : state.verifikasiModel!.data[index].tanggalVerivikasi.toString(),
                                     namaVerifikasiProduk: state.verifikasiModel!.data[index].namaProduk.toString(),
-                                    descVerifikasiProduk: state.verifikasiModel!.data[index].deskripsi.toString(),
+                                    descVerifikasiProduk: '',
                                     gambarVerifikasiProduk: 'assets/images/wortel.png',
                                     statusVerifikasiProduk: state.verifikasiModel!.data[index].status.toString(),
                                     onPressed: (){

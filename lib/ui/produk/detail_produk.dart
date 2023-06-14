@@ -153,7 +153,8 @@ class _DetailProdukState extends State<DetailProduk> {
                     ),
                     const SizedBox(height: 15,),
                     Text(
-                      widget.verifikasiModel.deskripsi == null ? "Tidak tertera Deskripsi" : widget.verifikasiModel.deskripsi.toString(),
+                      'Deskripsi Produk',
+                      // widget.verifikasiModel.deskripsi == null ? "Tidak tertera Deskripsi" : widget.verifikasiModel.deskripsi.toString(),
                       style: textTheme.headline6!.copyWith(
                         color: ColorValue.hintColor,
                         fontSize: 14,

@@ -185,7 +185,7 @@ class _DaftarProdukPageState extends State<DaftarProdukPage> {
                               hargaProduk: formatRupiah(filteredProdukModel[index].hargaVariant.toString()),
                               imageProduk: 'assets/images/wortel.png',
                               namaProduk: filteredProdukModel[index].namaProduk,
-                              penjualProduk: filteredProdukModel[index].namaToko,
+                              penjualProduk: filteredProdukModel[index].status,
                               isSelected: index == selectedProdukIndex,
                             );
                           },
@@ -267,7 +267,7 @@ class _DaftarProdukPageState extends State<DaftarProdukPage> {
                               hargaProduk: formatRupiah(filteredProdukModel[index].hargaVariant.toString()),
                               imageProduk: 'assets/images/wortel.png',
                               namaProduk: filteredProdukModel[index].namaProduk,
-                              penjualProduk: filteredProdukModel[index].namaToko.toString(),
+                              penjualProduk: filteredProdukModel[index].status.toString(),
                               isSelected: index == selectedProdukIndex,
                             );
                           },
