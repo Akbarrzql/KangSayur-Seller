@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:kangsayur_seller/ui/auth/register/driver/reset_pasword_driver.dart';
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
 
 void main() async {
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: const ResetPasswordDriver(),
     );
   }
 }
