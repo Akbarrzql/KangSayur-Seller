@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kangsayur_seller/ui/auth/register/driver/reset_pasword_driver.dart';
 import 'package:kangsayur_seller/ui/informasi_driver/informasi_driver.dart';
 
 import '../../common/color_value.dart';
@@ -95,14 +96,21 @@ class _DetailDriverState extends State<DetailDriver> {
                         color: ColorValue.neutralColor,
                       ),
                       ColorValue.neutralColor,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ResetPasswordDriver(),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 20),
                     _listMenu(
                       "Keluar",
                       const Icon(
                         Icons.logout,
-                        color: ColorValue.neutralColor,
+                        color: Colors.red,
                       ),
                       Colors.red,
                       onTap: () {},
