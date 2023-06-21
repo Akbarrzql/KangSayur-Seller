@@ -5,19 +5,12 @@ import 'package:kangsayur_seller/ui/auth/register/driver/reset_pasword_driver.da
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
 
 void main() async {
-  // Menginisialisasi pengaturan format tanggal dan waktu lokal
   await initializeDateFormatting();
-
-  // Memastikan inisialisasi Flutter sebelum menjalankan aplikasi
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Mengatur preferensi orientasi pada potret (portrait)
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
-  // Menjalankan aplikasi Flutter
   runApp(const MyApp());
 }
 
@@ -42,7 +35,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       debugShowCheckedModeBanner: false,
-      home: const ResetPasswordDriver(),
+      home: const SplashScreen(),
     );
   }
 }
