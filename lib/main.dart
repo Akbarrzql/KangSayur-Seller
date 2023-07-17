@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kangsayur_seller/ui/auth/register/driver/reset_pasword_driver.dart';
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
+import 'package:kangsayur_seller/ui/transaksi/transaksi.dart';
 
 void main() async {
   await initializeDateFormatting();

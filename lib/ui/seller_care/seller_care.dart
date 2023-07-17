@@ -253,7 +253,7 @@ class _SellerCarePageState extends State<SellerCarePage> {
         child: Theme(
           data: Theme.of(context).copyWith(
             dividerColor: Colors.transparent,
-            accentColor: Colors.transparent,
+            hintColor: Colors.transparent,
           ),
           child: ExpansionTile(
             title: Text(
