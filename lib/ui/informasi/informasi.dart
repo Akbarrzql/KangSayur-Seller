@@ -17,26 +17,6 @@ class _InformasiIklanPageState extends State<InformasiIklanPage> {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          'Informasi Iklan',
-          style: Theme.of(context).textTheme.headline6!.copyWith(
-            color: ColorValue.neutralColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: ColorValue.neutralColor,
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
