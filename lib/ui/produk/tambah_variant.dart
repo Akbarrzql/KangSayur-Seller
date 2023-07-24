@@ -24,10 +24,10 @@ class _TambahVariantPageState extends State<TambahVariantPage> {
   File? _imageFile3;
   File? _imageFile4;
 
-  TextEditingController _namaVarianController = TextEditingController();
-  TextEditingController _deksripsiController = TextEditingController();
-  TextEditingController _stokVarianController = TextEditingController();
-  TextEditingController _hargaVarianController = TextEditingController();
+  final TextEditingController _namaVarianController = TextEditingController();
+  final TextEditingController _deksripsiController = TextEditingController();
+  final TextEditingController _stokVarianController = TextEditingController();
+  final TextEditingController _hargaVarianController = TextEditingController();
 
   final _formatter = CurrencyTextInputFormatter(
     locale: 'id',
@@ -323,6 +323,7 @@ class _TambahVariantPageState extends State<TambahVariantPage> {
                   String stokVarian = _stokVarianController.text;
 
                   Map<String, dynamic> variant = {
+                    'images': _imageFile != null ? _imageFile!.path : null,
                     'variant': namaVarian,
                     'variant_desc': deskripsiVarian,
                     'stok': stokVarian,

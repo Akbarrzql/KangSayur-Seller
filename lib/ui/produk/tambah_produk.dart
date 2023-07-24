@@ -104,6 +104,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
             } else if(state is ProdukAddLoaded){
               return buildLoadedLayout();
             } else if(state is ProdukAddError){
+              print(state.errorMessage);
               return buildErorLayout(context, state.errorMessage);
             } else {
               return const Center(child: CircularProgressIndicator());
@@ -208,14 +209,12 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              child: Text(
-                                _listKategori[index].kategori,
-                                style: textTheme.bodyText1!.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                  color: _listKategori[index].isSelected ? Colors.white : Colors.white,
-                                ),
+                            Text(
+                              _listKategori[index].kategori,
+                              style: textTheme.bodyText1!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                                color: _listKategori[index].isSelected ? Colors.white : Colors.white,
                               ),
                             ),
                             const SizedBox(
@@ -382,13 +381,13 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
               height: 20,
             ),
             main_button("Tambah Produk", context, onPressed: (){
-              //if checkbox is checked then navigate to next page
               if(_isKetentuanSelected){
                 BlocProvider.of<ProdukAddPageBloc>(context).add(AddProdukButtonPressed(
                   namaProduk: _namaProdukController.text,
                   kategoriId: _listKategori.indexWhere((element) => element.isSelected),
                   variant: _varianList,
                 ));
+                print(_varianList);
               }
               else if(_varianList.isEmpty){
                 showErrorDialog(context, 'Anda belum menambahkan varian produk', 'Tambah Varian') ;
@@ -499,13 +498,13 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text("Kembali"),
             style: ElevatedButton.styleFrom(
               primary: ColorValue.primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
             ),
+            child: const Text("Kembali"),
           ),
         ],
       ),
