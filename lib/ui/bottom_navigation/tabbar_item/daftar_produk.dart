@@ -183,7 +183,7 @@ class _DaftarProdukPageState extends State<DaftarProdukPage> {
                           itemBuilder: (context, index) {
                             return CardProduk(
                               hargaProduk: formatRupiah(filteredProdukModel[index].hargaVariant.toString()),
-                              imageProduk: 'assets/images/wortel.png',
+                              imageProduk: "https://kangsayur.nitipaja.online${filteredProdukModel[index].variantImg}",
                               namaProduk: filteredProdukModel[index].namaProduk,
                               penjualProduk: filteredProdukModel[index].status,
                               isSelected: index == selectedProdukIndex,
@@ -265,7 +265,7 @@ class _DaftarProdukPageState extends State<DaftarProdukPage> {
                           itemBuilder: (context, index) {
                             return CardProduk(
                               hargaProduk: formatRupiah(filteredProdukModel[index].hargaVariant.toString()),
-                              imageProduk: 'assets/images/wortel.png',
+                              imageProduk: "https://kangsayur.nitipaja.online${filteredProdukModel[index].variantImg}",
                               namaProduk: filteredProdukModel[index].namaProduk,
                               penjualProduk: filteredProdukModel[index].status.toString(),
                               isSelected: index == selectedProdukIndex,

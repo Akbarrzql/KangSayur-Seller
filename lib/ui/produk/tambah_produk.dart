@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -72,46 +73,46 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          'Buat Produk Baru',
-          style: Theme.of(context).textTheme.headline6!.copyWith(
-            color: ColorValue.neutralColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Buat Produk Baru',
+            style: Theme.of(context).textTheme.headline6!.copyWith(
+              color: ColorValue.neutralColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: ColorValue.neutralColor,
+            ),
           ),
         ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: ColorValue.neutralColor,
-          ),
-        ),
-      ),
-      body: BlocProvider(
-        create: (context) => ProdukAddPageBloc(createProdukRepository: CreateProdukRepository()),
-        child: BlocConsumer<ProdukAddPageBloc, ProdukAddState>(
-          listener: (context, state) {},
-          builder: (context, state){
-            if(state is InitialProdukAddState){
-              return buildInitialLayout(context);
-            } else if(state is ProdukAddLoading){
-              return buildLoadingLayout(context);
-            } else if(state is ProdukAddLoaded){
-              return buildLoadedLayout();
-            } else if(state is ProdukAddError){
-              print(state.errorMessage);
-              return buildErorLayout(context, state.errorMessage);
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
+        body: BlocProvider(
+            create: (context) => ProdukAddPageBloc(createProdukRepository: CreateProdukRepository()),
+            child: BlocConsumer<ProdukAddPageBloc, ProdukAddState>(
+              listener: (context, state) {},
+              builder: (context, state){
+                if(state is InitialProdukAddState){
+                  return buildInitialLayout(context);
+                } else if(state is ProdukAddLoading){
+                  return buildLoadingLayout(context);
+                } else if(state is ProdukAddLoaded){
+                  return buildLoadedLayout();
+                } else if(state is ProdukAddError){
+                  print(state.errorMessage);
+                  return buildErorLayout(context, state.errorMessage);
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            )
         )
-      )
     );
   }
 
@@ -387,7 +388,23 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
                   kategoriId: _listKategori.indexWhere((element) => element.isSelected),
                   variant: _varianList,
                 ));
-                print(_varianList);
+
+                Map<String, dynamic> jsonData = {
+                  'nama_produk': _namaProdukController.text,
+                  'kategori_id': _listKategori.indexWhere((element) => element.isSelected),
+                };
+
+                for (int i = 0; i < _varianList.length; i++) {
+                  jsonData['variant[$i][variant]'] = _varianList[i]['variant'];
+                  jsonData['variant[$i][variant_desc]'] = _varianList[i]['variant_desc'];
+                  jsonData['variant[$i][stok]'] = _varianList[i]['stok'];
+                  jsonData['variant[$i][harga_variant]'] = _varianList[i]['harga_variant'];
+                  jsonData['variant[$i][images]'] = _varianList[i]['images'] ?? '';
+                }
+
+
+                print(jsonEncode(jsonData));
+
               }
               else if(_varianList.isEmpty){
                 showErrorDialog(context, 'Anda belum menambahkan varian produk', 'Tambah Varian') ;
@@ -405,26 +422,6 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
   Widget buildLoadedLayout(){
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          'Menunggu Verifikasi',
-          style: Theme.of(context).textTheme.headline6!.copyWith(
-            color: ColorValue.neutralColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: ColorValue.neutralColor,
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),

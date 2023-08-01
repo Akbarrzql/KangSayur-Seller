@@ -238,7 +238,7 @@ class _ConfirmDriverState extends State<ConfirmDriver> {
                                     //convert date to date in string in format dd-MM-yyyy
                                     DateFormat('dd-MM-yyyy').format(
                                       DateTime.parse(
-                                        state.confirmDriverModel.data[index].statusReadyDelivered[index2].createdAt.toString(),
+                                        state.confirmDriverModel.data[index].createdAt.toString(),
                                       ),
                                     ),
                                     style: textTheme.subtitle1!.copyWith(

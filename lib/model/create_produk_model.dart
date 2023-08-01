@@ -10,53 +10,73 @@ CreateProdukModel createProdukModelFromJson(String str) => CreateProdukModel.fro
 String createProdukModelToJson(CreateProdukModel data) => json.encode(data.toJson());
 
 class CreateProdukModel {
-  String namaProduk;
-  int kategoriId;
-  List<Variant> variant;
+  final String statusCode;
+  final String message;
+  final Data data;
 
   CreateProdukModel({
-    required this.namaProduk,
-    required this.kategoriId,
-    required this.variant,
+    required this.statusCode,
+    required this.message,
+    required this.data,
   });
 
   factory CreateProdukModel.fromJson(Map<String, dynamic> json) => CreateProdukModel(
-    namaProduk: json["nama_produk"],
-    kategoriId: json["kategori_id"],
-    variant: List<Variant>.from(json["variant"].map((x) => Variant.fromJson(x))),
+    statusCode: json["status_code"],
+    message: json["message"],
+    data: Data.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "nama_produk": namaProduk,
-    "kategori_id": kategoriId,
-    "variant": List<dynamic>.from(variant.map((x) => x.toJson())),
+    "status_code": statusCode,
+    "message": message,
+    "data": data.toJson(),
   };
 }
 
-class Variant {
-  String variant;
-  String variantDesc;
-  int stok;
-  int hargaVariant;
+class Data {
+  final int productId;
+  final String variant;
+  final String variantDesc;
+  final String stok;
+  final String variantImg;
+  final String hargaVariant;
+  final DateTime updatedAt;
+  final DateTime createdAt;
+  final int id;
 
-  Variant({
+  Data({
+    required this.productId,
     required this.variant,
     required this.variantDesc,
     required this.stok,
+    required this.variantImg,
     required this.hargaVariant,
+    required this.updatedAt,
+    required this.createdAt,
+    required this.id,
   });
 
-  factory Variant.fromJson(Map<String, dynamic> json) => Variant(
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+    productId: json["product_id"],
     variant: json["variant"],
     variantDesc: json["variant_desc"],
     stok: json["stok"],
+    variantImg: json["variant_img"],
     hargaVariant: json["harga_variant"],
+    updatedAt: DateTime.parse(json["updated_at"]),
+    createdAt: DateTime.parse(json["created_at"]),
+    id: json["id"],
   );
 
   Map<String, dynamic> toJson() => {
+    "product_id": productId,
     "variant": variant,
     "variant_desc": variantDesc,
     "stok": stok,
+    "variant_img": variantImg,
     "harga_variant": hargaVariant,
+    "updated_at": updatedAt.toIso8601String(),
+    "created_at": createdAt.toIso8601String(),
+    "id": id,
   };
 }
