@@ -42,7 +42,7 @@ class CardProduk extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           image:  DecorationImage(
-                            image: AssetImage(imageProduk),
+                            image: Image.network(imageProduk).image,
                             fit: BoxFit.cover,
                           ),
                         ),

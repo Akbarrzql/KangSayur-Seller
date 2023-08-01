@@ -58,6 +58,8 @@ class _TambahVariantPageState extends State<TambahVariantPage> {
     }
   }
 
+  final List<Map<String, dynamic>> _varianList = [];
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -323,13 +325,17 @@ class _TambahVariantPageState extends State<TambahVariantPage> {
                   String stokVarian = _stokVarianController.text;
 
                   Map<String, dynamic> variant = {
-                    'images': _imageFile != null ? _imageFile!.path : null,
                     'variant': namaVarian,
                     'variant_desc': deskripsiVarian,
                     'stok': stokVarian,
                     'harga_variant': hargaVarian,
                   };
 
+                  if (_imageFile != null && _imageFile is File) {
+                    variant['images'] = _imageFile;
+                  }
+
+                  _varianList.add(variant);
                   print(variant);
                   Navigator.pop(context, variant);
                 },)

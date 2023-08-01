@@ -251,7 +251,7 @@ class _DisiapkanPageState extends State<DisiapkanPage> {
                                     //convert date to date in string in format dd-MM-yyyy
                                     DateFormat('dd-MM-yyyy').format(
                                       DateTime.parse(
-                                        state.disiapkanModel.data[index].statusPrepared[index2].createdAt.toString(),
+                                        state.disiapkanModel.data[index].createdAt.toString(),
                                       ),
                                     ),
                                     style: textTheme.subtitle1!.copyWith(
@@ -269,6 +269,9 @@ class _DisiapkanPageState extends State<DisiapkanPage> {
                       ),
                       main_button("Pesanan Telah Siap", context, onPressed: () {
                         _disiapkanPageBloc.add(GetSiapAntar(state.disiapkanModel.data[index].transactionCode.toString()));
+                        setState(() {
+                          _disiapkanPageBloc.add(GetDisiapkan());
+                        });
                       }),
                     ],
                   )

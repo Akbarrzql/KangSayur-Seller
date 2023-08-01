@@ -229,7 +229,7 @@ class _PesananPageState extends State<PesananPage> {
                                     //convert date to date in string in format dd-MM-yyyy
                                     DateFormat('dd-MM-yyyy').format(
                                       DateTime.parse(
-                                        state.pesananModel.data[index].statusOrder[index2].createdAt.toString(),
+                                        state.pesananModel.data[index].createdAt.toString(),
                                       ),
                                     ),
                                     style: textTheme.subtitle1!.copyWith(
@@ -247,6 +247,9 @@ class _PesananPageState extends State<PesananPage> {
                       ),
                       main_button("Konfirmasi Pesanan", context, onPressed: () {
                         _pesananPageBloc.add(GetKonfirmasi(state.pesananModel.data[index].transactionCode.toString()));
+                        setState(() {
+                          _pesananPageBloc.add(GetPesanan());
+                        });
                       }),
                     ],
                   )
