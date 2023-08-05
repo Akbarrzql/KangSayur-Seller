@@ -125,9 +125,9 @@ class _DisiapkanPageState extends State<DisiapkanPage> {
                       height: 100,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        image: const DecorationImage(
+                        image: DecorationImage(
                           image: NetworkImage(
-                              "https://images.unsplash.com/photo-1612776561584-394d456a751d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDN8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60"),
+                              "https://kangsayur.nitipaja.online/${state.disiapkanModel.data[index].statusPrepared[0].variantImg}"),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -139,19 +139,22 @@ class _DisiapkanPageState extends State<DisiapkanPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text(
-                          state.disiapkanModel.data[index].statusPrepared[0].variant,
-                          style: textTheme.headline6!.copyWith(
-                            color: ColorValue.neutralColor,
-                            fontSize: 19,
-                            fontWeight: FontWeight.w700,
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            state.disiapkanModel.data[index].statusPrepared[0].namaProduk,
+                            style: textTheme.headline6!.copyWith(
+                              color: ColorValue.neutralColor,
+                              fontSize: 19,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 5),
                         Container(
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: Text(
-                            state.disiapkanModel.data[index].notes,
+                            state.disiapkanModel.data[index].statusPrepared[0].notes ?? "Tidak ada catatan",
                             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 12,

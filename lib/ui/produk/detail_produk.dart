@@ -210,11 +210,8 @@ class _DetailProdukState extends State<DetailProduk> {
                         const SizedBox(height: 5,),
                         Row(
                           children: [
-                            chipVarian("1/KG"),
-                            const SizedBox(width: 5,),
-                            chipVarian("2/KG"),
-                            const SizedBox(width: 5,),
-                            chipVarian("3/KG"),
+                            for(int i = 0; i < widget.verifikasiModel.stok; i++)
+                              chipVarian(widget.verifikasiModel.stok.toString()),
                           ],
                         )
                       ],

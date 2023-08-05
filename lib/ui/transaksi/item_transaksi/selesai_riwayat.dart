@@ -124,19 +124,22 @@ class _RiwayatPageState extends State<RiwayatPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text(
-                          state.selesaiModel.data[index].statusDone[0].variant,
-                          style: textTheme.headline6!.copyWith(
-                            color: ColorValue.neutralColor,
-                            fontSize: 19,
-                            fontWeight: FontWeight.w700,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            state.selesaiModel.data[index].statusDone[0].namaProduk,
+                            style: textTheme.headline6!.copyWith(
+                              color: ColorValue.neutralColor,
+                              fontSize: 19,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 5),
-                        Container(
+                        SizedBox(
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: Text(
-                            state.selesaiModel.data[index].notes,
+                            state.selesaiModel.data[index].statusDone[0].notes ?? "Tidak ada catatan",
                             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 12,

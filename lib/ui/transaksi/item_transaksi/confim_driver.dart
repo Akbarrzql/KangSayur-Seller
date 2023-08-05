@@ -126,19 +126,22 @@ class _ConfirmDriverState extends State<ConfirmDriver> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text(
-                          state.confirmDriverModel.data[index].statusReadyDelivered[0].variant,
-                          style: textTheme.headline6!.copyWith(
-                            color: ColorValue.neutralColor,
-                            fontSize: 19,
-                            fontWeight: FontWeight.w700,
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            state.confirmDriverModel.data[index].statusReadyDelivered[0].namaProduk,
+                            style: textTheme.headline6!.copyWith(
+                              color: ColorValue.neutralColor,
+                              fontSize: 19,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 5),
                         Container(
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: Text(
-                            state.confirmDriverModel.data[index].notes,
+                            state.confirmDriverModel.data[index].statusReadyDelivered[0].notes ?? "Tidak ada catatan",
                             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 12,

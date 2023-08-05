@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/map_page.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
+import '../../../validator/input_validator.dart';
+import '../../widget/custom_textfield.dart';
 import '../../widget/dialog_alret.dart';
 import '../../widget/main_button.dart';
 
@@ -23,120 +25,95 @@ class _KataSandiRegisterState extends State<KataSandiRegister> {
   final _konfirmasiSandiController = TextEditingController();
   bool isPasswordVisible = true;
   bool isPasswordVisible1 = true;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20,),
-              Text(
-                "Set Sandi",
-                style: Theme.of(context).textTheme.headline5!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: ColorValue.secondaryColor,
-                    ),
-              ),
-              Text(
-                "Masukkan Sandi anda",
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: ColorValue.neutralColor,
-                    ),
-              ),
-              const SizedBox(height: 30,),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: ColorValue.hintColor,
-                    width: 0.5,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextFormField(
-                    controller: _sandiController,
-                    obscureText: isPasswordVisible,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Masukkan Kata Sandi Anda',
-                      hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: ColorValue.hintColor,
+        child: Form(
+          key: _formKey,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20,),
+                Text(
+                  "Set Sandi",
+                  style: Theme.of(context).textTheme.headline5!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: ColorValue.secondaryColor,
                       ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isPasswordVisible = !isPasswordVisible;
-                          });
-                        },
-                        icon: Icon(
-                          isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          color: ColorValue.hintColor,
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
-              ),
-              const SizedBox(height: 20,),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: ColorValue.hintColor,
-                    width: 0.5,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextFormField(
-                    controller: _konfirmasiSandiController,
-                    obscureText: isPasswordVisible1,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Masukkan Kata Sandi Anda',
-                      hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: ColorValue.hintColor,
+                Text(
+                  "Masukkan Sandi anda",
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: ColorValue.neutralColor,
                       ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isPasswordVisible1 = !isPasswordVisible1;
-                          });
-                        },
-                        icon: Icon(
-                          isPasswordVisible1 ? Icons.visibility : Icons.visibility_off,
-                          color: ColorValue.hintColor,
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
-              ),
-              Spacer(),
-              main_button("Lanjut", context, onPressed: () {
-                if (_sandiController.text != _konfirmasiSandiController.text) {
-                  showErrorDialog(context, "Perhatian", "Kata sandi tidak sama");
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => register_toko(
-                      selectedCategoriesOperasional: [],
-                      namaPemilik: widget.namaPemilik,
-                      emailPemilik: widget.emailPemilik,
-                      noHpPemilik: widget.noHpPemilik,
-                      alamatPemilik: widget.alamatPemilik,
-                      sandi: _sandiController,
-                    )),
-                  );
-                }
-              }),
-            ],
+                const SizedBox(height: 30,),
+                CustomTextFormField(
+                  controller: _sandiController,
+                  label: 'Masukkan Kata Sandi Anda',
+                  isPassword: true,
+                  textInputType: TextInputType.visiblePassword,
+                  validator: (value) => InputValidator.passwordValidator(value),
+                ),
+                const SizedBox(height: 20,),
+                CustomTextFormField(
+                  controller: _konfirmasiSandiController,
+                  label: 'Konfirmasi Kata Sandi Anda',
+                  isPassword: true,
+                  textInputType: TextInputType.visiblePassword,
+                  validator: (value) => InputValidator.passwordValidator(value),
+                ),
+                Spacer(),
+                main_button("Lanjut", context, onPressed: () {
+                  if (_sandiController.text != _konfirmasiSandiController.text) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.red,
+                        margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                        behavior: SnackBarBehavior.floating,
+                        content: Text('Kata Sandi tidak sama'),
+                      ),
+                    );
+                  } else if (_sandiController.text.isEmpty || _konfirmasiSandiController.text.isEmpty){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.red,
+                        margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                        behavior: SnackBarBehavior.floating,
+                        content: Text('Kata Sandi anda tidak terisi'),
+                      ),
+                    );
+                  } else if (_formKey.currentState!.validate())  {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => register_toko(
+                        selectedCategoriesOperasional: [],
+                        namaPemilik: widget.namaPemilik,
+                        emailPemilik: widget.emailPemilik,
+                        noHpPemilik: widget.noHpPemilik,
+                        alamatPemilik: widget.alamatPemilik,
+                        sandi: _sandiController,
+                      )),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.red,
+                        margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                        behavior: SnackBarBehavior.floating,
+                        content: Text('Terdapat kesalahan pada inputan'),
+                      ),
+                    );
+                  }
+                }),
+              ],
+            ),
           ),
         ),
       ),

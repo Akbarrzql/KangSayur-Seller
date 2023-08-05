@@ -40,7 +40,6 @@ class Datum {
   final String paymentMethod;
   final String transactionToken;
   final String clientKey;
-  final String notes;
   final String status;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -53,7 +52,6 @@ class Datum {
     required this.paymentMethod,
     required this.transactionToken,
     required this.clientKey,
-    required this.notes,
     required this.status,
     required this.createdAt,
     required this.updatedAt,
@@ -67,7 +65,6 @@ class Datum {
     paymentMethod: json["payment_method"],
     transactionToken: json["transaction_token"],
     clientKey: json["client_key"],
-    notes: json["notes"],
     status: json["status"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
@@ -81,7 +78,6 @@ class Datum {
     "payment_method": paymentMethod,
     "transaction_token": transactionToken,
     "client_key": clientKey,
-    "notes": notes,
     "status": status,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
@@ -96,9 +92,11 @@ class StatusDone {
   final int variantId;
   final int storeId;
   final int userId;
+  final String? notes;
   final String status;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String namaProduk;
   final String variantImg;
   final String variant;
   final String variantDesc;
@@ -113,9 +111,11 @@ class StatusDone {
     required this.variantId,
     required this.storeId,
     required this.userId,
+    required this.notes,
     required this.status,
     required this.createdAt,
     required this.updatedAt,
+    required this.namaProduk,
     required this.variantImg,
     required this.variant,
     required this.variantDesc,
@@ -131,9 +131,11 @@ class StatusDone {
     variantId: json["variant_id"],
     storeId: json["store_id"],
     userId: json["user_id"],
+    notes: json["notes"] ?? "",
     status: json["status"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    namaProduk: json["nama_produk"],
     variantImg: json["variant_img"],
     variant: json["variant"],
     variantDesc: json["variant_desc"],
@@ -149,9 +151,11 @@ class StatusDone {
     "variant_id": variantId,
     "store_id": storeId,
     "user_id": userId,
+    "notes": notes,
     "status": status,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "nama_produk": namaProduk,
     "variant_img": variantImg,
     "variant": variant,
     "variant_desc": variantDesc,

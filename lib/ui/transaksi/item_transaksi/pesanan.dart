@@ -139,19 +139,22 @@ class _PesananPageState extends State<PesananPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text(
-                          state.pesananModel.data[index].statusOrder[0].variant,
-                          style: textTheme.headline6!.copyWith(
-                            color: ColorValue.neutralColor,
-                            fontSize: 19,
-                            fontWeight: FontWeight.w700,
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            state.pesananModel.data[index].statusOrder[0].namaProduk,
+                            style: textTheme.headline6!.copyWith(
+                              color: ColorValue.neutralColor,
+                              fontSize: 19,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 5),
                         Container(
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: Text(
-                            state.pesananModel.data[index].notes,
+                            state.pesananModel.data[index].statusOrder[0].notes.toString() ?? "Tidak ada catatan",
                             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 12,

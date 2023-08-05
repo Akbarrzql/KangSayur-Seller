@@ -3,7 +3,9 @@ import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:photo_view/photo_view.dart';
 
 class Detail_photo extends StatefulWidget {
-  const Detail_photo({Key? key}) : super(key: key);
+  const Detail_photo({Key? key, required this.name, required this.image}) : super(key: key);
+  final String name;
+  final String image;
 
   @override
   State<Detail_photo> createState() => _Detail_photoState();
@@ -37,14 +39,14 @@ class _Detail_photoState extends State<Detail_photo> {
       body: Center(
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.height * 0.87,
               width: MediaQuery.of(context).size.width,
               child: PhotoView(
                 imageProvider:
-                AssetImage("assets/images/wortel.png"),
+                NetworkImage(widget.image),
                 heroAttributes:
-                PhotoViewHeroAttributes(tag: "someTag"),
+                PhotoViewHeroAttributes(tag: widget.name),
               ),
             )
           ],

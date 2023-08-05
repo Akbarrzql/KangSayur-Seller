@@ -5,6 +5,8 @@ import 'package:kangsayur_seller/bloc/state/login_state.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/model/login_model.dart';
 import 'package:kangsayur_seller/ui/auth/login/otp.dart';
+import 'package:kangsayur_seller/ui/widget/custom_textfield.dart';
+import 'package:kangsayur_seller/validator/input_validator.dart';
 import '../../../bloc/event/login_event.dart';
 import '../../../repository/login_repository.dart';
 import '../../bottom_navigation/bottom_navigation.dart';
@@ -96,65 +98,21 @@ class _login_screenState extends State<login_screen> {
             const SizedBox(
               height: 30,
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: ColorValue.hintColor,
-                  width: 0.5,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Email',
-                    hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: ColorValue.hintColor,
-                    ),
-                  ),
-                ),
-              ),
+            CustomTextFormField(
+              controller: _emailController,
+              label: 'Email',
+              textInputType: TextInputType.emailAddress,
+              validator: (value) => InputValidator.emailValidator(value),
             ),
             const SizedBox(
               height: 20,
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: ColorValue.hintColor,
-                  width: 0.5,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextFormField(
-                  controller: _passwordController,
-                  obscureText: isPasswordVisible,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Password',
-                    hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: ColorValue.hintColor,
-                    ),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isPasswordVisible = !isPasswordVisible;
-                        });
-                      },
-                      icon: Icon(
-                        isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: ColorValue.hintColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            CustomTextFormField(
+              controller: _passwordController,
+              label: 'Password',
+              isPassword: true,
+              textInputType: TextInputType.visiblePassword,
+              validator: (value) => InputValidator.passwordValidator(value),
             ),
             const SizedBox(
               height: 2,
@@ -176,25 +134,20 @@ class _login_screenState extends State<login_screen> {
             Container(
               child: ElevatedButton(
                 onPressed: () {
-                  if(_emailController.text.isEmpty) {
-                    setState(() {
-                      _emailHasError = true;
-                    });
-                    showErrorDialog(context, "Perhatian" ,'Email tidak boleh kosong');
-                  } else if(!_isValidEmail(_emailController.text)) {
-                    setState(() {
-                      _emailHasError = true;
-                    });
-                    showErrorDialog(context, "Perhatian" ,'Email tidak valid');
-                  } else if(_passwordController.text.isEmpty) {
-                    showErrorDialog(context, 'Perhatian', 'Password tidak boleh kosong');
-                  } else if(_passwordController.text.length < 6) {
-                    showErrorDialog(context, 'perhatian', 'Password minimal 6 karakter');
-                  } else {
+                  if(_formKey.currentState!.validate()){
                     BlocProvider.of<LoginPageBloc>(context).add(LoginButtonPressed(
                       email: _emailController.text,
                       password: _passwordController.text,
                     ));
+                  }else{
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.red,
+                        margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                        behavior: SnackBarBehavior.floating,
+                        content: Text('Terdapat kesalahan pada inputan'),
+                      ),
+                    );
                   }
                 },
                 style: ElevatedButton.styleFrom(

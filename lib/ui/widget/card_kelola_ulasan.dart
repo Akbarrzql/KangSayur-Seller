@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../../common/color_value.dart';
 
 class CardKelolaUlasan extends StatelessWidget {
-  const CardKelolaUlasan({Key? key, required this.namaProduk, required this.namaPemesan, required this.gambarProduk, required this.hargaProduk, required this.onPressed}) : super(key: key);
+  const CardKelolaUlasan({Key? key, required this.namaProduk, required this.namaPemesan, required this.gambarProduk, required this.tanggalUlasPembeli, required this.onPressed}) : super(key: key);
   final String namaProduk;
   final String namaPemesan;
   final String gambarProduk;
-  final String hargaProduk;
+  final String tanggalUlasPembeli;
   final VoidCallback onPressed;
 
   @override
@@ -35,7 +35,7 @@ class CardKelolaUlasan extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(5),
-            child: Image.asset(
+            child: Image.network(
               gambarProduk,
               width: 75,
               height: 75,
@@ -69,14 +69,14 @@ class CardKelolaUlasan extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        hargaProduk,
+                        tanggalUlasPembeli,
                         style: textTheme.headline6!.copyWith(
                           color: ColorValue.bluePricecolor,
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: 25,
                         child: ElevatedButton(
                           onPressed: onPressed,

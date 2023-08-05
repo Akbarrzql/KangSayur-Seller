@@ -124,19 +124,22 @@ class _OngoingPageState extends State<OngoingPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text(
-                          state.diantarModel.data[index].statusDelivered[0].variant.toString(),
-                          style: textTheme.headline6!.copyWith(
-                            color: ColorValue.neutralColor,
-                            fontSize: 19,
-                            fontWeight: FontWeight.w700,
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            state.diantarModel.data[index].statusDelivered[0].namaProduk.toString(),
+                            style: textTheme.headline6!.copyWith(
+                              color: ColorValue.neutralColor,
+                              fontSize: 19,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 5),
                         Container(
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: Text(
-                            state.diantarModel.data[index].notes.toString(),
+                            state.diantarModel.data[index].statusDelivered[0].notes ?? "Tidak ada catatan",
                             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 12,

@@ -9,7 +9,7 @@ abstract class CreateProdukPageRepository {
   Future<StatusCreateProdukModel> createProduk(
       String namaProduk,
       int kategoriId,
-      List<Map<String, dynamic>> variant,
+      List<Map<String, dynamic>>? variant,
       );
 }
 
@@ -18,7 +18,7 @@ class CreateProdukRepository extends CreateProdukPageRepository {
   Future<StatusCreateProdukModel> createProduk(
       String namaProduk,
       int kategoriId,
-      List<Map<String, dynamic>> variant,
+      List<Map<String, dynamic>>? variant,
       ) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString('token');
@@ -36,20 +36,20 @@ class CreateProdukRepository extends CreateProdukPageRepository {
     request.fields['kategori_id'] = kategoriId.toString();
 
     // Loop through the variant list and add each variant field separately
-    for (int i = 0; i < variant.length; i++) {
+    for (int i = 0; i < variant!.length; i++) {
       request.fields['variant[$i][variant]'] = variant[i]['variant'];
       request.fields['variant[$i][variant_desc]'] = variant[i]['variant_desc'];
       request.fields['variant[$i][stok]'] = variant[i]['stok'];
       request.fields['variant[$i][harga_variant]'] = variant[i]['harga_variant'];
     }
 
-    // Add the image files to the request
     for (int i = 0; i < variant.length; i++) {
       if (variant[i]['images'] != null && variant[i]['images'] is File) {
         var imageFile = variant[i]['images'] as File;
+        var imageStream = imageFile.readAsBytes().asStream();
         request.files.add(http.MultipartFile(
           'variant[$i][images]',
-          imageFile.readAsBytes().asStream(),
+          imageStream,
           imageFile.lengthSync(),
           filename: imageFile.path.split('/').last, // Adjust the media type accordingly
         ));

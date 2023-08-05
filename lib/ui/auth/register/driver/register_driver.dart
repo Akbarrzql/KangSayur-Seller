@@ -9,6 +9,8 @@ import 'package:kangsayur_seller/ui/widget/main_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../common/color_value.dart';
+import '../../../../validator/input_validator.dart';
+import '../../../widget/custom_textfield.dart';
 import '../../../widget/textfiled.dart';
 
 class RegisterDriver extends StatefulWidget {
@@ -26,16 +28,28 @@ class _RegisterDriverState extends State<RegisterDriver> {
   TextEditingController _noHpDaruratController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   final ImagePicker _picker = ImagePicker();
   File? _imageFile;
+  File? _imageKtp;
+  File? _imageStnk;
+  File? _imageKendaraan;
 
-  Future<void> _getImage(ImageSource source) async {
+  Future<void> _getImage(ImageSource source, int imageIndex) async {
     final pickedFile = await _picker.pickImage(source: source);
 
     if (pickedFile != null) {
       setState(() {
-        _imageFile = File(pickedFile.path);
+        if(imageIndex == 1){
+          _imageFile = File(pickedFile.path);
+        }else if(imageIndex == 2){
+          _imageKtp = File(pickedFile.path);
+        }else if(imageIndex == 3){
+          _imageStnk = File(pickedFile.path);
+        }else if(imageIndex == 4){
+          _imageKendaraan = File(pickedFile.path);
+        }
       });
     }
   }
@@ -66,265 +80,621 @@ class _RegisterDriverState extends State<RegisterDriver> {
         backgroundColor: Colors.white,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xffD7FEDF),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 55,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: ColorValue.primaryColor,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Text(
-                          "Setelah mendaftar kamu akan tetap bisa menambah atau mengubah data diri driver.",
-                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: ColorValue.primaryColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Foto Driver",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                //image picker
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _showBottomSheet(context);
-                      },
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          color: ColorValue.neutralColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: _imageFile != null ? ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.file(_imageFile!, fit: BoxFit.cover),
-                        ) : Container(
-                          decoration: BoxDecoration(
-                            color: ColorValue.neutralColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
-                        ),
-                      ),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xffD7FEDF),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    height: 55,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          "Unggah Foto Driver",
-                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            color: ColorValue.neutralColor,
-                          ),
+                        const Icon(
+                          Icons.info_outline,
+                          color: ColorValue.primaryColor,
                         ),
                         const SizedBox(
-                          height: 10,
+                          width: 10,
                         ),
-                        //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
-                        _imageFile != null ? ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: ColorValue.primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          onPressed: (){
-                            _showBottomSheet(context);
-                          },
+                        Expanded(
                           child: Text(
-                            "Unggah Ulang",
+                            "Setelah mendaftar kamu akan tetap bisa menambah atau mengubah data diri driver.",
                             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
-                              color: Colors.white,
+                              color: ColorValue.primaryColor,
                             ),
                           ),
-                        ) : Container(),
+                        ),
                       ],
-                    )
-                  ],
-                ),
-                const SizedBox(height: 20,),
-                Text(
-                  "Nama Lengkap",
-                  style: textTheme.bodyText1!.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,),
-                ),
-                const SizedBox(height: 10,),
-                textfield(context, "Masukkan Nama Lengkap", _nameController, TextInputType.text),
-                const SizedBox(height: 20,),
-                Text(
-                  "Email",
-                  style: textTheme.bodyText1!.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,),
-                ),
-                const SizedBox(height: 10,),
-                textfield(context, "Masukkan Email", _emailController, TextInputType.emailAddress),
-                const SizedBox(height: 20,),
-                Text(
-                  "No. HP",
-                  style: textTheme.bodyText1!.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,),
-                ),
-                const SizedBox(height: 10,),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                      color: ColorValue.hintColor,
-                      width: 0.5,
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      controller: _noHpController,
-                      keyboardType: TextInputType.phone,
-                      autofillHints: const [AutofillHints.telephoneNumber],
-                      maxLength: 11,
-                      buildCounter: (BuildContext context, { int? currentLength, int? maxLength, bool? isFocused }) => null,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixText: "+62 ",
-                        prefixStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: ColorValue.primaryColor,
-                        ),
-                        hintText: "Masukkan No. HP",
-                        hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: ColorValue.hintColor,
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Foto Driver",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: ColorValue.neutralColor,
                         ),
                       ),
-                    ),
-
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //image picker
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _showBottomSheet(context, 1);
+                            },
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: ColorValue.neutralColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: _imageFile != null ? ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(_imageFile!, fit: BoxFit.cover),
+                              ) : Container(
+                                decoration: BoxDecoration(
+                                  color: ColorValue.neutralColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Text(
+                                "Unggah Foto Driver",
+                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: ColorValue.neutralColor,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
+                              _imageFile != null ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: ColorValue.primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                onPressed: (){
+                                  _showBottomSheet(context, 1);
+                                },
+                                child: Text(
+                                  "Unggah Ulang",
+                                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ) : Container(),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 20,),
-                Text(
-                  "No. HP Darurat",
-                  style: textTheme.bodyText1!.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,),
-                ),
-                const SizedBox(height: 10,),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                      color: ColorValue.hintColor,
-                      width: 0.5,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      controller: _noHpDaruratController,
-                      keyboardType: TextInputType.phone,
-                      autofillHints: const [AutofillHints.telephoneNumber],
-                      maxLength: 11,
-                      buildCounter: (BuildContext context, { int? currentLength, int? maxLength, bool? isFocused }) => null,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixText: "+62 ",
-                        prefixStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: ColorValue.primaryColor,
-                        ),
-                        hintText: "Masukkan No. HP Darurat",
-                        hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: ColorValue.hintColor,
+                  const SizedBox(height: 20,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Foto KTP",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: ColorValue.neutralColor,
                         ),
                       ),
-                    ),
-
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //image picker
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _showBottomSheet(context, 2);
+                            },
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: ColorValue.neutralColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: _imageKtp != null ? ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(_imageKtp!, fit: BoxFit.cover),
+                              ) : Container(
+                                decoration: BoxDecoration(
+                                  color: ColorValue.neutralColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Text(
+                                "Unggah Foto KTP",
+                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: ColorValue.neutralColor,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
+                              _imageKtp != null ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: ColorValue.primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                onPressed: (){
+                                  _showBottomSheet(context, 2);
+                                },
+                                child: Text(
+                                  "Unggah Ulang",
+                                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ) : Container(),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 20,),
-                Text(
-                  "Password",
-                  style: textTheme.bodyText1!.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,),
-                ),
-                const SizedBox(height: 10,),
-                textfield(context, "Masukkan Password", _passwordController, TextInputType.text),
-                const SizedBox(height: 20,),
-                Text(
-                  "Konfirmasi Password",
-                  style: textTheme.bodyText1!.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,),
-                ),
-                const SizedBox(height: 10,),
-                textfield(context, "Masukkan Konfirmasi Password", _confirmPasswordController, TextInputType.text),
-                const SizedBox(height: 20,),
-                main_button("Selanjutnya", context, onPressed: () async {
-                  SharedPreferences.getInstance().then((prefs) {
-                    prefs.setBool('hasRegistered', true);
-                  });
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterKendaraan(),
+                  const SizedBox(height: 20,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Foto STNK",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: ColorValue.neutralColor,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //image picker
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _showBottomSheet(context, 3);
+                            },
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: ColorValue.neutralColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: _imageStnk != null ? ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(_imageStnk!, fit: BoxFit.cover),
+                              ) : Container(
+                                decoration: BoxDecoration(
+                                  color: ColorValue.neutralColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Text(
+                                "Unggah Foto STNK",
+                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: ColorValue.neutralColor,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
+                              _imageStnk != null ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: ColorValue.primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                onPressed: (){
+                                  _showBottomSheet(context, 3);
+                                },
+                                child: Text(
+                                  "Unggah Ulang",
+                                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ) : Container(),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Foto Kendaraan",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: ColorValue.neutralColor,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //image picker
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _showBottomSheet(context, 4);
+                            },
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: ColorValue.neutralColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: _imageKendaraan != null ? ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(_imageKendaraan!, fit: BoxFit.cover),
+                              ) : Container(
+                                decoration: BoxDecoration(
+                                  color: ColorValue.neutralColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Text(
+                                "Unggah Foto KTP",
+                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: ColorValue.neutralColor,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
+                              _imageKendaraan != null ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: ColorValue.primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                onPressed: (){
+                                  _showBottomSheet(context, 4);
+                                },
+                                child: Text(
+                                  "Unggah Ulang",
+                                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ) : Container(),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20,),
+                  Text(
+                    "Nama Lengkap",
+                    style: textTheme.bodyText1!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,),
+                  ),
+                  const SizedBox(height: 10,),
+                  CustomTextFormField(
+                    controller: _nameController,
+                    label: 'Masukkan Nama Lengkap',
+                    validator: (value) =>  InputValidator.nameValidator(value),
+                  ),
+                  const SizedBox(height: 20,),
+                  Text(
+                    "Email",
+                    style: textTheme.bodyText1!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,),
+                  ),
+                  const SizedBox(height: 10,),
+                  CustomTextFormField(
+                    controller: _emailController,
+                    label: 'Email',
+                    textInputType: TextInputType.emailAddress,
+                    validator: (value) =>  InputValidator.emailValidator(value),
+                  ),
+                  const SizedBox(height: 20,),
+                  Text(
+                    "No. HP",
+                    style: textTheme.bodyText1!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,),
+                  ),
+                  const SizedBox(height: 10,),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(
+                        color: ColorValue.hintColor,
+                        width: 0.5,
+                      ),
                     ),
-                  );
-                }),
-              ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: TextFormField(
+                        controller: _noHpController,
+                        keyboardType: TextInputType.phone,
+                        validator: (value) =>  InputValidator.phoneValidator(value),
+                        autofillHints: const [AutofillHints.telephoneNumber],
+                        maxLength: 11,
+                        buildCounter: (BuildContext context, { int? currentLength, int? maxLength, bool? isFocused }) => null,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixText: "+62 ",
+                          prefixStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: ColorValue.primaryColor,
+                          ),
+                          hintText: "Masukkan No. HP",
+                          hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: ColorValue.hintColor,
+                          ),
+                        ),
+                      ),
+
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
+                  Text(
+                    "No. HP Darurat",
+                    style: textTheme.bodyText1!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,),
+                  ),
+                  const SizedBox(height: 10,),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(
+                        color: ColorValue.hintColor,
+                        width: 0.5,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: TextFormField(
+                        controller: _noHpDaruratController,
+                        keyboardType: TextInputType.phone,
+                        autofillHints: const [AutofillHints.telephoneNumber],
+                        validator: (value) =>  InputValidator.phoneValidator(value),
+                        maxLength: 11,
+                        buildCounter: (BuildContext context, { int? currentLength, int? maxLength, bool? isFocused }) => null,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixText: "+62 ",
+                          prefixStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: ColorValue.primaryColor,
+                          ),
+                          hintText: "Masukkan No. HP Darurat",
+                          hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: ColorValue.hintColor,
+                          ),
+                        ),
+                      ),
+
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
+                  Text(
+                    "Password",
+                    style: textTheme.bodyText1!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,),
+                  ),
+                  const SizedBox(height: 10,),
+                  CustomTextFormField(
+                    controller: _passwordController,
+                    label: 'Password',
+                    isPassword: true,
+                    textInputType: TextInputType.visiblePassword,
+                    validator: (value) =>  InputValidator.passwordValidator(value),
+                  ),
+                  const SizedBox(height: 20,),
+                  Text(
+                    "Konfirmasi Password",
+                    style: textTheme.bodyText1!.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,),
+                  ),
+                  const SizedBox(height: 10,),
+                  CustomTextFormField(
+                    controller: _confirmPasswordController,
+                    label: 'Konfirmasi Password',
+                    isPassword: true,
+                    textInputType: TextInputType.visiblePassword,
+                    validator: (value) =>  InputValidator.passwordValidator(value),
+                  ),
+                  const SizedBox(height: 20,),
+                  main_button("Selanjutnya", context, onPressed: () async {
+                    if(_imageFile == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                          behavior: SnackBarBehavior.floating,
+                          content: Text("Foto Driver belum di upload"),
+                        ),
+                      );
+                    }else if(_imageKtp == null){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                          behavior: SnackBarBehavior.floating,
+                          content: Text("Foto KTP belum di upload"),
+                        ),
+                      );
+                    }else if(_imageStnk == null){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                          behavior: SnackBarBehavior.floating,
+                          content: Text("Foto STNK belum di upload"),
+                        ),
+                      );
+                    }else if(_imageKendaraan == null){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                          behavior: SnackBarBehavior.floating,
+                          content: Text("Foto Kendaraan belum di upload"),
+                        ),
+                      );
+                    }else if (_formKey.currentState!.validate()){
+                      SharedPreferences.getInstance().then((prefs) {
+                        prefs.setBool('hasRegistered', true);
+                      });
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegisterKendaraan(
+                            namaLengkap: _nameController,
+                            email: _emailController,
+                            nomorTelepon: _noHpController,
+                            nomorTeleponDarurat: _noHpDaruratController,
+                            password: _passwordController,
+                            konfirmasiPassword: _confirmPasswordController,
+                            fotoDriver: _imageFile,
+                            fotoKTP: _imageKtp,
+                            fotoSTNK: _imageStnk,
+                            fotoKendaraan: _imageKendaraan,
+                          ),
+                        ),
+                      );
+                    }else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                          behavior: SnackBarBehavior.floating,
+                          content: Text("Terdapat kesalahan pada inputan"),
+                        ),
+                      );
+                    }
+                  }),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
-  void _showBottomSheet(BuildContext context) {
+  void _showBottomSheet(BuildContext context, int imageIndex) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -349,7 +719,7 @@ class _RegisterDriverState extends State<RegisterDriver> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        _getImage(ImageSource.camera);
+                        _getImage(ImageSource.camera, imageIndex);
                         Navigator.pop(context);
                       },
                       child: Column(
@@ -375,7 +745,7 @@ class _RegisterDriverState extends State<RegisterDriver> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        _getImage(ImageSource.gallery);
+                        _getImage(ImageSource.gallery, imageIndex);
                         Navigator.pop(context);
                       },
                       child: Column(
