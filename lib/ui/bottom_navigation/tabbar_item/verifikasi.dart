@@ -104,7 +104,7 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
                                           tanggalVerifikasiProduk: 'Tidak tertera Tanggal',
                                           namaVerifikasiProduk: 'Nama Produk',
                                           descVerifikasiProduk: 'Deskripsi Produk',
-                                          gambarVerifikasiProduk: 'assets/images/wortel.png',
+                                          gambarVerifikasiProduk: 'https://images.unsplash.com/photo-1545830790-68595959c491?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGZhcm1lcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',//'assets/images/wortel.png',
                                           statusVerifikasiProduk: 'Diproses',
                                           onPressed: (){},
                                         );
@@ -150,7 +150,7 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
                                     tanggalVerifikasiProduk: state.verifikasiModel!.data[index].tanggalVerivikasi == null ? 'Tidak tertera Tanggal' : state.verifikasiModel!.data[index].tanggalVerivikasi.toString(),
                                     namaVerifikasiProduk: state.verifikasiModel!.data[index].namaProduk.toString(),
                                     descVerifikasiProduk: '',
-                                    gambarVerifikasiProduk: 'assets/images/wortel.png',
+                                    gambarVerifikasiProduk: "https://kangsayur.nitipaja.online${state.verifikasiModel!.data[index].variantImg.toString()}",
                                     statusVerifikasiProduk: state.verifikasiModel!.data[index].status.toString(),
                                     onPressed: (){
                                       Navigator.push(
