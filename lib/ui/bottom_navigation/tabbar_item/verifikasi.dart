@@ -158,6 +158,7 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
                                         MaterialPageRoute(
                                           builder: (context) => DetailProduk(
                                             verifikasiModel: state.verifikasiModel!.data[index],
+                                            verifikasiModel2: state.verifikasiModel!,
                                           ),
                                         ),
                                       );

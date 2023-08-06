@@ -125,9 +125,9 @@ class _PesananPageState extends State<PesananPage> {
                       height: 100,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        image: const DecorationImage(
+                        image: DecorationImage(
                           image: NetworkImage(
-                              "https://images.unsplash.com/photo-1612776561584-394d456a751d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDN8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60"),
+                              "https://kangsayur.nitipaja.online/${state.pesananModel.data[index].statusOrder[0].variantImg}"),
                           fit: BoxFit.cover,
                         ),
                       ),
