@@ -238,6 +238,7 @@ class _DetailProdukState extends State<DetailProduk> {
 
   Widget chipVarian(String textVarian){
     return Container(
+      margin: const EdgeInsets.only(right: 5),
       alignment: Alignment.center,
       height: 30,
       width: 45,

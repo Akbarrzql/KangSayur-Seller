@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import '../../common/color_value.dart';
+import 'package:intl/intl.dart';
 
 class CardVerifikasi extends StatelessWidget {
   CardVerifikasi({Key? key, required this.jenisVerifikasiProduk, required this.tanggalVerifikasiProduk, required this.namaVerifikasiProduk , required this.descVerifikasiProduk, required this.gambarVerifikasiProduk, required this.statusVerifikasiProduk, required this.onPressed}) : super(key: key);
@@ -59,7 +59,7 @@ class CardVerifikasi extends StatelessWidget {
                           ),
                           const SizedBox(height: 5,),
                           Text(
-                            tanggalVerifikasiProduk,
+                            DateFormat('dd MMMM yyyy').format(DateTime.parse(tanggalVerifikasiProduk)),
                             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               fontWeight: FontWeight.w400,
                               fontSize: 10,
@@ -101,7 +101,7 @@ class CardVerifikasi extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       image:  DecorationImage(
-                        image: AssetImage(gambarVerifikasiProduk),
+                        image: NetworkImage(gambarVerifikasiProduk),
                         fit: BoxFit.cover,
                       ),
                     ),

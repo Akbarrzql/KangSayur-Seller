@@ -10,9 +10,9 @@ VerifikasiModel verifikasiModelFromJson(String str) => VerifikasiModel.fromJson(
 String verifikasiModelToJson(VerifikasiModel data) => json.encode(data.toJson());
 
 class VerifikasiModel {
-  String statusCode;
-  String message;
-  List<Datum> data;
+  final String statusCode;
+  final String message;
+  final List<Datum> data;
 
   VerifikasiModel({
     required this.statusCode,
@@ -34,13 +34,13 @@ class VerifikasiModel {
 }
 
 class Datum {
-  String namaProduk;
-  int produkId;
-  dynamic variantImg;
-  int hargaVariant;
-  DateTime tanggalVerivikasi;
-  String status;
-  int stok;
+  final String namaProduk;
+  final int produkId;
+  final String? variantImg;
+  final int hargaVariant;
+  final DateTime tanggalVerivikasi;
+  final String status;
+  final int stok;
 
   Datum({
     required this.namaProduk,
