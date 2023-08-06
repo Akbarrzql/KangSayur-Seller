@@ -36,11 +36,12 @@ class VerifikasiModel {
 class Datum {
   final String namaProduk;
   final int produkId;
-  final String? variantImg;
+  final String variantImg;
   final int hargaVariant;
   final DateTime tanggalVerivikasi;
   final String status;
   final int stok;
+  final String variant;
 
   Datum({
     required this.namaProduk,
@@ -50,6 +51,7 @@ class Datum {
     required this.tanggalVerivikasi,
     required this.status,
     required this.stok,
+    required this.variant,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -60,6 +62,7 @@ class Datum {
     tanggalVerivikasi: DateTime.parse(json["tanggal_verivikasi"]),
     status: json["status"],
     stok: json["stok"],
+    variant: json["variant"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -70,5 +73,6 @@ class Datum {
     "tanggal_verivikasi": tanggalVerivikasi.toIso8601String(),
     "status": status,
     "stok": stok,
+    "variant": variant,
   };
 }

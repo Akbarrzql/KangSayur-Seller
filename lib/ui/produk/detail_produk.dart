@@ -7,8 +7,9 @@ import 'alasan_produk_ditolak.dart';
 import 'package:intl/intl.dart';
 
 class DetailProduk extends StatefulWidget {
-  const DetailProduk({Key? key, required this.verifikasiModel}) : super(key: key);
+  const DetailProduk({Key? key, required this.verifikasiModel, required this.verifikasiModel2}) : super(key: key);
   final Datum verifikasiModel;
+  final VerifikasiModel verifikasiModel2;
 
   @override
   State<DetailProduk> createState() => _DetailProdukState();
@@ -120,8 +121,8 @@ class _DetailProdukState extends State<DetailProduk> {
                     ),
                   ),
                 ),
-                child: Image.asset(
-                  "assets/images/wortel.png",
+                child: Image.network(
+                  "https://kangsayur.nitipaja.online/${widget.verifikasiModel.variantImg}",
                   height: 265,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -210,10 +211,10 @@ class _DetailProdukState extends State<DetailProduk> {
                         const SizedBox(height: 5,),
                         Row(
                           children: [
-                            for(int i = 0; i < widget.verifikasiModel.stok; i++)
-                              chipVarian(widget.verifikasiModel.stok.toString()),
+                            for(int i = 0; i < widget.verifikasiModel2.data.length; i++)
+                              chipVarian(widget.verifikasiModel2.data[i].variant),
                           ],
-                        )
+                        ),
                       ],
                     )
                   ],
@@ -239,9 +240,9 @@ class _DetailProdukState extends State<DetailProduk> {
   Widget chipVarian(String textVarian){
     return Container(
       margin: const EdgeInsets.only(right: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       alignment: Alignment.center,
       height: 30,
-      width: 45,
       decoration: BoxDecoration(
         border: Border.all(
           color: ColorValue.neutralColor,

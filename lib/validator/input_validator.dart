@@ -17,7 +17,7 @@ class InputValidator {
   }
 
   static String? phoneValidator(value) {
-    return value.toString().length <= 11 && value.toString().length >= 11
+    return value.toString().length <= 11 && value.toString().length >= 12
         ? 'Nomor telepon tidak valid'
         : null;
   }
