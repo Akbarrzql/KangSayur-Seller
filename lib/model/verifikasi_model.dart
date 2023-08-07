@@ -42,6 +42,8 @@ class Datum {
   final String status;
   final int stok;
   final String variant;
+  final String variantDesc;
+  final String namaKategori;
 
   Datum({
     required this.namaProduk,
@@ -52,6 +54,8 @@ class Datum {
     required this.status,
     required this.stok,
     required this.variant,
+    required this.variantDesc,
+    required this.namaKategori,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -63,6 +67,8 @@ class Datum {
     status: json["status"],
     stok: json["stok"],
     variant: json["variant"],
+    variantDesc: json["variant_desc"],
+    namaKategori: json["nama_kategori"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -74,5 +80,7 @@ class Datum {
     "status": status,
     "stok": stok,
     "variant": variant,
+    "variant_desc": variantDesc,
+    "nama_kategori": namaKategori,
   };
 }

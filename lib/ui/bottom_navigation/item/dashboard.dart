@@ -544,8 +544,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                 Stack(
                   children: [
                     Container(
+                      padding:  const EdgeInsets.all(10),
                       alignment: Alignment.center,
-                      height: 30,
                       width: 300,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
