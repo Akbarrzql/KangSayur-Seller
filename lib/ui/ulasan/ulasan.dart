@@ -6,11 +6,13 @@ import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 import 'package:kangsayur_seller/ui/ulasan/ulasan_seller.dart';
 import 'package:kangsayur_seller/ui/widget/card_kelola_ulasan.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../bloc/bloc/ulasan_seller_bloc.dart';
 import '../../bloc/event/ulasan_seller_event.dart';
 import '../../common/color_value.dart';
 import '../../repository/ulasan_seller_repository.dart';
+import '../widget/not_found_widget.dart';
 
 class UlasanPage extends StatefulWidget {
   const UlasanPage({Key? key}) : super(key: key);
@@ -89,7 +91,7 @@ class _UlasanPageState extends State<UlasanPage> {
                       return shimmerAllUlasan();
                     } else if (state is UlasanSellerPageLoaded) {
                       final ulasanSeller = state.ulasanSellerModel;
-                      return ListView.builder(
+                      return ulasanSeller.data.length == 0 ? notFound(context, "assets/json/nfreview.json", "Belum ada ulasan dari pembeli untuk produkmu") : ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: ulasanSeller.data.length,
@@ -112,9 +114,7 @@ class _UlasanPageState extends State<UlasanPage> {
                         child: Text(state.errorMessage),
                       );
                     } else {
-                      return const Center(
-                        child: Text(''),
-                      );
+                      return notFound(context, "assets/json/nfreview.json", "Belum ada ulasan dari pembeli untuk produkmu");
                     }
                   },
                 ),

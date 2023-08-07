@@ -4,6 +4,7 @@ import 'package:kangsayur_seller/bloc/event/all_ulasan_event.dart';
 import 'package:kangsayur_seller/bloc/state/all_ulasan_state.dart';
 import 'package:kangsayur_seller/repository/all_ulasan_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:kangsayur_seller/ui/widget/not_found_widget.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../bloc/bloc/all_ulasan_bloc.dart';
 import '../../common/color_value.dart';
@@ -46,67 +47,67 @@ class _ReviewUlasanPageState extends State<ReviewUlasanPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              const Row(
-                children: [
-                  Icon(Icons.star, color: Colors.amber, size: 24),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text(
-                    "5.0",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "/5.0",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xffA0A0A0)),
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          child: BlocProvider(
+            create: (context) => AllUlasanPageBloc(allUlasanPageRepository: AllUlasanRepository())..add(GetAllUlasan()),
+            child: BlocBuilder<AllUlasanPageBloc, AllUlasanPageState>(
+              builder: (context, state) {
+                if(state is AllUlasanPageLoading){
+                  return shimmerAllUlasan();
+                } else if (state is AllUlasanPageLoaded){
+                  final data = state.allUlasanSellerModel;
+                  return data.data.length == 0 ? notFound(context, "assets/json/nfreview.json", "Belum ada review dari toko kamu") : Column(
                     children: [
-                      Text(
-                        "100% pembeli merasa puas",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      const SizedBox(
+                        height: 10,
                       ),
-                      SizedBox(
-                        height: 5,
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 24),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          const Text(
+                            "5.0",
+                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          const Text(
+                            "/5.0",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xffA0A0A0)),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "100% pembeli merasa puas",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "${data.data.length.toString()} total ulasan",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
-                      Text(
-                        "30 total ulasan",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
+                      const SizedBox(
+                        height: 15,
                       ),
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              BlocProvider(
-                create: (context) => AllUlasanPageBloc(allUlasanPageRepository: AllUlasanRepository())..add(GetAllUlasan()),
-                child: BlocBuilder<AllUlasanPageBloc, AllUlasanPageState>(
-                  builder: (context, state) {
-                    if(state is AllUlasanPageLoading){
-                      return shimmerAllUlasan();
-                    } else if (state is AllUlasanPageLoaded){
-                      final data = state.allUlasanSellerModel;
-                      return ListView.builder(
+                      ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: data.data.length,
@@ -129,16 +130,16 @@ class _ReviewUlasanPageState extends State<ReviewUlasanPage> {
                             ],
                           );
                         },
-                      );
-                    }else if (state is AllUlasanPageError){
-                      return const Center(child: Text("Terdapat kesalahan pada server"));
-                    } else {
-                      return const Center(child: Text("Terdapat kesalahan pada server"));
-                    }
-                  },
-                ),
-              )
-            ],
+                      ),
+                    ],
+                  );
+                }else if (state is AllUlasanPageError){
+                  return const Center(child: Text("Terdapat kesalahan pada server"));
+                } else {
+                  return const Center(child: Text("Terdapat kesalahan pada server"));
+                }
+              },
+            ),
           ),
         ),
       ),
@@ -151,6 +152,56 @@ class _ReviewUlasanPageState extends State<ReviewUlasanPage> {
       highlightColor: Colors.grey[100]!,
       child: Column(
         children: [
+          const SizedBox(
+            height: 10,
+          ),
+          const Row(
+            children: [
+              Icon(Icons.star, color: Colors.amber, size: 24),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                "5.0",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "/5.0",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xffA0A0A0)),
+              ),
+              SizedBox(
+                width: 15,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "100% pembeli merasa puas",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "30 total ulasan",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
           Container(
             height: 100,
             width: double.infinity,

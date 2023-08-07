@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../../../bloc/bloc/selesai_bloc.dart';
 import '../../../bloc/event/selesai_event.dart';
 import '../../../bloc/state/selesai_state.dart';
+import '../../widget/not_found_widget.dart';
 
 class RiwayatPage extends StatefulWidget {
   const RiwayatPage({Key? key}) : super(key: key);
@@ -102,185 +103,163 @@ class _RiwayatPageState extends State<RiwayatPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              "https://kangsayur.nitipaja.online/${state.selesaiModel.data[index].statusDone[0].variantImg}"),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                ListView.builder(
+                  itemCount: state.selesaiModel.data[index].statusDone.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index2) {
+                    return Column(
                       children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          child: Text(
-                            state.selesaiModel.data[index].statusDone[0].namaProduk,
-                            style: textTheme.headline6!.copyWith(
-                              color: ColorValue.neutralColor,
-                              fontSize: 19,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          child: Text(
-                            state.selesaiModel.data[index].statusDone[0].notes ?? "Tidak ada catatan",
-                            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                              color: ColorValue.neutralColor,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              alignment: Alignment.center,
-                              height: 20,
+                              width: 100,
+                              height: 100,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: const Color(0xFFD7FEDF),
-                              ),
-                              child: Text(
-                                state.selesaiModel.data[index].statusDone[0].status,
-                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 10,
-                                  color: ColorValue.primaryColor,
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                      "https://kangsayur.nitipaja.online/${state.selesaiModel.data[index].statusDone[index2].variantImg}"),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 5),
-                            Container(
-                              alignment: Alignment.center,
-                              height: 20,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: const Color(0xFFD7FEDF),
-                              ),
-                              child: Text(
-                                state.selesaiModel.data[index].status,
-                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 10,
-                                  color: ColorValue.primaryColor,
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.5,
+                                  child: Text(
+                                    state.selesaiModel.data[index].statusDone[index2].namaProduk,
+                                    style: textTheme.headline6!.copyWith(
+                                      color: ColorValue.neutralColor,
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
                                 ),
+                                const SizedBox(height: 5),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.5,
+                                  child: Text(
+                                    state.selesaiModel.data[index].statusDone[index2].notes ?? "Tidak ada catatan",
+                                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      color: ColorValue.neutralColor,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                      alignment: Alignment.center,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: const Color(0xFFD7FEDF),
+                                      ),
+                                      child: Text(
+                                        state.selesaiModel.data[index].statusDone[index2].status,
+                                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 10,
+                                          color: ColorValue.primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height: 20,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: const Color(0xFFD7FEDF),
+                                      ),
+                                      child: Text(
+                                        state.selesaiModel.data[index].status,
+                                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 10,
+                                          color: ColorValue.primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Kode Transaksi",
+                              style: textTheme.subtitle1!.copyWith(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12,
+                                color: ColorValue.neutralColor,
+                              ),
+                            ),
+                            Text(
+                              state.selesaiModel.data[index].statusDone[index2].transactionCode.toString(),
+                              style: textTheme.subtitle1!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                                color: ColorValue.neutralColor,
                               ),
                             ),
                           ],
-                        )
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Tanggal Transaksi",
+                              style: textTheme.subtitle1!.copyWith(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12,
+                                color: ColorValue.neutralColor,
+                              ),
+                            ),
+                            Text(
+                              //convert date to date in string in format dd-MM-yyyy
+                              DateFormat('dd-MM-yyyy').format(
+                                DateTime.parse(
+                                  state.selesaiModel.data[index].createdAt.toString(),
+                                ),
+                              ),
+                              style: textTheme.subtitle1!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                                color: ColorValue.neutralColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
                       ],
-                    ),
-                  ],
+                    );
+                  },
                 ),
-                if (isItemExpanded)
-                  Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      ListView.builder(
-                        itemCount: state.selesaiModel.data[index].statusDone.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index2) {
-                          return Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Kode Transaksi",
-                                    style: textTheme.subtitle1!.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 12,
-                                      color: ColorValue.neutralColor,
-                                    ),
-                                  ),
-                                  Text(
-                                    state.selesaiModel.data[index].statusDone[index2].transactionCode.toString(),
-                                    style: textTheme.subtitle1!.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
-                                      color: ColorValue.neutralColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Tanggal Transaksi",
-                                    style: textTheme.subtitle1!.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 12,
-                                      color: ColorValue.neutralColor,
-                                    ),
-                                  ),
-                                  Text(
-                                    //convert date to date in string in format dd-MM-yyyy
-                                    DateFormat('dd-MM-yyyy').format(
-                                      DateTime.parse(
-                                        state.selesaiModel.data[index].createdAt.toString(),
-                                      ),
-                                    ),
-                                    style: textTheme.subtitle1!.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
-                                      color: ColorValue.neutralColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                            ],
-                          );
-                        },
-                      ),
-                    ],
-                  )
+                // if (isItemExpanded)
               ],
             ),
           ),
         );
       },
-    ) : Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            Lottie.network("https://assets1.lottiefiles.com/private_files/lf30_dmjtc2fu.json", width: 300, height: 300,),
-            Text(
-              'Belum ada pesanan yang disiapkan saat ini',
-              style: textTheme.headline6!.copyWith(
-                color: ColorValue.neutralColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
+    ) : notFound(context, "assets/json/selesai.json", "Belum terdapat pesanan yang telah selesai");
   }
 
   Widget shimmerList(){

@@ -99,15 +99,7 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
                                       shrinkWrap: true,
                                       itemCount: 5,
                                       itemBuilder: (BuildContext context, int index) {
-                                        return CardVerifikasi(
-                                          jenisVerifikasiProduk: 'Bahan Pokok',
-                                          tanggalVerifikasiProduk: 'Tidak tertera Tanggal',
-                                          namaVerifikasiProduk: 'Nama Produk',
-                                          descVerifikasiProduk: 'Deskripsi Produk',
-                                          gambarVerifikasiProduk: 'https://images.unsplash.com/photo-1545830790-68595959c491?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGZhcm1lcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',//'assets/images/wortel.png',
-                                          statusVerifikasiProduk: 'Diproses',
-                                          onPressed: (){},
-                                        );
+                                        return shimmer();
                                       },
                                     )
                                   ],
@@ -146,10 +138,10 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
                                 itemCount: state.verifikasiModel!.data.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return CardVerifikasi(
-                                    jenisVerifikasiProduk: 'Bahan Pokok',
+                                    jenisVerifikasiProduk: state.verifikasiModel!.data[index].namaKategori.toString(),
                                     tanggalVerifikasiProduk: state.verifikasiModel!.data[index].tanggalVerivikasi == null ? 'Tidak tertera Tanggal' : state.verifikasiModel!.data[index].tanggalVerivikasi.toString(),
                                     namaVerifikasiProduk: state.verifikasiModel!.data[index].namaProduk.toString(),
-                                    descVerifikasiProduk: '',
+                                    descVerifikasiProduk: state.verifikasiModel!.data[index].variantDesc.toString(),
                                     gambarVerifikasiProduk: "https://kangsayur.nitipaja.online${state.verifikasiModel!.data[index].variantImg.toString()}",
                                     statusVerifikasiProduk: state.verifikasiModel!.data[index].status.toString(),
                                     onPressed: (){
@@ -292,6 +284,136 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
             child: Text(value)
         );
       }).toList(),
+    );
+  }
+
+  Widget shimmer(){
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      width: double.infinity,
+      height: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(
+          color: ColorValue.hintColor,
+          width: 0.5,
+        ),
+      ),
+      child: Container(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                  child: Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.topCenter,
+                      ),
+                      const SizedBox(width: 10,),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 20,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: const Color(0xFFFDF2B2)
+                            ),
+                          ),
+                          const SizedBox(height: 5,),
+                          Container(
+                            width: 100,
+                            height: 20,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: const Color(0xFFFDF2B2)
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    onPressed: (){},
+                    icon: const Icon(
+                      Icons.more_vert,
+                      color: ColorValue.neutralColor,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const Divider(
+              color: ColorValue.hintColor,
+              thickness: 0.5,
+            ),
+            const SizedBox(height: 10,),
+            Container(
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: const Color(0xFFFDF2B2)
+                    ),
+                  ),
+                  const SizedBox(width: 10,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 200,
+                      ),
+                      const SizedBox(height: 5,),
+                      Container(
+                        width: 200,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 5,),
+            Container(
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 100,
+                    height: 20,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: const Color(0xFFFDF2B2)
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    height: 20,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: const Color(0xFFFDF2B2)
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

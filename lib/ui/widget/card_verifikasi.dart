@@ -37,15 +37,6 @@ class CardVerifikasi extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
                   child: Row(
                     children: [
-                      Container(
-                        alignment: Alignment.topCenter,
-                        child: SvgPicture.asset(
-                          'assets/svg/bahan_pokok.svg',
-                          width: 35,
-                          height: 35,
-                        ),
-                      ),
-                      const SizedBox(width: 10,),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
