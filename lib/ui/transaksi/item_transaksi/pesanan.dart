@@ -249,8 +249,8 @@ class _PesananPageState extends State<PesananPage> {
                   Column(
                     children: [
                       main_button("Konfirmasi Pesanan", context, onPressed: () {
-                        _pesananPageBloc.add(GetKonfirmasi(state.pesananModel.data[index].transactionCode.toString()));
                         setState(() {
+                          _pesananPageBloc.add(GetKonfirmasi(state.pesananModel.data[index].transactionCode.toString()));
                           _pesananPageBloc.add(GetPesanan());
                         });
                       }),

@@ -272,8 +272,8 @@ class _DisiapkanPageState extends State<DisiapkanPage> {
                     children: [
                       const SizedBox(height: 10),
                       main_button("Pesanan Telah Siap", context, onPressed: () {
-                        _disiapkanPageBloc.add(GetSiapAntar(state.disiapkanModel.data[index].transactionCode.toString()));
                         setState(() {
+                          _disiapkanPageBloc.add(GetSiapAntar(state.disiapkanModel.data[index].transactionCode.toString()));
                           _disiapkanPageBloc.add(GetDisiapkan());
                         });
                       }),
