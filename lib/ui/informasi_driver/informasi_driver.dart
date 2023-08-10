@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../common/color_value.dart';
+import '../../model/list_all_driver_model.dart';
 import 'edit_informasi_driver.dart';
 
 class DetailInformasiDriverPage extends StatefulWidget {
-  const DetailInformasiDriverPage({Key? key}) : super(key: key);
+  const DetailInformasiDriverPage({Key? key, required this.data}) : super(key: key);
+  final Produk data;
 
   @override
   State<DetailInformasiDriverPage> createState() => _DetailInformasiDriverPageState();
@@ -70,13 +72,13 @@ class _DetailInformasiDriverPageState extends State<DetailInformasiDriverPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _listData("Nama Driver", "Mr Budiman Wididaw"),
+                      _listData("Nama Driver", widget.data.namaDriver),
                       const SizedBox(height: 20,),
-                      _listData("Nomor Telepon", "085123456789"),
+                      _listData("Nomor Telepon", "+62${widget.data.nomorTelfon.toString()}"),
                       const SizedBox(height: 20,),
-                      _listData("Kendaraan", "Supra XYZ"),
+                      _listData("Kendaraan", widget.data.namaKendaraan),
                       const SizedBox(height: 20,),
-                      _listData("Plat Nomor", "B 1234 ABC"),
+                      _listData("Plat Nomor", widget.data.nomorPolisi),
                     ],
                   ),
                 ),
@@ -84,7 +86,7 @@ class _DetailInformasiDriverPageState extends State<DetailInformasiDriverPage> {
             ),
             CircleAvatar(
               radius: 50,
-              backgroundImage: const AssetImage('assets/images/ava_seller.png'),
+              backgroundImage: NetworkImage('https://kangsayur.nitipaja.online${widget.data.fotoDriver.toString()}'),
             ),
           ],
         ),
@@ -114,7 +116,7 @@ class _DetailInformasiDriverPageState extends State<DetailInformasiDriverPage> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Text(
                 name,
                 style: TextStyle(

@@ -36,10 +36,7 @@ class _ResetPasswordDriverState extends State<ResetPasswordDriver> {
         actions: [
           InkWell(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const DetailDriver()));
+              Navigator.pop(context);
             },
             child: Container(
               alignment: Alignment.center,

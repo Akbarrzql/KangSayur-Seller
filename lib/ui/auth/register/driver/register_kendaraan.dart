@@ -177,7 +177,7 @@ class _RegisterKendaraanState extends State<RegisterKendaraan> {
                         password: widget.password.text,
                         // konfirmasiPassword: widget.konfirmasiPassword.text,
                         jenisKendaraan: _jenisKendaraanController.dropDownValue!.name,
-                        // namaKendaraan: _namaKendaraanController.text,
+                        namaKendaraan: _namaKendaraanController.text,
                         platNomor: _nomorPolisiController.text,
                         noRangka: _nomorRangkaController.text,
                         photoDriver: fotoDriver,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kangsayur_seller/bloc/bloc/device_token_bloc.dart';
 import 'package:kangsayur_seller/bloc/bloc/login_bloc.dart';
 import 'package:kangsayur_seller/bloc/state/login_state.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
@@ -7,7 +8,10 @@ import 'package:kangsayur_seller/model/login_model.dart';
 import 'package:kangsayur_seller/ui/auth/login/otp.dart';
 import 'package:kangsayur_seller/ui/widget/custom_textfield.dart';
 import 'package:kangsayur_seller/validator/input_validator.dart';
+import '../../../bloc/event/device_token_event.dart';
 import '../../../bloc/event/login_event.dart';
+import '../../../firebase/firebase_messaging.dart';
+import '../../../repository/device_token_repository.dart';
 import '../../../repository/login_repository.dart';
 import '../../bottom_navigation/bottom_navigation.dart';
 import '../../widget/dialog_alret.dart';
@@ -106,14 +110,14 @@ class _login_screenState extends State<login_screen> {
             ),
             const SizedBox(
               height: 20,
-            ),
-            CustomTextFormField(
+            ),CustomTextFormField(
               controller: _passwordController,
               label: 'Password',
               isPassword: true,
               textInputType: TextInputType.visiblePassword,
               validator: (value) => InputValidator.passwordValidator(value),
             ),
+
             const SizedBox(
               height: 2,
             ),
@@ -133,12 +137,24 @@ class _login_screenState extends State<login_screen> {
             const Spacer(),
             Container(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async{
                   if(_formKey.currentState!.validate()){
-                    BlocProvider.of<LoginPageBloc>(context).add(LoginButtonPressed(
-                      email: _emailController.text,
-                      password: _passwordController.text,
-                    ));
+                    String? deviceToken = await FirebaseNotificationManager.getToken();
+                    print('Device Token: $deviceToken');
+
+                    if(deviceToken != null){
+                      BlocProvider(
+                        create: (context) => DeviceTokenPageBloc(deviceTokenPageRepository: DeviceTokenRepository())..add(SendDeviceToken(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                          deviceToken: deviceToken,
+                        )),
+                      );
+                      BlocProvider.of<LoginPageBloc>(context).add(LoginButtonPressed(
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                      ));
+                    }
                   }else{
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

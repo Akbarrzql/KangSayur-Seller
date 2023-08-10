@@ -48,11 +48,8 @@ class _EditInformasiDriverState extends State<EditInformasiDriver> {
         ),
         actions: [
           InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const DetailInformasiDriverPage()));
+            onTap: (){
+              Navigator.pop(context);
             },
             child: Container(
               alignment: Alignment.center,

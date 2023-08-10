@@ -12,7 +12,7 @@ class RegisterDriverButtonPressed extends RegisterDriverEvent {
   final String password;
 // final String konfirmasiPassword,
   final String jenisKendaraan;
-// final String namaKendaraan,
+  final String namaKendaraan;
   final String platNomor;
   final String noRangka;
   final File? photoDriver;
@@ -28,7 +28,7 @@ class RegisterDriverButtonPressed extends RegisterDriverEvent {
     required this.password,
     // required this.konfirmasiPassword,
     required this.jenisKendaraan,
-    // required this.namaKendaraan,
+    required this.namaKendaraan,
     required this.platNomor,
     required this.noRangka,
     required this.photoDriver,

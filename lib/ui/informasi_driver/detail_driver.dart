@@ -4,9 +4,11 @@ import 'package:kangsayur_seller/ui/auth/register/driver/reset_pasword_driver.da
 import 'package:kangsayur_seller/ui/informasi_driver/informasi_driver.dart';
 
 import '../../common/color_value.dart';
+import '../../model/list_all_driver_model.dart';
 
 class DetailDriver extends StatefulWidget {
-  const DetailDriver({Key? key}) : super(key: key);
+  const DetailDriver({Key? key, required this.data}) : super(key: key);
+  final Produk data;
 
   @override
   State<DetailDriver> createState() => _DetailDriverState();
@@ -20,6 +22,16 @@ class _DetailDriverState extends State<DetailDriver> {
         .textTheme;
     return Scaffold(
       backgroundColor: const Color(0xFF0E4F55),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,16 +41,16 @@ class _DetailDriverState extends State<DetailDriver> {
               padding: const EdgeInsets.fromLTRB(28, 50, 28, 0),
               child: Column(
                 children: [
-                  const Center(
+                  Center(
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundImage: AssetImage(
-                          'assets/images/ava_seller.png'),
+                      backgroundImage: NetworkImage(
+                          'https://kangsayur.nitipaja.online${widget.data.fotoDriver.toString()}'),
                     ),
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Mr Budiman Wididaw',
+                    widget.data.namaDriver,
                     style: textTheme.headline6!.copyWith(
                       color: Colors.white,
                       fontSize: 20,
@@ -47,7 +59,7 @@ class _DetailDriverState extends State<DetailDriver> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    '085123456789',
+                    "+62${widget.data.nomorTelfon.toString()}",
                     style: textTheme.headline6!.copyWith(
                       color: Colors.white,
                       fontSize: 16,
@@ -83,7 +95,9 @@ class _DetailDriverState extends State<DetailDriver> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const DetailInformasiDriverPage(),
+                            builder: (context) => DetailInformasiDriverPage(
+                              data: widget.data,
+                            ),
                           ),
                         );
                       },
@@ -107,7 +121,7 @@ class _DetailDriverState extends State<DetailDriver> {
                     ),
                     const SizedBox(height: 20),
                     _listMenu(
-                      "Keluar",
+                      "Hapus Akun Driver",
                       const Icon(
                         Icons.logout,
                         color: Colors.red,
