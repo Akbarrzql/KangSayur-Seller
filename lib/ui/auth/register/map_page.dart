@@ -19,6 +19,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import '../../../bloc/event/register_event.dart';
 import '../../../common/color_value.dart';
+import '../../../firebase/firebase_messaging.dart';
 import '../../../repository/register_repository.dart';
 import '../../widget/main_button.dart';
 import 'package:image/image.dart' as img;
@@ -287,8 +288,11 @@ class _MapScreenState extends State<MapScreen> {
               ),
               const SizedBox(height: 15),
               main_button("Daftar", context, onPressed: () async {
+                String? deviceToken = await FirebaseNotificationManager.getToken();
+                print('Device Token: $deviceToken');
                 File? selectedImage = await compressImage(widget.image!);
 
+                if(deviceToken != null){
                   BlocProvider.of<RegisterPageBloc>(context).add(RegisterButtonPressed(
                     email: convertToText(widget.emailPemilik),
                     password: convertToText(widget.sandi),
@@ -304,6 +308,7 @@ class _MapScreenState extends State<MapScreen> {
                     close: convertToTimeString(widget.jamTutup).toString(),
                     photo: selectedImage,
                   ));
+                }
               }),
             ],
           ),

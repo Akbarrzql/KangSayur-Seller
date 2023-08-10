@@ -19,7 +19,7 @@ class RegisterDriverPageBloc extends Bloc<RegisterDriverEvent, RegisterDriverSta
           event.password,
           // event.konfirmasiPassword,
           event.jenisKendaraan,
-          // event.namaKendaraan,
+          event.namaKendaraan,
           event.platNomor,
           event.noRangka,
           event.photoDriver,

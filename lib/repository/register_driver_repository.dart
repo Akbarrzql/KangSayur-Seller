@@ -12,7 +12,7 @@ abstract class RegisterDriverPageRepository{
       String password,
       // String konfirmasiPassword,
       String jenisKendaraan,
-      // String namaKendaraan,
+      String namaKendaraan,
       String platNomor,
       String noRangka,
       File?  photoDriver,
@@ -24,7 +24,7 @@ abstract class RegisterDriverPageRepository{
 
 class RegisterDriverRepository extends RegisterDriverPageRepository{
   @override
-  Future<ResgisterDriverModel> registerDriver(String namaLengkap, String email, String noHp, String noHpDarurat, String password, String jenisKendaraan, String platNomor, String noRangka, File? photoDriver, File? photoKTP, File? photoSTNK, File? photoKendaraan) async{
+  Future<ResgisterDriverModel> registerDriver(String namaLengkap, String email, String noHp, String noHpDarurat, String password, String jenisKendaraan, String namaKendaraan,String platNomor, String noRangka, File? photoDriver, File? photoKTP, File? photoSTNK, File? photoKendaraan) async{
 
     List<int> imageBytes = photoDriver!.readAsBytesSync();
     var multipartFile = http.MultipartFile.fromBytes(
@@ -68,7 +68,7 @@ class RegisterDriverRepository extends RegisterDriverPageRepository{
     request.fields['password'] = password;
     // request.fields['password_confirmation'] = konfirmasiPassword;
     request.fields['jenis_kendaraan'] = jenisKendaraan;
-    // request.fields['nama_kendaraan'] = namaKendaraan;
+    request.fields['nama_kendaraan'] = namaKendaraan;
     request.fields['nomor_polisi'] = platNomor;
     request.fields['nomor_rangka'] = noRangka;
     request.files.add(multipartFile);

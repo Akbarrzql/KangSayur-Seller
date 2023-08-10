@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -5,13 +7,31 @@ import 'package:kangsayur_seller/ui/auth/register/driver/reset_pasword_driver.da
 import 'package:kangsayur_seller/ui/splash_screen/splash_screen.dart';
 import 'package:kangsayur_seller/ui/transaksi/transaksi.dart';
 
+import 'firebase/firebase_messaging.dart';
+import 'firebase/firebase_notification.dart';
+import 'firebase/firebase_options.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async {
-  await initializeDateFormatting();
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await PushNotificationConfig().requestPermission();
+  await PushNotificationConfig().androidNotificationChanel();
+  await initializeDateFormatting();
+  await FirebaseNotificationManager.initializeFirebase();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  // FirebaseNotificationManager.configureForegroundMessaging();
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
 }
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "861824910619",
+    "project_id": "kangsayur-8136c",
+    "storage_bucket": "kangsayur-8136c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861824910619:android:b53e6dd17d5941b565ffbe",
+        "android_client_info": {
+          "package_name": "com.example.kangsayur_seller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "861824910619-f8eo7oek61hiecp4f2phm7j48cju9juu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH059NmwuJxjrUFHY9rFy8mPgikd0l06M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "861824910619-f8eo7oek61hiecp4f2phm7j48cju9juu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
