@@ -39,6 +39,7 @@ class Produk {
   final String fotoDriver;
   final String namaKendaraan;
   final String nomorPolisi;
+  final int driverId;
 
   Produk({
     required this.namaDriver,
@@ -46,6 +47,7 @@ class Produk {
     required this.fotoDriver,
     required this.namaKendaraan,
     required this.nomorPolisi,
+    required this.driverId,
   });
 
   factory Produk.fromJson(Map<String, dynamic> json) => Produk(
@@ -54,6 +56,7 @@ class Produk {
     fotoDriver: json["foto_driver"],
     namaKendaraan: json["nama_kendaraan"],
     nomorPolisi: json["nomor_polisi"],
+    driverId: json["driver_id"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -62,5 +65,6 @@ class Produk {
     "foto_driver": fotoDriver,
     "nama_kendaraan": namaKendaraan,
     "nomor_polisi": nomorPolisi,
+    "driver_id": driverId,
   };
 }

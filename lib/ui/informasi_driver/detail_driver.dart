@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kangsayur_seller/bloc/bloc/delete_driver_bloc.dart';
+import 'package:kangsayur_seller/bloc/state/delete_driver_state.dart';
+import 'package:kangsayur_seller/repository/delete_driver_repository.dart';
 import 'package:kangsayur_seller/ui/auth/register/driver/reset_pasword_driver.dart';
 import 'package:kangsayur_seller/ui/informasi_driver/informasi_driver.dart';
 
+import '../../bloc/event/delete_driver_event.dart';
 import '../../common/color_value.dart';
 import '../../model/list_all_driver_model.dart';
+import 'list_driver.dart';
 
 class DetailDriver extends StatefulWidget {
   const DetailDriver({Key? key, required this.data}) : super(key: key);
@@ -120,14 +126,40 @@ class _DetailDriverState extends State<DetailDriver> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    _listMenu(
-                      "Hapus Akun Driver",
-                      const Icon(
-                        Icons.logout,
-                        color: Colors.red,
-                      ),
-                      Colors.red,
-                      onTap: () {},
+                    BlocProvider(
+                      create: (context) => DeletDriverPageBloc(deleteDriverPageRepository: DeleteDriverRepository())..add(DeleteDriver(widget.data.driverId.toString())),
+                      child: BlocConsumer<DeletDriverPageBloc, DeleteDriverState>(
+                        listener: (context, state) {},
+                        builder: (context, state) {
+                          if (state is DeleteDriverInitial){
+                            return _listMenu(
+                              "Hapus Akun Driver",
+                              const Icon(
+                                Icons.logout,
+                                color: Colors.red,
+                              ),
+                              Colors.red,
+                              onTap: () {
+                                BlocProvider.of<DeletDriverPageBloc>(context).add(DeleteDriver(widget.data.driverId.toString()));
+                              },
+                            );
+                          } else if (state is DeleteDriverLoading){
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }else if (state is DeleteDriverLoaded){
+                            return const ListDriver();
+                          }else if (state is DeleteDriverError) {
+                            return const Center(
+                              child: Text("Terjadi kesalahan"),
+                            );
+                          }else{
+                            return const Center(
+                              child: Text("Terjadi kesalahan"),
+                            );
+                          }
+                        },
+                      )
                     )
                   ],
                 ),
