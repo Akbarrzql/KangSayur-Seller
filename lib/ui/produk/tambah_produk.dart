@@ -196,7 +196,8 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
                 return GestureDetector(
                   onTap: (){
                     setState(() {
-                      _listKategori[index].isSelected = !_listKategori[index].isSelected;
+                      _listKategori.forEach((element) => element.isSelected = false);
+                      _listKategori[index].isSelected = true;
                     });
                   },
                   child: Container(
@@ -385,13 +386,13 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
               if(_isKetentuanSelected){
                 BlocProvider.of<ProdukAddPageBloc>(context).add(AddProdukButtonPressed(
                   namaProduk: _namaProdukController.text,
-                  kategoriId: _listKategori.indexWhere((element) => element.isSelected),
+                  kategoriId: _listKategori.indexWhere((element) => element.isSelected) + 1,
                   variant: _varianList,
                 ));
 
                 Map<String, dynamic> jsonData = {
                   'nama_produk': _namaProdukController.text,
-                  'kategori_id': _listKategori.indexWhere((element) => element.isSelected),
+                  'kategori_id': _listKategori.indexWhere((element) => element.isSelected) + 1,
                 };
 
                 for (int i = 0; i < _varianList.length; i++) {
@@ -402,7 +403,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
                   jsonData['variant[$i][images]'] = _varianList[i]['images'] ?? '';
                 }
 
-
+                print(_listKategori.indexWhere((element) => element.isSelected) + 1);
                 print(jsonEncode(jsonData));
 
               }

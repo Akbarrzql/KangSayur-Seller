@@ -98,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             children: [
                               Row(
                                 children: [
-                                  CircleAvatar(
+                                  const CircleAvatar(
                                     radius: 30,
                                     backgroundColor: Colors.white,
                                   ),
@@ -136,7 +136,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       else if (state is ProfilePageLoaded){
                         return GestureDetector(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const OptionProfile()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => OptionProfile(
+                              data: state.userModel.data,
+                            )));
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -175,7 +177,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const OptionProfile()),
+                                    MaterialPageRoute(builder: (context) => OptionProfile(
+                                      data: state.userModel.data,
+                                    )),
                                   );
                                 },
                                 icon: const Icon(

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kangsayur_seller/ui/auth/password/ganti_password.dart';
 import 'package:kangsayur_seller/ui/profile/kustomisasi_profile.dart';
-
+import '../../model/user_model.dart';
 import '../../common/color_value.dart';
 
 class OptionProfile extends StatefulWidget {
-  const OptionProfile({Key? key}) : super(key: key);
+  const OptionProfile({Key? key, required this.data}) : super(key: key);
+  final Data data;
 
   @override
   State<OptionProfile> createState() => _OptionProfileState();
@@ -44,7 +45,9 @@ class _OptionProfileState extends State<OptionProfile> {
             children: [
               InkWell(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const KustomisasiProfilePage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => KustomisasiProfilePage(
+                    data: widget.data,
+                  )));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,7 +62,9 @@ class _OptionProfileState extends State<OptionProfile> {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const KustomisasiProfilePage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => KustomisasiProfilePage(
+                          data: widget.data,
+                        )));
                       },
                       icon: const Icon(
                         Icons.arrow_forward_ios,

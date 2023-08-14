@@ -92,8 +92,12 @@ class StatusPrepared {
   final int variantId;
   final int storeId;
   final int userId;
-  final String? notes;
+  final String notes;
+  final int alamatId;
+  final String statusDiulas;
   final String status;
+  final dynamic deliveredBy;
+  final int discount;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String namaProduk;
@@ -112,7 +116,11 @@ class StatusPrepared {
     required this.storeId,
     required this.userId,
     required this.notes,
+    required this.alamatId,
+    required this.statusDiulas,
     required this.status,
+    required this.deliveredBy,
+    required this.discount,
     required this.createdAt,
     required this.updatedAt,
     required this.namaProduk,
@@ -131,8 +139,12 @@ class StatusPrepared {
     variantId: json["variant_id"],
     storeId: json["store_id"],
     userId: json["user_id"],
-    notes: json["notes"] ?? '',
+    notes: json["notes"],
+    alamatId: json["alamat_id"],
+    statusDiulas: json["status_diulas"],
     status: json["status"],
+    deliveredBy: json["delivered_by"],
+    discount: json["discount"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
     namaProduk: json["nama_produk"],
@@ -152,12 +164,15 @@ class StatusPrepared {
     "store_id": storeId,
     "user_id": userId,
     "notes": notes,
+    "alamat_id": alamatId,
+    "status_diulas": statusDiulas,
     "status": status,
+    "delivered_by": deliveredBy,
+    "discount": discount,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
     "nama_produk": namaProduk,
     "variant_img": variantImg,
-    "variant": variant,
     "variant": variant,
     "variant_desc": variantDesc,
     "stok": stok,
