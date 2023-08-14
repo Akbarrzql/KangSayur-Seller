@@ -10,9 +10,9 @@ UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 String userModelToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel {
-  int status;
-  String message;
-  Data data;
+  final int status;
+  final String message;
+  final Data data;
 
   UserModel({
     required this.status,
@@ -34,37 +34,53 @@ class UserModel {
 }
 
 class Data {
-  int id;
-  String namaToko;
-  String? imgProfile;
-  String name;
-  String email;
-  dynamic phoneNumber;
+  final int id;
+  final String namaToko;
+  final String imgProfile;
+  final String alamat;
+  final String open;
+  final String close;
+  final String name;
+  final String email;
+  final int phoneNumber;
+  final String address;
 
   Data({
     required this.id,
     required this.namaToko,
     required this.imgProfile,
+    required this.alamat,
+    required this.open,
+    required this.close,
     required this.name,
     required this.email,
     required this.phoneNumber,
+    required this.address,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     id: json["id"],
     namaToko: json["nama_toko"],
     imgProfile: json["img_profile"],
+    alamat: json["alamat"],
+    open: json["open"],
+    close: json["close"],
     name: json["name"],
     email: json["email"],
     phoneNumber: json["phone_number"],
+    address: json["address"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "nama_toko": namaToko,
     "img_profile": imgProfile,
+    "alamat": alamat,
+    "open": open,
+    "close": close,
     "name": name,
     "email": email,
     "phone_number": phoneNumber,
+    "address": address,
   };
 }

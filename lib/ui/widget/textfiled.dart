@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../common/color_value.dart';
 
-Widget textfield(BuildContext context, String hintText, TextEditingController _namaController, TextInputType) {
+Widget textfield(BuildContext context, String hintText, TextEditingController _namaController, TextInputType,) {
    return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(5),

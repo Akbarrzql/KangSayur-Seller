@@ -503,7 +503,7 @@ class _IklanPageState extends State<IklanPage> {
               BlocProvider.of<IklanBloc>(context).add(
                   PostIklan(
                     imgPamflet: selectedImage,
-                    kategoriId: widget.selectedCategories.indexOf(true) + 1,
+                    kategoriId: widget.selectedCategories.indexWhere((element) => element == true) + 1,
                   ));
             }) : main_button('Iklankan', context, onPressed: () {}),
           ],
