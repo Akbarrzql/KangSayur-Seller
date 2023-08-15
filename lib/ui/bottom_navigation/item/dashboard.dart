@@ -905,7 +905,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                              const PromoPage(
+                                               const PromoPage(
                                                 selectedCategories: [],
                                               )));
                                     },
