@@ -3,6 +3,7 @@ import 'package:kangsayur_seller/ui/auth/password/ganti_password.dart';
 import 'package:kangsayur_seller/ui/profile/kustomisasi_profile.dart';
 import '../../model/user_model.dart';
 import '../../common/color_value.dart';
+import '../auth/password/send_email.dart';
 
 class OptionProfile extends StatefulWidget {
   const OptionProfile({Key? key, required this.data}) : super(key: key);
@@ -78,7 +79,7 @@ class _OptionProfileState extends State<OptionProfile> {
               const SizedBox(height: 5),
               InkWell(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const GantiPasswordPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SendEmailPage()));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,7 +94,7 @@ class _OptionProfileState extends State<OptionProfile> {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const GantiPasswordPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SendEmailPage()));
                       },
                       icon: const Icon(
                         Icons.arrow_forward_ios,

@@ -110,14 +110,14 @@ class _login_screenState extends State<login_screen> {
             ),
             const SizedBox(
               height: 20,
-            ),CustomTextFormField(
+            ),
+            CustomTextFormField(
               controller: _passwordController,
               label: 'Password',
               isPassword: true,
               textInputType: TextInputType.visiblePassword,
               validator: (value) => InputValidator.passwordValidator(value),
             ),
-
             const SizedBox(
               height: 2,
             ),
