@@ -10,9 +10,9 @@ ProdukModel produkModelFromJson(String str) => ProdukModel.fromJson(json.decode(
 String produkModelToJson(ProdukModel data) => json.encode(data.toJson());
 
 class ProdukModel {
-  String statusCode;
-  String message;
-  List<Datum> data;
+  final String statusCode;
+  final String message;
+  final List<Datum> data;
 
   ProdukModel({
     required this.statusCode,
@@ -34,13 +34,15 @@ class ProdukModel {
 }
 
 class Datum {
-  String namaProduk;
-  int produkId;
-  dynamic variantImg;
-  int hargaVariant;
-  DateTime tanggalVerivikasi;
-  String status;
-  int stok;
+  final String namaProduk;
+  final int produkId;
+  final String variantImg;
+  final int hargaVariant;
+  final DateTime tanggalVerivikasi;
+  final String status;
+  final int stok;
+  final List<Variant> variant;
+  final int id;
 
   Datum({
     required this.namaProduk,
@@ -50,6 +52,8 @@ class Datum {
     required this.tanggalVerivikasi,
     required this.status,
     required this.stok,
+    required this.variant,
+    required this.id,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -60,6 +64,8 @@ class Datum {
     tanggalVerivikasi: DateTime.parse(json["tanggal_verivikasi"]),
     status: json["status"],
     stok: json["stok"],
+    variant: List<Variant>.from(json["variant"].map((x) => Variant.fromJson(x))),
+    id: json["id"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -70,5 +76,55 @@ class Datum {
     "tanggal_verivikasi": tanggalVerivikasi.toIso8601String(),
     "status": status,
     "stok": stok,
+    "variant": List<dynamic>.from(variant.map((x) => x.toJson())),
+    "id": id,
+  };
+}
+
+class Variant {
+  final int id;
+  final int productId;
+  final String variantImg;
+  final String variant;
+  final String variantDesc;
+  final int stok;
+  final int hargaVariant;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  Variant({
+    required this.id,
+    required this.productId,
+    required this.variantImg,
+    required this.variant,
+    required this.variantDesc,
+    required this.stok,
+    required this.hargaVariant,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory Variant.fromJson(Map<String, dynamic> json) => Variant(
+    id: json["id"],
+    productId: json["product_id"],
+    variantImg: json["variant_img"],
+    variant: json["variant"],
+    variantDesc: json["variant_desc"],
+    stok: json["stok"],
+    hargaVariant: json["harga_variant"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "product_id": productId,
+    "variant_img": variantImg,
+    "variant": variant,
+    "variant_desc": variantDesc,
+    "stok": stok,
+    "harga_variant": hargaVariant,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
   };
 }

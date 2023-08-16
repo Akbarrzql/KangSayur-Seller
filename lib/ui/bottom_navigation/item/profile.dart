@@ -153,12 +153,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        state.userModel!.data.namaToko,
-                                        style: Theme.of(context).textTheme.headline6!.copyWith(
-                                          color: ColorValue.neutralColor,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width * 0.5,
+                                        child: Text(
+                                          state.userModel!.data.namaToko,
+                                          style: Theme.of(context).textTheme.headline6!.copyWith(
+                                            color: ColorValue.neutralColor,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ),
                                       Text(
@@ -216,7 +219,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 24,),
               Center(
                 child: Container(
-                  height: 330,
+                  height: 250,
                   width: 315,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
@@ -256,13 +259,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                 KategoriProfile("Promo", "assets/svg/promo_profile.svg", 32, 32,  onTap: (){
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoPage(selectedCategories: [])));
                                 }),
-                                KategoriProfile("Toko", "assets/svg/store.svg", 32, 32, ),
-                              ],
-                            ),
-                            const SizedBox(height: 40,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
                                 KategoriProfile("Driver", "assets/svg/shipment.svg", 32, 32,  onTap: () async {
                                   bool hasRegistered = await hasRegisteredBefore();
                                   if (hasRegistered) {
@@ -281,6 +277,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     );
                                   }
                                 }),
+                                // KategoriProfile("Toko", "assets/svg/store.svg", 32, 32, ),
                               ],
                             ),
                           ],

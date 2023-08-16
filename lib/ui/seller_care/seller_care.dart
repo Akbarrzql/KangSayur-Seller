@@ -129,7 +129,7 @@ class _SellerCarePageState extends State<SellerCarePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: 193,
+                          width: 190,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

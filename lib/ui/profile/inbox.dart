@@ -5,6 +5,7 @@ import 'package:kangsayur_seller/bloc/event/inbox_event.dart';
 import 'package:kangsayur_seller/bloc/state/inbox_state.dart';
 import 'package:kangsayur_seller/repository/inbox_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../common/color_value.dart';
 
 class InboxPage extends StatefulWidget {
@@ -44,7 +45,96 @@ class _InboxPageState extends State<InboxPage> {
         child: BlocBuilder<InboxPageBloc, InboxState>(
           builder: (context, state) {
             if(state is InboxLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: SafeArea(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ListView.builder(
+                          itemCount: 5,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 100,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 100,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Container(
+                                            width: 100,
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Divider(
+                                  thickness: 1,
+                                  color: Colors.white.withOpacity(0.2),
+                                ),
+                              ],
+                            );
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
             }else if (state is InboxLoaded){
               final data = state.inboxModel;
               return SafeArea(

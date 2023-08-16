@@ -52,8 +52,12 @@ void _handleDeepLink(PendingDynamicLinkData? data) {
   final Uri? uri = data?.link;
   print('uri: $uri');
   if (uri != null && uri.path == '/') {
-    runApp(const MaterialApp(
-      home: GantiPasswordPage(),
+    runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: const GantiPasswordPage(),
     ));
   } else {
     runApp(const MyApp());
