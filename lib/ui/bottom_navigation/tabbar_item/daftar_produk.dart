@@ -172,23 +172,28 @@ class _DaftarProdukPageState extends State<DaftarProdukPage> {
                               )
                             ],
                           ),
-                        ) : GridView.builder(
-                          padding: const EdgeInsets.all(24),
-                          itemCount: filteredProdukModel.length,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 0.7,
-                            mainAxisSpacing: 10,
-                          ),
-                          itemBuilder: (context, index) {
-                            return CardProduk(
-                              hargaProduk: formatRupiah(filteredProdukModel[index].hargaVariant.toString()),
-                              imageProduk: "https://kangsayur.nitipaja.online${filteredProdukModel[index].variantImg}",
-                              namaProduk: filteredProdukModel[index].namaProduk,
-                              penjualProduk: filteredProdukModel[index].status,
-                              isSelected: index == selectedProdukIndex,
-                            );
+                        ) : RefreshIndicator(
+                          onRefresh: () async {
+                            context.read<ProdukPageBloc>().add(GetProduk());
                           },
+                          child: GridView.builder(
+                            padding: const EdgeInsets.all(24),
+                            itemCount: filteredProdukModel.length,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.7,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemBuilder: (context, index) {
+                              return CardProduk(
+                                hargaProduk: formatRupiah(filteredProdukModel[index].hargaVariant.toString()),
+                                imageProduk: "https://kangsayur.nitipaja.online${filteredProdukModel[index].variantImg}",
+                                namaProduk: filteredProdukModel[index].namaProduk,
+                                penjualProduk: filteredProdukModel[index].status,
+                                isSelected: index == selectedProdukIndex,
+                              );
+                            },
+                          ),
                         )
                     ),
                   ],
