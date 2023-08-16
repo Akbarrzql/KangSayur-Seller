@@ -546,7 +546,6 @@ class _DahsboardPageState extends State<DahsboardPage> {
                     Container(
                       padding:  const EdgeInsets.all(10),
                       alignment: Alignment.center,
-                      width: 300,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         color: const Color(0xFFE5E5E5),
@@ -565,13 +564,14 @@ class _DahsboardPageState extends State<DahsboardPage> {
                   height: 10,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Stack(
                       children: [
                         Container(
                           alignment: Alignment.center,
                           height: 30,
-                          width: 140,
+                          width: MediaQuery.of(context).size.width / 2 - 30,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: const Color(0xFFE5E5E5),
@@ -629,7 +629,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                         Container(
                           alignment: Alignment.center,
                           height: 30,
-                          width: 150,
+                          width: MediaQuery.of(context).size.width / 2 - 30,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: const Color(0xFFE5E5E5),
@@ -675,7 +675,6 @@ class _DahsboardPageState extends State<DahsboardPage> {
                           highlightColor: Colors.grey[100]!,
                           child: Container(
                             height: 200,
-                            width: 300,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
                               color: Colors.white,

@@ -155,44 +155,54 @@ class _ReviewUlasanPageState extends State<ReviewUlasanPage> {
           const SizedBox(
             height: 10,
           ),
-          const Row(
+           Row(
             children: [
-              Icon(Icons.star, color: Colors.amber, size: 24),
-              SizedBox(
+              const Icon(Icons.star, color: Colors.amber, size: 24),
+              const SizedBox(
                 width: 5,
               ),
-              Text(
-                "5.0",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Container(
+                height: 24,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
               ),
-              Text(
-                "/5.0",
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xffA0A0A0)),
+              const SizedBox(
+                width: 15,
               ),
-              SizedBox(
+              Container(
+                height: 16,
+                width: 30,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              const SizedBox(
                 width: 15,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "100% pembeli merasa puas",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                  Container(
+                    height: 14,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
-                  Text(
-                    "30 total ulasan",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
+                  Container(
+                    height: 12,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                 ],

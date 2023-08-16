@@ -78,8 +78,10 @@ class _RegisterKendaraanState extends State<RegisterKendaraan> {
           if (state is InitialRegisterDriverState){
             return buildInitialLayout(context);
           } else if(state is RegisterDriverLoading){
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           } else if (state is RegisterDriverSuccess){
             return buildLoadedLayout();

@@ -70,6 +70,7 @@ class _PromoPageState extends State<PromoPage> {
     super.initState();
     // Check if any category is already selected
     _hargaPromoController.addAll(List.generate(widget.selectedCategories.length, (_) => TextEditingController()));
+    _stockController.addAll(List.generate(widget.selectedCategories.length, (_) => TextEditingController()));
 
     // Check if any category is already selected
     for (var i = 0; i < widget.selectedCategories.length; i++) {
@@ -83,34 +84,34 @@ class _PromoPageState extends State<PromoPage> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          'Daftar Promo',
-          style: Theme.of(context).textTheme.headline6!.copyWith(
-            color: ColorValue.neutralColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: ColorValue.neutralColor,
-          ),
-        ),
-      ),
-      body: BlocProvider(
-        create: (context) => SalePagBloc(salePageRepository: SaleRepository()),
-        child: BlocConsumer<SalePagBloc, SaleState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            if(state is SaleInitial){
-              return SafeArea(
+    return BlocProvider(
+      create: (context) => SalePagBloc(salePageRepository: SaleRepository()),
+      child: BlocConsumer<SalePagBloc, SaleState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if(state is SaleInitial){
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                title: Text(
+                  'Daftar Promo',
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
+                    color: ColorValue.neutralColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: ColorValue.neutralColor,
+                  ),
+                ),
+              ),
+              body: SafeArea(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
                     child: Column(
@@ -285,193 +286,194 @@ class _PromoPageState extends State<PromoPage> {
                                         children: [
                                           Row(
                                             children: [
-                                              Container(
-                                                padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                                width: 314,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  color: Colors.white,
-                                                  border: Border.all(
-                                                    color: ColorValue.neutralColor.withOpacity(0.1),
-                                                    width: 1,
+                                              Expanded(
+                                                child: Container(
+                                                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                                  width: 314,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                      color: ColorValue.neutralColor.withOpacity(0.1),
+                                                      width: 1,
+                                                    ),
                                                   ),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Container(
-                                                          child: Row(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Container(
-                                                                width: 70,
-                                                                height: 80,
-                                                                decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(5),
-                                                                  image:  DecorationImage(
-                                                                    image: NetworkImage(widget.image), // Change to appropriate variable
-                                                                    fit: BoxFit.cover,
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                            child: Row(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Container(
+                                                                  width: 70,
+                                                                  height: 80,
+                                                                  decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(5),
+                                                                    image:  DecorationImage(
+                                                                      image: NetworkImage(widget.image), // Change to appropriate variable
+                                                                      fit: BoxFit.cover,
+                                                                    ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                              const SizedBox(width: 10,),
-                                                              Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Text(
-                                                                    widget.title, // Change to appropriate variable
-                                                                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                                                      fontWeight: FontWeight.w500,
-                                                                      fontSize: 14,
-                                                                      color: ColorValue.neutralColor,
+                                                                const SizedBox(width: 10,),
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    Text(
+                                                                      widget.title, // Change to appropriate variable
+                                                                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                                                        fontWeight: FontWeight.w500,
+                                                                        fontSize: 14,
+                                                                        color: ColorValue.neutralColor,
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                  const SizedBox(height: 5,),
-                                                                  Text(
-                                                                    "Stock ${widget.stock}", // Change to appropriate variable
-                                                                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                                                      fontWeight: FontWeight.w400,
-                                                                      fontSize: 12,
-                                                                      color: ColorValue.hintColor,
+                                                                    const SizedBox(height: 5,),
+                                                                    Text(
+                                                                      "Stock ${widget.stock}", // Change to appropriate variable
+                                                                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                                                        fontWeight: FontWeight.w400,
+                                                                        fontSize: 12,
+                                                                        color: ColorValue.hintColor,
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                  const SizedBox(height: 5,),
-                                                                  Row(
-                                                                    children: [
-                                                                      for (var j = 0; j < widget.variant.length; j++)
-                                                                        Container(
-                                                                          margin: const EdgeInsets.only(right: 5),
-                                                                          child: ActionChip(
-                                                                            label: Text(
-                                                                              widget.variant[j].toString(), // Change to appropriate variable
-                                                                              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                                                                fontWeight: FontWeight.w400,
-                                                                                fontSize: 12,
-                                                                                color: chip[j] ? Colors.white : ColorValue.neutralColor,
+                                                                    const SizedBox(height: 5,),
+                                                                    Row(
+                                                                      children: [
+                                                                        for (var j = 0; j < widget.variant.length; j++)
+                                                                          Container(
+                                                                            margin: const EdgeInsets.only(right: 5),
+                                                                            child: ActionChip(
+                                                                              label: Text(
+                                                                                widget.variant[j].toString(), // Change to appropriate variable
+                                                                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                                                                  fontWeight: FontWeight.w400,
+                                                                                  fontSize: 12,
+                                                                                  color: chip[j] ? Colors.white : ColorValue.neutralColor,
+                                                                                ),
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                setState(() {
+                                                                                  chip[j] = !chip[j];
+                                                                                  for (var k = 0; k < chip.length; k++) {
+                                                                                    if (k != j) {
+                                                                                      chip[k] = false;
+                                                                                    }
+                                                                                  }
+                                                                                });
+                                                                              },
+                                                                              backgroundColor: chip[j] ? ColorValue.primaryColor : Colors.grey.withOpacity(0.1),
+                                                                              elevation: 1,
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                                              visualDensity: VisualDensity.compact,
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(5),
                                                                               ),
                                                                             ),
-                                                                            onPressed: () {
-                                                                              setState(() {
-                                                                                chip[j] = !chip[j];
-                                                                                for (var k = 0; k < chip.length; k++) {
-                                                                                  if (k != j) {
-                                                                                    chip[k] = false;
-                                                                                  }
-                                                                                }
-                                                                              });
-                                                                            },
-                                                                            backgroundColor: chip[j] ? ColorValue.primaryColor : ColorValue.neutralColor.withOpacity(0.1),
-                                                                            elevation: 2,
-                                                                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                            labelPadding: const EdgeInsets.symmetric(vertical: 5),
-                                                                            visualDensity: VisualDensity.compact,
-                                                                            shape: RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(5),
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                    ],
-                                                                  )
-                                                                ],
+                                                                          )
+                                                                      ],
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            alignment: Alignment.topRight,
+                                                            child: IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  widget.selectedCategories[i] = false;
+                                                                  _isCategorySelected = widget.selectedCategories.contains(true);
+                                                                });
+                                                              },
+                                                              icon: const Icon(
+                                                                Icons.delete,
+                                                                color: Colors.red,
+                                                                size: 20,
                                                               ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          alignment: Alignment.topRight,
-                                                          child: IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                widget.selectedCategories[i] = false;
-                                                                _isCategorySelected = widget.selectedCategories.contains(true);
-                                                              });
-                                                            },
-                                                            icon: const Icon(
-                                                              Icons.delete,
-                                                              color: Colors.red,
-                                                              size: 20,
                                                             ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 20,),
-                                                    Container(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                                                      alignment: Alignment.centerLeft,
-                                                      height: 50,
-                                                      width: double.infinity,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(5),
-                                                        border: Border.all(
-                                                          color: ColorValue.hintColor,
-                                                          width: 0.5,
-                                                        ),
+                                                          )
+                                                        ],
                                                       ),
-                                                      child: Text(
-                                                        "Harga Normal ${
-                                                        //set state jika ada perubahan harga dari chip variant
-                                                            chip[0] ? widget.variantPrice[0].toString() : chip[1] ? widget.variantPrice[1].toString() : chip[2] ? widget.variantPrice[2].toString() : chip[3] ? widget.variantPrice[3].toString() : chip[4] ? widget.variantPrice[4].toString() : chip[5] ? widget.variantPrice[5].toString() : widget.price.toString()
-                                                        }",
-                                                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                                          fontWeight: FontWeight.w500,
-                                                          fontSize: 14,
-                                                          color: ColorValue.neutralColor,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 10,),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(5),
-                                                        border: Border.all(
-                                                          color: ColorValue.hintColor,
-                                                          width: 0.5,
-                                                        ),
-                                                      ),
-                                                      child: Padding(
+                                                      const SizedBox(height: 20,),
+                                                      Container(
                                                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                                                        child: TextFormField(
-                                                          controller: _stockController[i],
-                                                          keyboardType: TextInputType.number,
-                                                          decoration: InputDecoration(
-                                                            border: InputBorder.none,
-                                                            hintText: "Stok Barang Promo",
-                                                            hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                                              color: ColorValue.hintColor,
+                                                        alignment: Alignment.centerLeft,
+                                                        height: 50,
+                                                        width: double.infinity,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(5),
+                                                          border: Border.all(
+                                                            color: ColorValue.hintColor,
+                                                            width: 0.5,
+                                                          ),
+                                                        ),
+                                                        child: Text(
+                                                          "Harga Normal ${
+                                                          //set state jika ada perubahan harga dari chip variant
+                                                              chip[0] ? widget.variantPrice[0].toString() : chip[1] ? widget.variantPrice[1].toString() : chip[2] ? widget.variantPrice[2].toString() : chip[3] ? widget.variantPrice[3].toString() : chip[4] ? widget.variantPrice[4].toString() : chip[5] ? widget.variantPrice[5].toString() : widget.price.toString()
+                                                          }",
+                                                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                                            fontWeight: FontWeight.w500,
+                                                            fontSize: 14,
+                                                            color: ColorValue.neutralColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 10,),
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(5),
+                                                          border: Border.all(
+                                                            color: ColorValue.hintColor,
+                                                            width: 0.5,
+                                                          ),
+                                                        ),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                          child: TextFormField(
+                                                            controller: _stockController[i],
+                                                            keyboardType: TextInputType.number,
+                                                            decoration: InputDecoration(
+                                                              border: InputBorder.none,
+                                                              hintText: "Stok Barang Promo",
+                                                              hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                                                color: ColorValue.hintColor,
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    const SizedBox(height: 10,),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(5),
-                                                        border: Border.all(
-                                                          color: ColorValue.hintColor,
-                                                          width: 0.5,
+                                                      const SizedBox(height: 10,),
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(5),
+                                                          border: Border.all(
+                                                            color: ColorValue.hintColor,
+                                                            width: 0.5,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                                                        child: TextFormField(
-                                                          controller: _hargaPromoController[i],
-                                                          keyboardType: TextInputType.number,
-                                                          inputFormatters: [_formatter],
-                                                          decoration: InputDecoration(
-                                                            border: InputBorder.none,
-                                                            hintText: "Rp. ",
-                                                            hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                                              color: ColorValue.hintColor,
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                          child: TextFormField(
+                                                            controller: _hargaPromoController[i],
+                                                            keyboardType: TextInputType.number,
+                                                            inputFormatters: [_formatter],
+                                                            decoration: InputDecoration(
+                                                              border: InputBorder.none,
+                                                              hintText: "Rp. ",
+                                                              hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                                                color: ColorValue.hintColor,
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -565,26 +567,28 @@ class _PromoPageState extends State<PromoPage> {
                       ],
                     ),
                   )
-              );
-            }else if (state is SaleLoading){
-              return const Center(
+              ),
+            );
+          }else if (state is SaleLoading){
+            return const Scaffold(
+              body: Center(
                 child: CircularProgressIndicator(),
-              );
-            }else if (state is SaleLoaded) {
-              return const ListPromoPage();
-            }else if (state is SaleError) {
-              print(state.message);
-              return Center(
-                child: Text(state.message),
-              );
-            }else{
-              return Center(
-                child: Text("Error"),
-              );
-            }
-          },
-        ),
-      )
+              ),
+            );
+          }else if (state is SaleLoaded) {
+            return const ListPromoPage();
+          }else if (state is SaleError) {
+            print(state.message);
+            return Center(
+              child: Text(state.message),
+            );
+          }else{
+            return Center(
+              child: Text("Error"),
+            );
+          }
+        },
+      ),
     );
   }
 
