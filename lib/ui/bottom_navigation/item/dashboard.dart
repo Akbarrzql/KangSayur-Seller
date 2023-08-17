@@ -723,7 +723,6 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             child: SfCartesianChart(
                               enableAxisAnimation: true,
                               primaryXAxis: CategoryAxis(),
-                              // Chart title
                               title: ChartTitle(
                                   text: 'Data Penjualan Bulan Ini',
                                   textStyle: textTheme.bodyText1!.copyWith(

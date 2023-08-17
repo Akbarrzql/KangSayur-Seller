@@ -26,148 +26,188 @@ class _DetailDriverState extends State<DetailDriver> {
     final textTheme = Theme
         .of(context)
         .textTheme;
-    return Scaffold(
-      backgroundColor: const Color(0xFF0E4F55),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
+    return BlocProvider(
+        create: (context) => DeletDriverPageBloc(deleteDriverPageRepository: DeleteDriverRepository()),
+        child: BlocConsumer<DeletDriverPageBloc, DeleteDriverState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            if (state is DeleteDriverInitial){
+              return Scaffold(
+                backgroundColor: const Color(0xFF0E4F55),
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                body: SafeArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(28, 50, 28, 0),
+                        child: Column(
+                          children: [
+                            Center(
+                              child: CircleAvatar(
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                    'https://kangsayur.nitipaja.online${widget.data.fotoDriver.toString()}'),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              widget.data.namaDriver,
+                              style: textTheme.headline6!.copyWith(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              "+62${widget.data.nomorTelfon.toString()}",
+                              style: textTheme.headline6!.copyWith(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 50),
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 28, vertical: 30),
+                          decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25),
+                                  topRight: Radius.circular(25)
+                              )
+                          ),
+                          child: Column(
+                            children: [
+                              _listMenu(
+                                "Detail Informasi",
+                                const Icon(
+                                  Icons.info_outline_rounded,
+                                  color: ColorValue.neutralColor,
+                                ),
+                                ColorValue.neutralColor,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailInformasiDriverPage(
+                                        data: widget.data,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 20),
+                              _listMenu(
+                                "Reset Password",
+                                const Icon(
+                                  Icons.lock_outline_rounded,
+                                  color: ColorValue.neutralColor,
+                                ),
+                                ColorValue.neutralColor,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const ResetPasswordDriver(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 20),
+                              _listMenu(
+                                "Hapus Akun Driver",
+                                const Icon(
+                                  Icons.logout,
+                                  color: Colors.red,
+                                ),
+                                Colors.red,
+                                onTap: () {
+                                  context.read<DeletDriverPageBloc>().add(DeleteDriver(widget.data.driverId.toString()));
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }else if (state is DeleteDriverLoading){
+              return const Center(child: CircularProgressIndicator());
+            }else if (state is DeleteDriverLoaded) {
+              return const ListDriver();
+            }else if (state is DeleteDriverError){
+              return Scaffold(
+                body: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Terjadi Kesalahan',
+                        style: textTheme.headline6!.copyWith(
+                          color: ColorValue.neutralColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<DeletDriverPageBloc>().add(DeleteDriver(widget.data.driverId.toString()));
+                        },
+                        child: const Text('Coba Lagi'),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }else{
+              return Scaffold(
+                body: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Terjadi Kesalahan',
+                        style: textTheme.headline6!.copyWith(
+                          color: ColorValue.neutralColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<DeletDriverPageBloc>().add(DeleteDriver(widget.data.driverId.toString()));
+                        },
+                        child: const Text('Coba Lagi'),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }
           },
         ),
-      ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(28, 50, 28, 0),
-              child: Column(
-                children: [
-                  Center(
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                          'https://kangsayur.nitipaja.online${widget.data.fotoDriver.toString()}'),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    widget.data.namaDriver,
-                    style: textTheme.headline6!.copyWith(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "+62${widget.data.nomorTelfon.toString()}",
-                    style: textTheme.headline6!.copyWith(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 50),
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 28, vertical: 30),
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25)
-                    )
-                ),
-                child: Column(
-                  children: [
-                    _listMenu(
-                      "Detail Informasi",
-                      const Icon(
-                        Icons.info_outline_rounded,
-                        color: ColorValue.neutralColor,
-                      ),
-                      ColorValue.neutralColor,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailInformasiDriverPage(
-                              data: widget.data,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    _listMenu(
-                      "Reset Password",
-                      const Icon(
-                        Icons.lock_outline_rounded,
-                        color: ColorValue.neutralColor,
-                      ),
-                      ColorValue.neutralColor,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ResetPasswordDriver(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    BlocProvider(
-                      create: (context) => DeletDriverPageBloc(deleteDriverPageRepository: DeleteDriverRepository())..add(DeleteDriver(widget.data.driverId.toString())),
-                      child: BlocConsumer<DeletDriverPageBloc, DeleteDriverState>(
-                        listener: (context, state) {},
-                        builder: (context, state) {
-                          if (state is DeleteDriverInitial){
-                            return _listMenu(
-                              "Hapus Akun Driver",
-                              const Icon(
-                                Icons.logout,
-                                color: Colors.red,
-                              ),
-                              Colors.red,
-                              onTap: () {
-                                BlocProvider.of<DeletDriverPageBloc>(context).add(DeleteDriver(widget.data.driverId.toString()));
-                              },
-                            );
-                          } else if (state is DeleteDriverLoading){
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }else if (state is DeleteDriverLoaded){
-                            return const ListDriver();
-                          }else if (state is DeleteDriverError) {
-                            return const Center(
-                              child: Text("Terjadi kesalahan"),
-                            );
-                          }else{
-                            return const Center(
-                              child: Text("Terjadi kesalahan"),
-                            );
-                          }
-                        },
-                      )
-                    )
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
     );
   }
 
@@ -201,7 +241,7 @@ class _DetailDriverState extends State<DetailDriver> {
             ),
           ),
           const Spacer(),
-          const Icon(Icons.navigate_next_sharp)
+          Icon(Icons.navigate_next_sharp, color: color,)
         ],
       ),
     );

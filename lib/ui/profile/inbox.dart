@@ -5,6 +5,7 @@ import 'package:kangsayur_seller/bloc/event/inbox_event.dart';
 import 'package:kangsayur_seller/bloc/state/inbox_state.dart';
 import 'package:kangsayur_seller/repository/inbox_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../common/color_value.dart';
 
@@ -138,7 +139,25 @@ class _InboxPageState extends State<InboxPage> {
             }else if (state is InboxLoaded){
               final data = state.inboxModel;
               return SafeArea(
-                child: SingleChildScrollView(
+                child: data.data.isEmpty ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      children: [
+                        Lottie.asset("assets/json/inboxnf.json", width: 300, height: 300,),
+                        Text(
+                          'Belum ada inbox yang masuk',
+                          style: textTheme.headline6!.copyWith(
+                            color: ColorValue.neutralColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ) : SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

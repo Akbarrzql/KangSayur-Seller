@@ -23,9 +23,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   final FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await PushNotificationConfig().requestPermission();
-  await PushNotificationConfig().androidNotificationChanel();
+  // utama notifikasi
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // await PushNotificationConfig().requestPermission();
+  // await PushNotificationConfig().androidNotificationChanel();
   await initializeDateFormatting();
   await FirebaseNotificationManager.initializeFirebase();
   SystemChrome.setPreferredOrientations([

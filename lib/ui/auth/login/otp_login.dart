@@ -1,10 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../bloc/bloc/otp_bloc.dart';
+import '../../../bloc/bloc/verify_otp_bloc.dart';
+import '../../../bloc/event/otp_event.dart';
+import '../../../bloc/event/verify_otp_event.dart';
 import '../../../common/color_value.dart';
 
 class otpForm extends StatefulWidget {
-  const otpForm({Key? key}) : super(key: key);
+  const otpForm({Key? key, required this.controller, required this.controller2, required this.controller3, required this.controller4, required this.emailPemilik}) : super(key: key);
+  final TextEditingController controller;
+  final TextEditingController controller2;
+  final TextEditingController controller3;
+  final TextEditingController controller4;
+  final TextEditingController emailPemilik;
 
   @override
   State<otpForm> createState() => _otpFormState();
@@ -65,6 +75,7 @@ class _otpFormState extends State<otpForm> {
                 height: 50,
                 width: 63,
                 child: TextFormField(
+                  controller: widget.controller,
                   onChanged: (value) {
                     if (value.length == 1) {
                       FocusScope.of(context).nextFocus();
@@ -86,29 +97,7 @@ class _otpFormState extends State<otpForm> {
                 height: 50,
                 width: 63,
                 child: TextFormField(
-                  onChanged: (value) {
-                    if (value.length == 1) {
-                      FocusScope.of(context).nextFocus();
-                    } if (value.length == 0) {
-                      FocusScope.of(context).previousFocus();
-                    }
-                  },
-                  style: TextStyle(
-                      fontSize: 50,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xff1e1e1e).withOpacity(0.75)),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(1),
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                ),
-              ),
-              Container(
-                height: 50,
-                width: 63,
-                child: TextFormField(
+                  controller: widget.controller2,
                   onChanged: (value) {
                     if (value.length == 1) {
                       FocusScope.of(context).nextFocus();
@@ -132,6 +121,31 @@ class _otpFormState extends State<otpForm> {
                 height: 50,
                 width: 63,
                 child: TextFormField(
+                  controller: widget.controller3,
+                  onChanged: (value) {
+                    if (value.length == 1) {
+                      FocusScope.of(context).nextFocus();
+                    } if (value.length == 0) {
+                      FocusScope.of(context).previousFocus();
+                    }
+                  },
+                  style: TextStyle(
+                      fontSize: 50,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xff1e1e1e).withOpacity(0.75)),
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(1),
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                ),
+              ),
+              Container(
+                height: 50,
+                width: 63,
+                child: TextFormField(
+                  controller: widget.controller4,
                   onChanged: (value) {
                     if (value.length == 0) {
                       FocusScope.of(context).previousFocus();
@@ -176,6 +190,7 @@ class _otpFormState extends State<otpForm> {
               onPressed: () {
                 _remainingTime = _duration;
                 _startTimer();
+                context.read<OtpPageBloc>().add(OtpEventGetOtp(widget.emailPemilik.text));
               },
               child: Text('Kirim Ulang Kode',
                 style: Theme.of(context).textTheme.bodyText1!.copyWith(

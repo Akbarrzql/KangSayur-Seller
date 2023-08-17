@@ -1,13 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kangsayur_seller/bloc/bloc/otp_bloc.dart';
+import 'package:kangsayur_seller/bloc/state/otp_state.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
+import 'package:kangsayur_seller/repository/otp_repository.dart';
+import 'package:kangsayur_seller/ui/auth/login/otp.dart';
 import 'package:kangsayur_seller/ui/auth/register/kategori_toko.dart';
 import 'package:kangsayur_seller/ui/auth/register/list_operasional_toko.dart';
 import 'package:kangsayur_seller/ui/auth/register/map_page.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_pemilik.dart';
+import '../../../bloc/event/otp_event.dart';
 import '../../../validator/input_validator.dart';
 import '../../widget/custom_textfield.dart';
 import '../../widget/textfiled.dart';
@@ -110,79 +116,37 @@ class _register_tokoState extends State<register_toko> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Pendaftaran Toko",
-          style: TextStyle(color: Colors.black, fontSize: 18),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const register_pemilik()),
-                  (Route<dynamic> route) => false),
-        ),
-        backgroundColor: Colors.white,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          physics: const BouncingScrollPhysics(),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Foto Toko",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
+    return BlocProvider(
+      create: (context) => OtpPageBloc(otpPageRepository: OtpRepository()),
+      child: BlocConsumer<OtpPageBloc, OtpState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (state is OtpInitial){
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                  "Pendaftaran Toko",
+                  style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
-                const SizedBox(
-                  height: 10,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const register_pemilik()),
+                          (Route<dynamic> route) => false),
                 ),
-                //image picker
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _showBottomSheet(context);
-                      },
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          color: ColorValue.neutralColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: _imageFile != null ? ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.file(_imageFile!, fit: BoxFit.cover),
-                        ) : Container(
-                          decoration: BoxDecoration(
-                            color: ColorValue.neutralColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Column(
+                backgroundColor: Colors.white,
+              ),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                  physics: const BouncingScrollPhysics(),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(
-                          width: 15,
-                        ),
                         Text(
-                          "Unggah Foto Toko",
+                          "Foto Toko",
                           style: Theme.of(context).textTheme.subtitle1!.copyWith(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
@@ -192,368 +156,435 @@ class _register_tokoState extends State<register_toko> {
                         const SizedBox(
                           height: 10,
                         ),
-                        //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
-                        _imageFile != null ? ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: ColorValue.primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          onPressed: (){
-                            _showBottomSheet(context);
-                          },
-                          child: Text(
-                            "Unggah Ulang",
-                            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ) : Container(),
-                      ],
-                    )
-                  ],
-                ),
-                //informasi banner
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xffD7FEDF),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 55,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: ColorValue.primaryColor,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Text(
-                          "Nama toko tidak dapat diubah setelah lapak terverifikasi.",
-                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: ColorValue.primaryColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Nama Toko",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                CustomTextFormField(
-                  controller: _namaTokoController,
-                  label: 'Masukkan Nama Toko',
-                  textInputType: TextInputType.name,
-                  validator: (value) => InputValidator.nameTokoValidator(value),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Deskripsi Toko",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: ColorValue.hintColor,
-                      width: 0.5,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      controller: _deskripsiController,
-                      minLines: 1,
-                      maxLines: 10,
-                      textInputAction: TextInputAction.newline,
-                      validator: (value) => InputValidator.descTokovalidator(value),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Deksripsi toko",
-                        hintStyle:
-                        Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: ColorValue.hintColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Alamat Toko",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: ColorValue.hintColor,
-                      width: 0.5,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      controller: _alamatController,
-                      keyboardType: TextInputType.text,
-                      validator: (value) => InputValidator.addressValidator(value),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Alamat toko",
-                        hintStyle:
-                        Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: ColorValue.hintColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Jam Operasional",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                if(_isCategorySelectedOperasional)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var i = 0; i < widget.selectedCategoriesOperasional.length; i++)
-                        if(widget.selectedCategoriesOperasional[i])
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                categoryHari[i],
-                                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
+                        //image picker
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                _showBottomSheet(context);
+                              },
+                              child: Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
                                   color: ColorValue.neutralColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: _imageFile != null ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.file(_imageFile!, fit: BoxFit.cover),
+                                ) : Container(
+                                  decoration: BoxDecoration(
+                                    color: ColorValue.neutralColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Icon(Icons.add_a_photo_outlined, color: ColorValue.primaryColor,),
                                 ),
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      height: 50,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          color: ColorValue.hintColor,
-                                          width: 0.5,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        child: TextFormField(
-                                          controller: _jamBukaOperasionalController[i],
-                                          keyboardType: TextInputType.text,
-                                          onTap: (){
-                                            _selectTime(context, _jamBukaOperasionalController[i]);
-                                            print(_jamBukaOperasionalController[i].text);
-                                            print("jam buka");
-                                          },
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "Jam Buka",
-                                            hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                              color: ColorValue.hintColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Text(
+                                  "Unggah Foto Toko",
+                                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: ColorValue.neutralColor,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
+                                _imageFile != null ? ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: ColorValue.primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 30,
-                                    child: Divider(
-                                      color: ColorValue.hintColor,
-                                      thickness: 1,
-                                      endIndent: 5,
-                                      indent: 5,
+                                  onPressed: (){
+                                    _showBottomSheet(context);
+                                  },
+                                  child: Text(
+                                    "Unggah Ulang",
+                                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                      color: Colors.white,
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Container(
-                                      height: 50,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          color: ColorValue.hintColor,
-                                          width: 0.5,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                                        child: TextFormField(
-                                          controller: _jamTutupOperasionalController[i],
-                                          keyboardType: TextInputType.text,
-                                          onTap: (){
-                                            _selectTime(context, _jamTutupOperasionalController[i]);
-                                          },
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "Jam Tutup",
-                                            hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                              color: ColorValue.hintColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ) : Container(),
+                              ],
+                            )
+                          ],
+                        ),
+                        //informasi banner
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xffD7FEDF),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          height: 55,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.info_outline,
+                                color: ColorValue.primaryColor,
                               ),
                               const SizedBox(
-                                height: 20,
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  "Nama toko tidak dapat diubah setelah lapak terverifikasi.",
+                                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: ColorValue.primaryColor,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                    ],
-                  )
-                else
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: ColorValue.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ListOperasionalToko(
-                                namaPemilik: widget.namaPemilik,
-                                emailPemilik: widget.emailPemilik,
-                                noHpPemilik: widget.noHpPemilik,
-                                alamatPemilik: widget.alamatPemilik,
-                                sandi: widget.sandi,
-                              )));
-                    },
-                    child: Text(
-                      "Pilih Jam Operasional",
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if(_formKey.currentState!.validate()){
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MapScreen(
-                              namaPemilik: widget.namaPemilik,
-                              emailPemilik: widget.emailPemilik,
-                              noHpPemilik: widget.noHpPemilik,
-                              alamatPemilik: widget.alamatPemilik,
-                              namaToko: _namaTokoController,
-                              deskripsiToko: _deskripsiController,
-                              alamatToko: _alamatController,
-                              sandi: widget.sandi,
-                              jamBuka: _jamBukaOperasionalController,
-                              jamTutup: _jamTutupOperasionalController,
-                              image: _imageFile,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Nama Toko",
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: ColorValue.neutralColor,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextFormField(
+                          controller: _namaTokoController,
+                          label: 'Masukkan Nama Toko',
+                          textInputType: TextInputType.name,
+                          validator: (value) => InputValidator.nameTokoValidator(value),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Deskripsi Toko",
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: ColorValue.neutralColor,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: ColorValue.hintColor,
+                              width: 0.5,
                             ),
                           ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            backgroundColor: Colors.red,
-                            margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
-                            behavior: SnackBarBehavior.floating,
-                            content: Text('Terdapat Kesalahan di input anda'),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: TextFormField(
+                              controller: _deskripsiController,
+                              minLines: 1,
+                              maxLines: 10,
+                              textInputAction: TextInputAction.newline,
+                              validator: (value) => InputValidator.descTokovalidator(value),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Deksripsi toko",
+                                hintStyle:
+                                Theme.of(context).textTheme.bodyText1!.copyWith(
+                                  color: ColorValue.hintColor,
+                                ),
+                              ),
+                            ),
                           ),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: ColorValue.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: Text(
-                      'Selanjutnya',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal,
-                      ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Alamat Toko",
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: ColorValue.neutralColor,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: ColorValue.hintColor,
+                              width: 0.5,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: TextFormField(
+                              controller: _alamatController,
+                              keyboardType: TextInputType.text,
+                              validator: (value) => InputValidator.addressValidator(value),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Alamat toko",
+                                hintStyle:
+                                Theme.of(context).textTheme.bodyText1!.copyWith(
+                                  color: ColorValue.hintColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Jam Operasional",
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: ColorValue.neutralColor,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        if(_isCategorySelectedOperasional)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (var i = 0; i < widget.selectedCategoriesOperasional.length; i++)
+                                if(widget.selectedCategoriesOperasional[i])
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        categoryHari[i],
+                                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: ColorValue.neutralColor,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              height: 50,
+                                              width: 100,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                  color: ColorValue.hintColor,
+                                                  width: 0.5,
+                                                ),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                child: TextFormField(
+                                                  controller: _jamBukaOperasionalController[i],
+                                                  keyboardType: TextInputType.text,
+                                                  onTap: (){
+                                                    _selectTime(context, _jamBukaOperasionalController[i]);
+                                                    print(_jamBukaOperasionalController[i].text);
+                                                    print("jam buka");
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    hintText: "Jam Buka",
+                                                    hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                                      color: ColorValue.hintColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 30,
+                                            child: Divider(
+                                              color: ColorValue.hintColor,
+                                              thickness: 1,
+                                              endIndent: 5,
+                                              indent: 5,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              height: 50,
+                                              width: 100,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                  color: ColorValue.hintColor,
+                                                  width: 0.5,
+                                                ),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                child: TextFormField(
+                                                  controller: _jamTutupOperasionalController[i],
+                                                  keyboardType: TextInputType.text,
+                                                  onTap: (){
+                                                    _selectTime(context, _jamTutupOperasionalController[i]);
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    hintText: "Jam Tutup",
+                                                    hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                                      color: ColorValue.hintColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                    ],
+                                  ),
+                            ],
+                          )
+                        else
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: ColorValue.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ListOperasionalToko(
+                                        namaPemilik: widget.namaPemilik,
+                                        emailPemilik: widget.emailPemilik,
+                                        noHpPemilik: widget.noHpPemilik,
+                                        alamatPemilik: widget.alamatPemilik,
+                                        sandi: widget.sandi,
+                                      )));
+                            },
+                            child: Text(
+                              "Pilih Jam Operasional",
+                              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if(_formKey.currentState!.validate()){
+                                BlocProvider.of<OtpPageBloc>(context).add(OtpEventGetOtp(widget.emailPemilik.text));
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.red,
+                                    margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                                    behavior: SnackBarBehavior.floating,
+                                    content: Text('Terdapat Kesalahan di input anda'),
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: ColorValue.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                            child: Text(
+                              'Selanjutnya',
+                              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
+              ),
+            );
+          } else if (state is OtpLoading){
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else if (state is OtpSuccess){
+            return OTP(
+              namaPemilik: widget.namaPemilik,
+              emailPemilik: widget.emailPemilik,
+              noHpPemilik: widget.noHpPemilik,
+              alamatPemilik: widget.alamatPemilik,
+              namaToko: _namaTokoController,
+              deskripsiToko: _deskripsiController,
+              alamatToko: _alamatController,
+              sandi: widget.sandi,
+              jamBuka: _jamBukaOperasionalController,
+              jamTutup: _jamTutupOperasionalController,
+              image: _imageFile,
+            );
+          }else if (state is OtpFailure){
+            return const Scaffold(
+              body: Center(
+                child: Text("Gagal"),
+              ),
+            );
+          }else{
+            return const Scaffold(
+              body: Center(
+                child: Text("Gagal"),
+              ),
+            );
+          }
+        },
       ),
     );
   }
