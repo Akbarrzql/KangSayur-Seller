@@ -17,9 +17,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Constants/app_constants.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
+import '../../../bloc/bloc/device_token_bloc.dart';
+import '../../../bloc/event/device_token_event.dart';
 import '../../../bloc/event/register_event.dart';
 import '../../../common/color_value.dart';
 import '../../../firebase/firebase_messaging.dart';
+import '../../../repository/device_token_repository.dart';
 import '../../../repository/register_repository.dart';
 import '../../widget/main_button.dart';
 import 'package:image/image.dart' as img;
@@ -152,13 +155,14 @@ class _MapScreenState extends State<MapScreen> {
     String timeString = '';
     for (var controller in controllers) {
       String time = controller.text.replaceAll("┤", "").replaceAll("├", "");
-      timeString += (time.isNotEmpty) ? time + ', ' : '';
+      timeString += (time.isNotEmpty) ? '$time, ' : '';
     }
     if (timeString.isNotEmpty) {
       timeString = timeString.substring(0, timeString.length - 2);
     }
     return timeString;
   }
+
 
 
   String convertToText(TextEditingController controller) {
@@ -288,27 +292,50 @@ class _MapScreenState extends State<MapScreen> {
               ),
               const SizedBox(height: 15),
               main_button("Daftar", context, onPressed: () async {
-                String? deviceToken = await FirebaseNotificationManager.getToken();
-                print('Device Token: $deviceToken');
+                // String? deviceToken = await FirebaseNotificationManager.getToken();
+                // print('Device Token: $deviceToken');
                 File? selectedImage = await compressImage(widget.image!);
 
-                if(deviceToken != null){
-                  BlocProvider.of<RegisterPageBloc>(context).add(RegisterButtonPressed(
-                    email: convertToText(widget.emailPemilik),
-                    password: convertToText(widget.sandi),
-                    ownerName: convertToText(widget.namaPemilik),
-                    phoneNumber: convertToText(widget.noHpPemilik),
-                    ownerAddress: convertToText(widget.alamatPemilik),
-                    storeName: convertToText(widget.namaToko),
-                    description: convertToText(widget.deskripsiToko),
-                    storeAddress: convertToText(widget.alamatToko),
-                    storeLongitude: _currentPosition.longitude.toDouble().toString(),
-                    storeLatitude: _currentPosition.latitude.toDouble().toString(),
-                    open: convertToTimeString(widget.jamBuka).toString(),
-                    close: convertToTimeString(widget.jamTutup).toString(),
-                    photo: selectedImage,
-                  ));
-                }
+                BlocProvider.of<RegisterPageBloc>(context).add(RegisterButtonPressed(
+                  email: convertToText(widget.emailPemilik),
+                  password: convertToText(widget.sandi),
+                  ownerName: convertToText(widget.namaPemilik),
+                  phoneNumber: convertToText(widget.noHpPemilik),
+                  ownerAddress: convertToText(widget.alamatPemilik),
+                  storeName: convertToText(widget.namaToko),
+                  description: convertToText(widget.deskripsiToko),
+                  storeAddress: convertToText(widget.alamatToko),
+                  storeLongitude: _currentPosition.longitude.toDouble().toString(),
+                  storeLatitude: _currentPosition.latitude.toDouble().toString(),
+                  open: convertToTimeString(widget.jamBuka).toString(),
+                  close: convertToTimeString(widget.jamTutup).toString(),
+                  photo: selectedImage,
+                ));
+
+                // if(deviceToken != null){
+                //   BlocProvider(
+                //     create: (context) => DeviceTokenPageBloc(deviceTokenPageRepository: DeviceTokenRepository())..add(SendDeviceToken(
+                //       email: widget.emailPemilik.text,
+                //       password: widget.sandi.text,
+                //       deviceToken: deviceToken,
+                //     )),
+                //   );
+                //   BlocProvider.of<RegisterPageBloc>(context).add(RegisterButtonPressed(
+                //     email: convertToText(widget.emailPemilik),
+                //     password: convertToText(widget.sandi),
+                //     ownerName: convertToText(widget.namaPemilik),
+                //     phoneNumber: convertToText(widget.noHpPemilik),
+                //     ownerAddress: convertToText(widget.alamatPemilik),
+                //     storeName: convertToText(widget.namaToko),
+                //     description: convertToText(widget.deskripsiToko),
+                //     storeAddress: convertToText(widget.alamatToko),
+                //     storeLongitude: _currentPosition.longitude.toDouble().toString(),
+                //     storeLatitude: _currentPosition.latitude.toDouble().toString(),
+                //     open: convertToTimeString(widget.jamBuka).toString(),
+                //     close: convertToTimeString(widget.jamTutup).toString(),
+                //     photo: selectedImage,
+                //   ));
+                // }
               }),
             ],
           ),

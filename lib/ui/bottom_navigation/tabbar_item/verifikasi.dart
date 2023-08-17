@@ -132,31 +132,36 @@ class _VerifikasiPageState extends State<VerifikasiPage> {
                                   )
                                 ],
                               ),
-                            ) : ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: state.verifikasiModel!.data.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return CardVerifikasi(
-                                    jenisVerifikasiProduk: state.verifikasiModel!.data[index].namaKategori.toString(),
-                                    tanggalVerifikasiProduk: state.verifikasiModel!.data[index].tanggalVerivikasi == null ? 'Tidak tertera Tanggal' : state.verifikasiModel!.data[index].tanggalVerivikasi.toString(),
-                                    namaVerifikasiProduk: state.verifikasiModel!.data[index].namaProduk.toString(),
-                                    descVerifikasiProduk: state.verifikasiModel!.data[index].variantDesc.toString(),
-                                    gambarVerifikasiProduk: "https://kangsayur.nitipaja.online${state.verifikasiModel!.data[index].variantImg.toString()}",
-                                    statusVerifikasiProduk: state.verifikasiModel!.data[index].status.toString(),
-                                    onPressed: (){
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => DetailProduk(
-                                            verifikasiModel: state.verifikasiModel!.data[index],
-                                            verifikasiModel2: state.verifikasiModel!,
+                            ) : RefreshIndicator(
+                              onRefresh: () async {
+                                BlocProvider.of<VerifikasiBloc>(context).add(GetVerifikasi());
+                              },
+                              child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: state.verifikasiModel!.data.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return CardVerifikasi(
+                                      jenisVerifikasiProduk: state.verifikasiModel!.data[index].namaKategori.toString(),
+                                      tanggalVerifikasiProduk: state.verifikasiModel!.data[index].tanggalVerivikasi == null ? 'Tidak tertera Tanggal' : state.verifikasiModel!.data[index].tanggalVerivikasi.toString(),
+                                      namaVerifikasiProduk: state.verifikasiModel!.data[index].namaProduk.toString(),
+                                      descVerifikasiProduk: state.verifikasiModel!.data[index].variantDesc.toString(),
+                                      gambarVerifikasiProduk: "https://kangsayur.nitipaja.online${state.verifikasiModel!.data[index].variantImg.toString()}",
+                                      statusVerifikasiProduk: state.verifikasiModel!.data[index].status.toString(),
+                                      onPressed: (){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => DetailProduk(
+                                              verifikasiModel: state.verifikasiModel!.data[index],
+                                              verifikasiModel2: state.verifikasiModel!,
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
+                                        );
+                                      },
+                                    );
+                                  },
+                              ),
                             ),
                           );
                         }

@@ -139,22 +139,27 @@ class _login_screenState extends State<login_screen> {
               child: ElevatedButton(
                 onPressed: () async{
                   if(_formKey.currentState!.validate()){
-                    String? deviceToken = await FirebaseNotificationManager.getToken();
-                    print('Device Token: $deviceToken');
+                    // String? deviceToken = await FirebaseNotificationManager.getToken();
+                    // print('Device Token: $deviceToken');
 
-                    if(deviceToken != null){
-                      BlocProvider(
-                        create: (context) => DeviceTokenPageBloc(deviceTokenPageRepository: DeviceTokenRepository())..add(SendDeviceToken(
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                          deviceToken: deviceToken,
-                        )),
-                      );
-                      BlocProvider.of<LoginPageBloc>(context).add(LoginButtonPressed(
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                      ));
-                    }
+                    BlocProvider.of<LoginPageBloc>(context).add(LoginButtonPressed(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    ));
+
+                    // if(deviceToken != null){
+                    //   BlocProvider(
+                    //     create: (context) => DeviceTokenPageBloc(deviceTokenPageRepository: DeviceTokenRepository())..add(SendDeviceToken(
+                    //       email: _emailController.text,
+                    //       password: _passwordController.text,
+                    //       deviceToken: deviceToken,
+                    //     )),
+                    //   );
+                    //   BlocProvider.of<LoginPageBloc>(context).add(LoginButtonPressed(
+                    //     email: _emailController.text,
+                    //     password: _passwordController.text,
+                    //   ));
+                    // }
                   }else{
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
