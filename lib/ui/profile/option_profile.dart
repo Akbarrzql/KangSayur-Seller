@@ -79,7 +79,9 @@ class _OptionProfileState extends State<OptionProfile> {
               const SizedBox(height: 5),
               InkWell(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SendEmailPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SendEmailPage(
+                    email: widget.data.email,
+                  )));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,7 +96,9 @@ class _OptionProfileState extends State<OptionProfile> {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SendEmailPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SendEmailPage(
+                          email: widget.data.email,
+                        )));
                       },
                       icon: const Icon(
                         Icons.arrow_forward_ios,

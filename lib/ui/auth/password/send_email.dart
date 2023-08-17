@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kangsayur_seller/bloc/bloc/reset_pw_seller_bloc.dart';
+import 'package:kangsayur_seller/bloc/state/reset_pw_seller_state.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 
+import '../../../bloc/event/reset_pw_seller_event.dart';
+import '../../../repository/reset_pw_seller_repository.dart';
 import '../../../validator/input_validator.dart';
 import '../../widget/custom_textfield.dart';
 import 'ganti_password.dart';
 
 class SendEmailPage extends StatefulWidget {
-  const SendEmailPage({super.key});
+  const SendEmailPage({super.key, required this.email});
+  final String email;
 
   @override
   State<SendEmailPage> createState() => _SendEmailPageState();
@@ -73,18 +79,94 @@ class _SendEmailPageState extends State<SendEmailPage> {
                 const SizedBox(
                   height: 24,
                 ),
-                CustomTextFormField(
-                  controller: _emailController,
-                  label: 'Email',
-                  textInputType: TextInputType.emailAddress,
-                  validator: (value) => InputValidator.emailValidator(value),
+                Column(
+                  children: [
+                    Text(
+                      'Email Terdaftar :',
+                      style: textTheme.bodyText2!.copyWith(
+                        color: ColorValue.neutralColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  widget.email,
+                  style: textTheme.bodyText2!.copyWith(
+                    color: ColorValue.hintColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                // CustomTextFormField(
+                //   controller: _emailController,
+                //   label: widget.email,
+                //   textInputType: TextInputType.emailAddress,
+                //   validator: (value) => InputValidator.emailValidator(value),
+                // ),
                 const SizedBox(
                   height: 50,
                 ),
-                main_button("Kirim Email", context, onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const GantiPasswordPage()));
-                },),
+                BlocProvider(
+                  create: (context) => ResetPasswordSellerPageBloc(resetPasswordSellerPageRepository: ResetPwSellerRepository()),
+                  child: BlocBuilder<ResetPasswordSellerPageBloc, ResetPwSellerState>(
+                    builder: (context, state) {
+                      if(state is ResetPwSellerInitial){
+                        return main_button("Kirim Email", context, onPressed: () {
+                          BlocProvider.of<ResetPasswordSellerPageBloc>(context).add(ResetPwSeller());
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: ColorValue.primaryColor,
+                              margin: EdgeInsets.fromLTRB(24, 0, 24, 24),
+                              behavior: SnackBarBehavior.floating,
+                              content: Text('Email berhasil dikirim'),
+                            ),
+                          );
+                        },);
+                      }else if(state is ResetPwSellerLoading){
+                        return main_button("Kirim Email", context, onPressed: () {
+                          BlocProvider.of<ResetPasswordSellerPageBloc>(context).add(ResetPwSeller());
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: ColorValue.primaryColor,
+                              margin: EdgeInsets.fromLTRB(24, 0, 24, 24),
+                              behavior: SnackBarBehavior.floating,
+                              content: Text('Email berhasil dikirim'),
+                            ),
+                          );
+                        },);
+                      } else if(state is ResetPwSellerSuccess){
+                        return main_button("Kirim Email", context, onPressed: () {
+                          BlocProvider.of<ResetPasswordSellerPageBloc>(context).add(ResetPwSeller());
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: ColorValue.primaryColor,
+                              margin: EdgeInsets.fromLTRB(24, 0, 24, 24),
+                              behavior: SnackBarBehavior.floating,
+                              content: Text('Email berhasil dikirim'),
+                            ),
+                          );
+                        },);
+                      }else if (state is ResetPwSellerError){
+                        return SnackBar(
+                          backgroundColor: ColorValue.primaryColor,
+                          margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                          behavior: SnackBarBehavior.floating,
+                          content: Text(state.errorMessage),
+                        );
+                      }else{
+                        return const SizedBox();
+                      }
+                    },
+                  ),
+                )
               ],
             ),
           ),

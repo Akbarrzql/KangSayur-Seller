@@ -126,7 +126,9 @@ class _DetailDriverState extends State<DetailDriver> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const ResetPasswordDriver(),
+                                      builder: (context) => ResetPasswordDriver(
+                                        data: widget.data,
+                                      ),
                                     ),
                                   );
                                 },
