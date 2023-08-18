@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kangsayur_seller/bloc/state/validasi_email_state.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/nama_toko.dart';
 import 'package:kangsayur_seller/ui/auth/register/register_toko.dart';
 import 'package:kangsayur_seller/ui/auth/register/sandi_register.dart';
 import 'package:kangsayur_seller/ui/on_boarding/on_boarding_screen.dart';
+import '../../../bloc/bloc/validasi_email_bloc.dart';
+import '../../../bloc/event/validasi_email_event.dart';
+import '../../../repository/validasi_email_repository.dart';
 import '../../../validator/input_validator.dart';
 import '../../widget/custom_textfield.dart';
 import '../../widget/textfiled.dart';
@@ -85,11 +90,91 @@ class _register_pemilikState extends State<register_pemilik> {
                         SizedBox(
                           height: 10,
                         ),
-                        CustomTextFormField(
-                          controller: _emailPemilikController,
-                          label: 'Masukkan Email',
-                          textInputType: TextInputType.emailAddress,
-                          validator: (value) => InputValidator.emailValidator(value),
+                        BlocProvider(
+                          create: (context) => ValidasiEmailPageBloc(validasiEmailPageRepository: ValidasiEmailRepository()),
+                          child: BlocConsumer<ValidasiEmailPageBloc, ValidasiEmailState>(
+                            listener: (context, state) {},
+                            builder: (context, state) {
+                              if (state is ValidasiEmailInitial){
+                                return CustomTextFormField(
+                                  controller: _emailPemilikController,
+                                  label: 'Masukkan Email',
+                                  textInputType: TextInputType.emailAddress,
+                                  validator: (value) {
+                                    if (state.validasiEmailModel.status == 0) {
+                                      return InputValidator.emailValidator(value);
+                                    } else if (state.validasiEmailModel.message == "maaf, email yang anda masukan sudah terdaftar") {
+                                      return 'Email sudah terdaftar';
+                                    }else{
+                                      return InputValidator.emailValidator(value);
+                                    }
+                                  },
+                                  onChanged: (p0) {
+                                    if (p0!.length > 5) {
+                                      context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
+                                    }
+                                  },
+                                );
+                              }else if (state is ValidasiEmailLoading) {
+                                return CustomTextFormField(
+                                  controller: _emailPemilikController,
+                                  label: 'Masukkan Email',
+                                  textInputType: TextInputType.emailAddress,
+                                  validator: (value) => InputValidator.emailValidator(value),
+                                  onChanged: (p0) {
+                                    if (p0!.length > 5) {
+                                      context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
+                                    }
+                                  },
+                                );
+                              }else if (state is ValidasiEmailSuccess) {
+                                return CustomTextFormField(
+                                  controller: _emailPemilikController,
+                                  label: 'Masukkan Email',
+                                  textInputType: TextInputType.emailAddress,
+                                  validator: (value) {
+                                    if (state.validasiEmailModel.status == 0) {
+                                      return InputValidator.emailValidator(value);
+                                    } else if (state.validasiEmailModel.message == "maaf, email yang anda masukan sudah terdaftar") {
+                                      return 'Email sudah terdaftar';
+                                    }else{
+                                      return InputValidator.emailValidator(value);
+                                    }
+                                  },
+                                  onChanged: (p0) {
+                                    if (p0!.length > 5) {
+                                      context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
+                                    }
+                                  },
+                                );
+                              }
+                              else if (state is ValidasiEmailError) {
+                                return CustomTextFormField(
+                                  controller: _emailPemilikController,
+                                  label: 'Masukkan Email',
+                                  textInputType: TextInputType.emailAddress,
+                                  validator: (value) => InputValidator.emailValidator(value),
+                                  onChanged: (p0) {
+                                    if (p0!.length > 5) {
+                                      context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
+                                    }
+                                  },
+                                );
+                              }else{
+                                return CustomTextFormField(
+                                  controller: _emailPemilikController,
+                                  label: 'Masukkan Email',
+                                  textInputType: TextInputType.emailAddress,
+                                  validator: (value) => InputValidator.emailValidator(value),
+                                  onChanged: (p0) {
+                                    if (p0!.length > 5) {
+                                      context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
+                                    }
+                                  },
+                                );
+                              }
+                            },
+                          ),
                         ),
                         SizedBox(height: 20,),
                         Container(

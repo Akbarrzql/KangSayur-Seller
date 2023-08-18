@@ -63,4 +63,10 @@ class InputValidator {
         ? 'Nomor Rangka tidak valid'
         : null;
   }
+
+  static String? emailRegisteredValidator(value) {
+    return value.toString().length <= 5
+        ? 'Email sudah terdaftar'
+        : null;
+  }
 }
