@@ -1,13 +1,21 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kangsayur_seller/bloc/bloc/edit_seller_bloc.dart';
+import 'package:kangsayur_seller/bloc/state/edit_driver_state.dart';
 import 'package:kangsayur_seller/ui/informasi_driver/informasi_driver.dart';
 
+import '../../bloc/bloc/edit_driver_bloc.dart';
+import '../../bloc/event/edit_driver_event.dart';
 import '../../common/color_value.dart';
+import '../../model/list_all_driver_model.dart';
+import '../../repository/edit_driver_repository.dart';
 
 class EditInformasiDriver extends StatefulWidget {
-  const EditInformasiDriver({Key? key}) : super(key: key);
+  const EditInformasiDriver({Key? key, required this.data}) : super(key: key);
+  final Produk data;
 
   @override
   State<EditInformasiDriver> createState() => _EditInformasiDriverState();
@@ -35,125 +43,198 @@ class _EditInformasiDriverState extends State<EditInformasiDriver> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      backgroundColor: const Color(0xFF0E4F55),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          InkWell(
-            onTap: (){
-              Navigator.pop(context);
-            },
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(
-                'Simpan',
-                style: textTheme.headline6!.copyWith(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+    return BlocProvider(
+      create: (context) => EditDriverPageBloc(editDriverPageRepository: EditDriverRepository()),
+      child: BlocConsumer<EditDriverPageBloc, EditDriverState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if(state is EditDriverInitial){
+            return Scaffold(
+              backgroundColor: const Color(0xFF0E4F55),
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-              ),
-            ),
-          )
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
-                child: Expanded(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: double.infinity,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 28, vertical: 50),
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25),
-                            topRight: Radius.circular(25))),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _listData("Nama Driver", "Masukkan Nama Driver", _nameController, TextInputType.text),
-                        const SizedBox(height: 20,),
-                        _listData("Nomor Telepon", "Masukkan Nomor Telepon", _phoneController, TextInputType.phone),
-                        const SizedBox(height: 20,),
-                        _listData("Kendaraan", "Masukkan Kendaraan", _kendaraanController, TextInputType.text),
-                        const SizedBox(height: 20,),
-                        _listData("Plat Nomor", "Masukkan Plat Nomor", _platController, TextInputType.text),
-                      ],
+                actions: [
+                  InkWell(
+                    onTap: (){
+                      if(_imageFile != null) {
+                        BlocProvider.of<EditDriverPageBloc>(context).add(EditDriver(
+                          widget.data.driverId.toString(),
+                          _nameController.text,
+                          _imageFile,
+                          _phoneController.text,
+                          _platController.text,
+                          _kendaraanController.text,
+                        ));
+                      }else if (_imageFile == null){
+                        BlocProvider.of<EditDriverPageBloc>(context).add(EditDriver(
+                          widget.data.driverId.toString(),
+                          _nameController.text,
+                          null,
+                          _phoneController.text,
+                          _platController.text,
+                          _kendaraanController.text,
+                        ));
+                      }
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Text(
+                        'Simpan',
+                        style: textTheme.headline6!.copyWith(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  )
+                ],
               ),
-              Positioned(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundColor: ColorValue.tertiaryColor,
+              body: SafeArea(
+                child: SingleChildScrollView(
                   child: Stack(
                     alignment: Alignment.topCenter,
                     children: [
-                      GestureDetector(
-                          onTap: () {
-                            _showBottomSheet(context, 1);
-                          },
-                          child: _imageFile != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.file(
-                                    _imageFile!,
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Container()),
-                      Stack(
-                        children: [
-                          Positioned(
-                            right: 0,
-                            bottom: 0,
-                            child: CircleAvatar(
-                              radius: 16,
-                              backgroundColor: ColorValue.primaryColor,
-                              child: Stack(
-                                alignment: Alignment.center,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
+                        child: Expanded(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height,
+                            width: double.infinity,
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 28, vertical: 50),
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(25),
+                                    topRight: Radius.circular(25))),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                                _listData("Nama Driver", widget.data.namaDriver.toString(), _nameController, TextInputType.text),
+                                const SizedBox(height: 20,),
+                                _listData("No Telepon", "+62${widget.data.nomorTelfon.toString()}", _phoneController, TextInputType.phone),
+                                const SizedBox(height: 20,),
+                                _listData("Nama Kendaraan", widget.data.namaKendaraan.toString(), _kendaraanController, TextInputType.text),
+                                const SizedBox(height: 20,),
+                                _listData("No Polisi", widget.data.nomorPolisi.toString(), _platController, TextInputType.text),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage('https://kangsayur.nitipaja.online${widget.data.fotoDriver.toString()}'),
+                          child: Stack(
+                            alignment: Alignment.topCenter,
+                            children: [
+                              GestureDetector(
+                                  onTap: () {
+                                    _showBottomSheet(context, 1);
+                                  },
+                                  child: _imageFile != null
+                                      ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: Image.file(
+                                      _imageFile!,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                      : Container()),
+                              Stack(
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      _showBottomSheet(context, 1);
-                                    },
-                                    child: const Icon(
-                                      Icons.camera_alt_outlined,
-                                      color: Colors.white,
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor: ColorValue.primaryColor,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              _showBottomSheet(context, 1);
+                                            },
+                                            child: const Icon(
+                                              Icons.camera_alt_outlined,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
+            );
+          }else if (state is EditDriverLoading){
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }else if (state is EditDriverSuccess){
+            return DetailInformasiDriverPage(
+              data: widget.data,
+            );
+          }else if(state is EditDriverError){
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  children: [
+                    const Text('Gagal mengupdate data'),
+                    const SizedBox(height: 20,),
+                    ElevatedButton(
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Kembali'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }else{
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  children: [
+                    const Text('Gagal mengupdate data'),
+                    const SizedBox(height: 20,),
+                    ElevatedButton(
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Kembali'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }

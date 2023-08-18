@@ -260,24 +260,34 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoPage(selectedCategories: [])));
                                 }),
                                 KategoriProfile("Driver", "assets/svg/shipment.svg", 32, 32,  onTap: () async {
-                                  bool hasRegistered = await hasRegisteredBefore();
-                                  if (hasRegistered) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const ListDriver(),
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const RegisterDriver(),
-                                      ),
-                                    );
-                                  }
-                                }),
-                                // KategoriProfile("Toko", "assets/svg/store.svg", 32, 32, ),
+                                  Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => const ListDriver(),
+                                            ),
+                                          );
+                                  //kondisi jika terdapat data driver != 0 maka akan langsung ke page ListDriver
+                                  //jika tidak maka akan ke page RegisterDriver
+                                  // bool hasRegistered = await hasRegisteredBefore();
+                                  //   if (hasRegistered) {
+                                  //     Navigator.push(
+                                  //       context,
+                                  //       MaterialPageRoute(
+                                  //         builder: (context) => const ListDriver(),
+                                  //       ),
+                                  //     );
+                                  //   } else {
+                                  //     Navigator.push(
+                                  //       context,
+                                  //       MaterialPageRoute(
+                                  //         builder: (context) => const RegisterDriver(),
+                                  //       ),
+                                  //     );
+                                  //   }
+                                  // }),
+                                  // KategoriProfile("Toko", "assets/svg/store.svg", 32, 32, ),
+                                }
+                                ),
                               ],
                             ),
                           ],

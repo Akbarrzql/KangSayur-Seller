@@ -13,6 +13,18 @@ class DetailInformasiDriverPage extends StatefulWidget {
 }
 
 class _DetailInformasiDriverPageState extends State<DetailInformasiDriverPage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        widget.data;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -33,7 +45,9 @@ class _DetailInformasiDriverPageState extends State<DetailInformasiDriverPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const EditInformasiDriver())
+                      builder: (context) => EditInformasiDriver(
+                        data: widget.data,
+                      ))
               );
             },
             child: Container(

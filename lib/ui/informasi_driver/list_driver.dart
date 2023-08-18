@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
 import 'package:kangsayur_seller/ui/auth/register/driver/register_driver.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../bloc/bloc/list_all_driver_bloc.dart';
@@ -21,6 +22,7 @@ class ListDriver extends StatefulWidget {
 class _ListDriverState extends State<ListDriver> {
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text("List Driver",
@@ -28,7 +30,8 @@ class _ListDriverState extends State<ListDriver> {
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
+              Navigator.pop(context);
+              // Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
             }
         ),
         backgroundColor: Colors.white,
@@ -58,19 +61,42 @@ class _ListDriverState extends State<ListDriver> {
                 );
               } else if (state is ListAllDriverLoaded) {
                 final data = state.listAllDriverModel;
-                return Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: SingleChildScrollView(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: data.produk.length,
-                        itemBuilder: (context, index) {
-                          return _cardDriver(data.produk[index].namaDriver.toString(), "+62${data.produk[index].nomorTelfon.toString()}", "https://kangsayur.nitipaja.online${data.produk[index].fotoDriver.toString()}", onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailDriver(data: data.produk[index])));
-                          },);
-                        },
-                      )
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    BlocProvider.of<ListAllDriverPageBloc>(context).add(GetListAllDriver());
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: SingleChildScrollView(
+                        child: data.produk.isEmpty ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              children: [
+                                Lottie.asset("assets/json/drivernf.json", width: 300, height: 300,),
+                                Text(
+                                  'Belum ada inbox yang masuk',
+                                  style: textTheme.headline6!.copyWith(
+                                    color: ColorValue.neutralColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ) :ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: data.produk.length,
+                          itemBuilder: (context, index) {
+                            return _cardDriver(data.produk[index].namaDriver.toString(), "+62${data.produk[index].nomorTelfon.toString()}", "https://kangsayur.nitipaja.online${data.produk[index].fotoDriver.toString()}", onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => DetailDriver(data: data.produk[index])));
+                            },);
+                          },
+                        ),
+                    ),
                   ),
                 );
               } else if (state is ListAllDriverError) {
