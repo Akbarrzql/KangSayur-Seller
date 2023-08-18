@@ -119,7 +119,6 @@ class _EditInformasiDriverState extends State<EditInformasiDriver> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-
                                 _listData("Nama Driver", widget.data.namaDriver.toString(), _nameController, TextInputType.text),
                                 const SizedBox(height: 20,),
                                 _listData("No Telepon", "+62${widget.data.nomorTelfon.toString()}", _phoneController, TextInputType.phone),
