@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 import '../../model/iklan_model.dart';
+import '../../model/iklan_toko_model.dart';
 
 @immutable
 abstract class AddIklanState {}
@@ -13,6 +14,12 @@ class AddIklanPageLoaded extends AddIklanState {
   final IklanModel iklanModel;
 
   AddIklanPageLoaded(this.iklanModel);
+}
+
+class IklanTokoSuccess extends AddIklanState {
+  final IklanTokoModel iklanTokoModel;
+
+  IklanTokoSuccess(this.iklanTokoModel);
 }
 
 class AddIklanPageError extends AddIklanState {

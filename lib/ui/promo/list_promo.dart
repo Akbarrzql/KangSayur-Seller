@@ -27,7 +27,7 @@ class _ListPromoPageState extends State<ListPromoPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'Informasi Iklan',
+          'Promo',
           style: Theme.of(context).textTheme.headline6!.copyWith(
             color: ColorValue.neutralColor,
             fontSize: 16,

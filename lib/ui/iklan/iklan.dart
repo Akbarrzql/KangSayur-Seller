@@ -6,8 +6,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kangsayur_seller/bloc/bloc/add_iklan_bloc.dart';
 import 'package:kangsayur_seller/repository/iklan_repository.dart';
+import 'package:kangsayur_seller/repository/iklan_toko_repository.dart';
 import 'package:kangsayur_seller/ui/iklan/kategori_iklan.dart';
 import 'package:kangsayur_seller/ui/informasi/informasi.dart';
+import 'package:kangsayur_seller/ui/profile/inbox.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 import 'package:kangsayur_seller/ui/widget/textfiled.dart';
 
@@ -32,6 +34,7 @@ class _IklanPageState extends State<IklanPage> {
   bool _isCategorySelected = false;
   bool _iskategoriIklanSelected = false;
   bool _iskategoriIklanSelected1 = false;
+  late IklanBloc iklanBloc;
 
   Future<void> _getImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
@@ -79,7 +82,6 @@ class _IklanPageState extends State<IklanPage> {
   @override
   void initState() {
     super.initState();
-
     for (int i = 0; i < widget.selectedCategories.length; i++) {
       if (widget.selectedCategories[i]) {
         setState(() {
@@ -88,6 +90,19 @@ class _IklanPageState extends State<IklanPage> {
         });
       }
     }
+    iklanBloc = IklanBloc(iklanRepository: IklanRepository(), iklanTokoPageRepository: IklanTokoRepository());
+    iklanBloc.stream.listen((event) {
+      if(event is AddIklanPageLoaded){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const InformasiIklanPage()));
+      }
+    });
+  }
+
+
+  @override
+  void dispose() {
+    iklanBloc.close();
+    super.dispose();
   }
 
   @override
@@ -115,7 +130,7 @@ class _IklanPageState extends State<IklanPage> {
         ),
       ),
       body: BlocProvider(
-        create: (context) => IklanBloc(iklanRepository: IklanRepository()),
+        create: (context) => iklanBloc,
         child: BlocConsumer<IklanBloc, AddIklanState>(
           listener: (context, state) {},
           builder: (context, state) {
@@ -126,11 +141,12 @@ class _IklanPageState extends State<IklanPage> {
                 child: CircularProgressIndicator(),
               );
             } else if (state is AddIklanPageLoaded) {
-              return const InformasiIklanPage();
+              return const InboxPage();
+            } else if(state is AddIklanPageError){
+              print(state.errorMessage);
+              return const InboxPage();
             } else {
-              return const Center(
-                child: Text("Error"),
-              );
+              return Container();
             }
           },
         )
@@ -498,14 +514,22 @@ class _IklanPageState extends State<IklanPage> {
             const SizedBox(
               height: 20,
             ),
-            _isCategorySelected ? main_button('Iklankan', context, onPressed: () async{
+            main_button('Iklankan', context, onPressed: () async{
               File? selectedImage = await compressImage(_imageFile!);
-              BlocProvider.of<IklanBloc>(context).add(
-                  PostIklan(
-                    imgPamflet: selectedImage,
-                    kategoriId: widget.selectedCategories.indexWhere((element) => element == true) + 1,
-                  ));
-            }) : main_button('Iklankan', context, onPressed: () {}),
+              //jika menekan Action chip Iklan Katalog maka akan menjalankan fungsi postIklan pada bloc
+              if(_iskategoriIklanSelected){
+                print("Iklan katalog");
+                BlocProvider.of<IklanBloc>(context).add(PostIklan(
+                  imgPamflet: selectedImage,
+                  kategoriId: widget.selectedCategories.indexWhere((element) => element == true) + 1
+                ));
+              } else {
+                print("Iklan Toko");
+                BlocProvider.of<IklanBloc>(context).add(PostIklanToko(
+                  imgPamflet: selectedImage,
+                ));
+              }
+            })
           ],
         ),
       ),
