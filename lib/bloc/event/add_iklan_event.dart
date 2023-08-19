@@ -13,3 +13,9 @@ class PostIklan extends AddIklanEvent {
     required this.kategoriId,
 });
 }
+
+class PostIklanToko extends AddIklanEvent{
+  final File imgPamflet;
+
+  PostIklanToko({required this.imgPamflet});
+}
