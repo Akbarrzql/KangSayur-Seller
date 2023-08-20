@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kangsayur_seller/Constants/app_constants.dart';
 import 'package:kangsayur_seller/bloc/bloc/dashboard_bloc.dart';
@@ -666,7 +669,50 @@ class _DahsboardPageState extends State<DahsboardPage> {
                               color: const Color(0xFFE5E5E5),
                             ),
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: () async{
+                                FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+                                SharedPreferences pref = await SharedPreferences.getInstance();
+                                String? token = pref.getString('token');
+
+                                if (token != null) {
+                                  FlutterDownloader.enqueue(
+                                    url: 'https://kangsayur.nitipaja.online/api/seller/download/grafik',
+                                    headers: {
+                                      'Accept': 'application/json',
+                                      'Authorization': 'Bearer $token',
+                                    },
+                                    savedDir: '/storage/emulated/0/Download',
+                                    fileName: 'Grafik Penjualan.pdf',
+                                    showNotification: false,
+                                    openFileFromNotification: false,
+                                    saveInPublicStorage: true,
+                                  );
+
+                                  var androidPlatformChannelSpecifics =  const AndroidNotificationDetails(
+                                    'your channel id',
+                                    'your channel name',
+                                    importance: Importance.max,
+                                    priority: Priority.high,
+                                  );
+                                  var platformChannelSpecifics = NotificationDetails(
+                                    android: androidPlatformChannelSpecifics,
+                                  );
+
+                                  // Display the notification
+                                  await flutterLocalNotificationsPlugin.show(
+                                    0, // Notification ID
+                                    'Download Selesai', // Notification title
+                                    'Grafik Penjualan.pdf', // Notification body
+                                    platformChannelSpecifics,
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Token tidak tersedia, mohon untuk login terlebih dahulu."),
+                                    ),
+                                  );
+                                }
+                              },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
