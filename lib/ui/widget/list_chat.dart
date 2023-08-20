@@ -28,7 +28,7 @@ class ListChart extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       image: DecorationImage(
-                        image: AssetImage(imagePelanggan),
+                        image: NetworkImage(imagePelanggan),
                         fit: BoxFit.cover,
                       ),
                     ),
