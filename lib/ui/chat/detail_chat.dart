@@ -8,6 +8,7 @@ import 'package:kangsayur_seller/bloc/event/room_chat_event.dart';
 import 'package:kangsayur_seller/bloc/state/room_chat_state.dart';
 import 'package:kangsayur_seller/repository/room_chat_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:kangsayur_seller/repository/send_massage_repository.dart';
 import 'package:pusher_client/pusher_client.dart';
 import '../../common/color_value.dart';
 import '../../model/list_chat_seller_model.dart';
@@ -25,6 +26,9 @@ class DetailChatPage extends StatefulWidget {
 class _DetailChatPageState extends State<DetailChatPage> {
 
   final TextEditingController _messageController = TextEditingController(); // Tambahkan controller untuk TextField
+
+  final List<ChatMessage> _chatMessages = [];
+
   //inisisasi pusher dan stream controller
   late PusherClient pusher;
   StreamController<dynamic> dataStreamController = StreamController<dynamic>();
@@ -34,13 +38,10 @@ class _DetailChatPageState extends State<DetailChatPage> {
   @override
   void initState() {
     super.initState();
+    _initPusher();
     //inisialisasi pusher dijalanakan di initstate untuk pertama kali
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     });
   }
 
@@ -83,11 +84,7 @@ class _DetailChatPageState extends State<DetailChatPage> {
 
         RoomChatModelModel updatedRoomChatModel = RoomChatModelModel.fromJson(eventData);
         dataStreamController.add(updatedRoomChatModel);
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       });
     } catch (e) {
       print('Error initializing Pusher: $e');
@@ -107,16 +104,10 @@ class _DetailChatPageState extends State<DetailChatPage> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return BlocProvider(
-      create: (context) => RoomChatPageBloc(roomChatPageRepository: RoomChatRepository())..add(GetRoomChat(widget.data.conversationId.toString())),
+      create: (context) => RoomChatPageBloc(roomChatPageRepository: RoomChatRepository(), sendMassagePageRepository: SendMassageRepository())..add(GetRoomChat(widget.data.conversationId.toString())),
       child: BlocBuilder<RoomChatPageBloc, RoomChatState>(
         builder: (context, state) {
-          if (state is RoomChatLoading) {
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              )
-            );
-          }else if (state is RoomChatLoaded){
+          if (state is RoomChatLoaded){
             final roomChatModel = state.roomChatModelModel;
             return Scaffold(
               appBar: AppBar(
@@ -166,7 +157,7 @@ class _DetailChatPageState extends State<DetailChatPage> {
                             itemBuilder: (context, index) {
                               final interlocutors = updatedRoomChatModel.interlocutors;
                               final message = updatedRoomChatModel.messages[index];
-                              return InkWell(
+                              return GestureDetector(
                                 onLongPress: () {},
                                 child: ChatBubble(
                                   imageUser: 'https://kangsayur.nitipaja.online${message.photo}',
@@ -188,7 +179,7 @@ class _DetailChatPageState extends State<DetailChatPage> {
                             itemBuilder: (context, index) {
                               final interlocutors = roomChatModel.interlocutors;
                               final message = roomChatModel.messages[index];
-                              return InkWell(
+                              return GestureDetector(
                                 onLongPress: () {},
                                 child: ChatBubble(
                                   imageUser: 'https://kangsayur.nitipaja.online${message.photo}',
@@ -245,12 +236,33 @@ class _DetailChatPageState extends State<DetailChatPage> {
                           ),
                           const SizedBox(width: 10),
                           InkWell(
-                            onTap: () {
+                            onTap: () async{
                               // Tambahkan kondisi jika _messageController.text tidak kosong
                               if (_messageController.text.isNotEmpty) {
                                 setState(() {
+                                  _chatMessages.add(
+                                    ChatMessage(
+                                      name: 'Seller',
+                                      message: _messageController.text,
+                                      date: DateFormat('HH:mm').format(DateTime.now()),
+                                      role: 'seller',
+                                      isCurrentUser: true,
+                                    ),
+                                  );
+                                  context.read<RoomChatPageBloc>().add(SendMassage(widget.data.conversationId.toString(), _messageController.text));
                                 });
                                 _messageController.clear(); // Clear text field
+
+                                // Tunggu sebentar agar pesan dapat dikirim
+                                await Future.delayed(Duration(milliseconds: 500));
+
+                                // Kembali ke halaman yang sama
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailChatPage(data: widget.data),
+                                  ),
+                                );
                               }
                             },
                             child: Container(
@@ -273,13 +285,9 @@ class _DetailChatPageState extends State<DetailChatPage> {
                 ],
               ),
             );
-          }else if (state is RoomChatError){
-            return Center(
-              child: Text(state.errorMessage),
-            );
           }else{
-            return const Center(
-              child: Text('Error'),
+            return const Scaffold(
+              body: SizedBox(),
             );
           }
         },
