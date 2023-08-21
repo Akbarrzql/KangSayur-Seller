@@ -8,3 +8,10 @@ class GetRoomChat extends RoomChatEvent {
 
   GetRoomChat(this.conversationId);
 }
+
+class SendMassage extends RoomChatEvent {
+  final String conversationId;
+  final String message;
+
+  SendMassage(this.conversationId, this.message);
+}

@@ -50,12 +50,15 @@ class ListChart extends StatelessWidget {
                       const SizedBox(
                         height: 4,
                       ),
-                      Text(
-                        pesanPelanggan,
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: ColorValue.neutralColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: Text(
+                          pesanPelanggan,
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: ColorValue.neutralColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ],
@@ -75,24 +78,6 @@ class ListChart extends StatelessWidget {
                   ),
                   const SizedBox(
                     height: 4,
-                  ),
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: Colors.red,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        '1',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
