@@ -51,20 +51,20 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
   }
 
   final List<Kategori> _listKategori = [
-    Kategori('Sayuran', false),
-    Kategori('Unggas', false),
     Kategori('Bahan Pokok', false),
+    Kategori('Sayuran', false),
     Kategori('Buah-Buahan', false),
     Kategori('Daging', false),
+    Kategori('Unggas', false),
     Kategori('Telur', false),
   ];
 
   final List<String> _katalogIcons = [
-    "assets/svg/sayuran_1.svg",
-    "assets/svg/unggas.svg",
     "assets/svg/bahan_pokok.svg",
+    "assets/svg/sayuran_1.svg",
     "assets/svg/buah.svg",
     "assets/svg/daging.svg",
+    "assets/svg/unggas.svg",
     "assets/svg/telur.svg",
   ];
 

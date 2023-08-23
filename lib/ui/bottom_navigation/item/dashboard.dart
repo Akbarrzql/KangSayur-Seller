@@ -759,13 +759,8 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             ),
                           );
                         } else if (state is DashboardPageLoaded) {
-                          return InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ChartHorizotalPage(
-                                dataPenjualan: getSalesData(),
-                                dataPenjualanDateList: getSalesData(),
-                              )));
-                            },
+                          return GestureDetector(
+                            onTap: (){},
                             child: SfCartesianChart(
                               enableAxisAnimation: true,
                               primaryXAxis: CategoryAxis(),
@@ -781,6 +776,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                   enablePanning: true),
                               // Enable tooltipz
                               tooltipBehavior: TooltipBehavior(enable: true),
+                              //terdapat titik titik pada garis
                               series: <ChartSeries<DataPenjualan, String>>[
                                 LineSeries<DataPenjualan, String>(
                                   dataSource: <DataPenjualan>[
@@ -791,6 +787,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                                   yValueMapper: (DataPenjualan data, _) => data.total,
                                   color: ColorValue.primaryColor,
                                   // Enable data label
+                                  markerSettings: const MarkerSettings(isVisible: true),
                                   dataLabelSettings:
                                   const DataLabelSettings(isVisible: true),)
                               ],

@@ -1,9 +1,25 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kangsayur_seller/bloc/bloc/room_chat_bloc.dart';
+import 'package:kangsayur_seller/bloc/event/room_chat_event.dart';
+import 'package:kangsayur_seller/bloc/state/room_chat_state.dart';
+import 'package:kangsayur_seller/repository/room_chat_repository.dart';
+import 'package:intl/intl.dart';
+import 'package:kangsayur_seller/repository/send_massage_repository.dart';
+import 'package:pusher_client/pusher_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/color_value.dart';
+import '../../model/list_chat_seller_model.dart';
+import 'package:http/http.dart' as http;
+import '../../model/room_chat_model.dart';
+import '../../model/start_convertation_model.dart';
 
 class DetailChatSellerPage extends StatefulWidget {
-  const DetailChatSellerPage({Key? key}) : super(key: key);
+  const DetailChatSellerPage({Key? key, required this.data}) : super(key: key);
+  final StartConvertationModel data;
 
   @override
   State<DetailChatSellerPage> createState() => _DetailChatSellerPageState();
@@ -13,258 +29,337 @@ class _DetailChatSellerPageState extends State<DetailChatSellerPage> {
 
   final TextEditingController _messageController = TextEditingController(); // Tambahkan controller untuk TextField
 
-  final List<ChatMessage> _chatMessages = [
-    ChatMessage(
-      name: 'Toko',
-      message: 'Halo, saya mengalami masalah pada pesanan saya',
-      date: '10:01',
-      isCurrentUser: true,
-    ),
-    ChatMessage(
-      name: 'Admin',
-      message: 'Halo, ada yang bisa kami bantu?',
-      date: '10:00',
-      isCurrentUser: false,
-    ),
-  ];
+  final List<ChatMessage> _chatMessages = [];
+  bool isLoading = false;
+
+  //inisisasi pusher dan stream controller
+  late PusherClient pusher;
+  StreamController<dynamic> dataStreamController = StreamController<dynamic>();
+  final ScrollController _scrollController = ScrollController();
+
+
+  @override
+  void initState() {
+    super.initState();
+    _initPusher();
+    //inisialisasi pusher dijalanakan di initstate untuk pertama kali
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+  }
+
+  //fungsi untuk inisialisasi pusher dan subscribe ke channel
+  Future<void> _initPusher() async {
+    try {
+      pusher = PusherClient(
+        'a1b4c333a2e77bd3dc40',
+        PusherOptions(
+          cluster: 'ap1',
+          encrypted: true,
+        ),
+      );
+
+      pusher.onConnectionStateChange((state) {
+        print('Connection state changed: $state');
+      });
+
+      pusher.onConnectionError((error) {
+        print('Error connecting to Pusher: $error');
+      });
+
+      await pusher.connect();
+
+      // Subscribe to a channel
+      Channel channel = pusher.subscribe('conversation.${widget.data.convoId}');
+
+      //untuk subscribe ke channel private
+      // Channel channel = pusher.subscribePrivate('private-delivery');
+
+      //unsbuscribe channel
+      // pusher.unsubscribe('delivery');
+
+      //disconnect
+      // pusher.disconnect();
+
+      // Bind to an event
+      channel.bind('getMessagesList', (event) {
+        Map<String, dynamic> eventData = jsonDecode(event!.data.toString());
+
+        RoomChatModelModel updatedRoomChatModel = RoomChatModelModel.fromJson(eventData);
+        dataStreamController.add(updatedRoomChatModel);
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      });
+    } catch (e) {
+      print('Error initializing Pusher: $e');
+    }
+
+  }
+
+  @override
+  void dispose() {
+    // pusher.unsubscribe('conversation.${widget.data.conversationId}');
+    // pusher.disconnect();
+    dataStreamController.close();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            Container(
-              width: 35,
-              height: 35,
-              decoration: BoxDecoration(
-                color: ColorValue.tertiaryColor,
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.asset(
-                  'assets/images/admin_ava.png',
-                  fit: BoxFit.cover,
-                ),
-              )
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            //column
-            Text(
-              'Admin KangSayur',
-              style: textTheme.headline6!.copyWith(
-                color: ColorValue.neutralColor,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: ColorValue.neutralColor,
-          ),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              reverse: true,
-              itemCount: _chatMessages.length, // Gunakan jumlah pesan dalam _chatMessages
-              itemBuilder: (context, index) {
-                ChatMessage chatMessage = _chatMessages[index];
-                return InkWell(
-                  onLongPress: (){
-                    //menampilkan show dialog
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(
-                            'Hapus Pesan',
-                            style: textTheme.headline6!.copyWith(
-                              color: ColorValue.neutralColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          content: Text(
-                            'Apakah anda yakin ingin menghapus pesan ini?',
-                            style: textTheme.bodyText2!.copyWith(
-                              color: ColorValue.neutralColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                'Batal',
-                                style: textTheme.bodyText2!.copyWith(
-                                  color: ColorValue.neutralColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  _chatMessages.removeAt(index);
-                                });
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                'Hapus',
-                                style: textTheme.bodyText2!.copyWith(
-                                  color: ColorValue.primaryColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: ChatBubble(
-                    name: chatMessage.name,
-                    message: chatMessage.message,
-                    date: chatMessage.date,
-                    isCurrentUser: chatMessage.isCurrentUser,
-                  ),
-                );
-              },
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _messageController, // Tambahkan controller
-                    decoration: InputDecoration(
-                      hintText: 'Ketik pesan...',
-                      hintStyle: textTheme.bodyText2!.copyWith(
-                        color: ColorValue.neutralColor.withOpacity(0.5),
+    return BlocProvider(
+      create: (context) => RoomChatPageBloc(roomChatPageRepository: RoomChatRepository(), sendMassagePageRepository: SendMassageRepository())..add(GetRoomChat(widget.data.convoId.toString())),
+      child: BlocBuilder<RoomChatPageBloc, RoomChatState>(
+        builder: (context, state) {
+          if (state is RoomChatLoaded){
+            final roomChatModel = state.roomChatModelModel;
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                title: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 16,
+                      backgroundImage: NetworkImage('https://kangsayur.nitipaja.online/storage/user_profile/1684847191asa.jpg'),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    //column
+                    Text(
+                      "Joko (Admin)",
+                      style: textTheme.headline6!.copyWith(
+                        color: ColorValue.neutralColor,
                         fontSize: 14,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w700,
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
-                      ),
-                      filled: true,
-                      fillColor: ColorValue.neutralColor.withOpacity(0.1),
                     ),
-                  ),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                InkWell(
-                  onTap: () {
-                    // Tambahkan kondisi jika _messageController.text tidak kosong
-                    if (_messageController.text.isNotEmpty) {
-                      setState(() {
-                        _chatMessages.insert(
-                          0,
-                          ChatMessage(
-                            name: 'Toko',
-                            message: _messageController.text,
-                            date: '${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}',
-                            isCurrentUser: true,
-                          ),
-                        );
-                      });
-                      _messageController.clear(); // Clear text field
-                    }
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
                   },
-                  child: Container(
-                    width: 35,
-                    height: 35,
-                    decoration: BoxDecoration(
-                      color: ColorValue.primaryColor,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: const Icon(
-                      Icons.send,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: ColorValue.neutralColor,
                   ),
                 ),
-              ],
-            )
-            ),
-        ],
+              ),
+              body: Column(
+                children: [
+                  Expanded(
+                    child: StreamBuilder(
+                      stream: dataStreamController.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData){
+                          final updatedRoomChatModel = snapshot.data as RoomChatModelModel;
+                          return ListView.builder(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                            itemCount: updatedRoomChatModel.messages.length,
+                            itemBuilder: (context, index) {
+                              final message = updatedRoomChatModel.messages[index];
+                              return GestureDetector(
+                                onLongPress: () {},
+                                child: ChatBubble(
+                                  imageUser: 'https://kangsayur.nitipaja.online${message.photo}',
+                                  imageSeller: 'https://kangsayur.nitipaja.online${message.photo}',
+                                  name: message.name.toString(),
+                                  nameSeller: "Joko (Admin)",
+                                  message: message.message,
+                                  date: DateFormat('HH:mm').format(DateTime.parse(message.createdAt.toString())),
+                                  role: message.role.toString(),
+                                ),
+                              );
+                            },
+                          );
+                        }else{
+                          return ListView.builder(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                            itemCount: roomChatModel.messages.length,
+                            itemBuilder: (context, index) {
+                              final message = roomChatModel.messages[index];
+                              return GestureDetector(
+                                onLongPress: () {},
+                                child: ChatBubble(
+                                  imageUser: 'https://kangsayur.nitipaja.online${message.photo}',
+                                  imageSeller: 'https://kangsayur.nitipaja.online${message.photo}',
+                                  name: message.name.toString(),
+                                  nameSeller: "Joko (Admin)",
+                                  message: message.message,
+                                  date: DateFormat('HH:mm').format(DateTime.parse(message.createdAt.toString())),
+                                  role: message.role.toString(),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 1,
+                            blurRadius: 5,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _messageController, // Tambahkan controller
+                              decoration: InputDecoration(
+                                hintText: 'Ketik pesan...',
+                                hintStyle: textTheme.bodyText2!.copyWith(
+                                  color: ColorValue.neutralColor.withOpacity(0.5),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 10,
+                                ),
+                                filled: true,
+                                fillColor: ColorValue.neutralColor.withOpacity(0.1),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          if(isLoading)
+                            Container(
+                              width: 35,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: const Icon(
+                                Icons.send,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            )
+                          else
+                            InkWell(
+                              onTap: () async{
+                                // Tambahkan kondisi jika _messageController.text tidak kosong
+                                if (_messageController.text.isNotEmpty) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  setState(() {
+                                    _chatMessages.add(
+                                      ChatMessage(
+                                        name: 'Seller',
+                                        message: _messageController.text,
+                                        date: DateFormat('HH:mm').format(DateTime.now()),
+                                        role: 'seller',
+                                        isCurrentUser: true,
+                                      ),
+                                    );
+                                    // context.read<RoomChatPageBloc>().add(SendMassage(widget.data.conversationId.toString(), _messageController.text));
+                                  });
+                                  await ChatFunc().sendMessage(widget.data.convoId.toString(), _messageController.text);
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  _messageController.clear(); // Clear text field
+
+                                  // // Tunggu sebentar agar pesan dapat dikirim
+                                  // await Future.delayed(Duration(milliseconds: 500));
+                                  //
+                                  // // Kembali ke halaman yang sama
+                                  // Navigator.pushReplacement(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => DetailChatPage(data: widget.data),
+                                  //   ),
+                                  // );
+                                }
+                              },
+                              child: Container(
+                                width: 35,
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  color: ColorValue.primaryColor,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: const Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                        ],
+                      )
+                  ),
+                ],
+              ),
+            );
+          }else{
+            return const Scaffold(
+              body: SizedBox(),
+            );
+          }
+        },
       ),
     );
   }
 }
 
 class ChatBubble extends StatelessWidget {
+  final String imageUser;
+  final String imageSeller;
   final String name;
+  final String nameSeller;
   final String message;
   final String date;
-  final bool isCurrentUser;
+  final String role;
 
   const ChatBubble({
+    required this.imageUser,
+    required this.imageSeller,
     required this.name,
+    required this.nameSeller,
     required this.message,
     required this.date,
-    required this.isCurrentUser,
+    required this.role,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment:
-      isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      role == 'seller' ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+          mainAxisAlignment: role == 'seller'
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!isCurrentUser)
-              const CircleAvatar(
-                // Foto profil User
+            if (role == "admin")
+              CircleAvatar(
                 radius: 16,
-                backgroundImage: AssetImage('assets/images/admin_ava.png'),
-                backgroundColor: ColorValue.tertiaryColor,
+                backgroundImage: NetworkImage(imageUser),
               ),
             const SizedBox(width: 8),
             Flexible(
               child: Column(
-                crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                crossAxisAlignment: role == "seller" ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -272,7 +367,6 @@ class ChatBubble extends StatelessWidget {
                       name, // Tampilkan nama pengirim
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: isCurrentUser ? ColorValue.neutralColor : ColorValue.neutralColor,
                       ),
                     ),
                   ),
@@ -281,16 +375,16 @@ class ChatBubble extends StatelessWidget {
                     padding: const EdgeInsets.all(12),
                     margin: const EdgeInsets.symmetric(horizontal: 8),
                     decoration: BoxDecoration(
-                      color: isCurrentUser ? const Color(0xFFDDEDE7) : Colors.grey[200],
+                      color: role == "seller" ? const Color(0xFFDDEDE7) : Colors.grey[200],
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
-                      crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                      crossAxisAlignment: role == "seller" ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                       children: [
                         Text(
                           message, // Tampilkan pesan
                           style: TextStyle(
-                            color: isCurrentUser ? ColorValue.neutralColor : ColorValue.neutralColor,
+                            color: role == "seller" ? ColorValue.neutralColor : ColorValue.neutralColor,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -298,7 +392,7 @@ class ChatBubble extends StatelessWidget {
                           date, // Tampilkan waktu pengiriman
                           style: TextStyle(
                             fontSize: 12,
-                            color: isCurrentUser ? ColorValue.hintColor : ColorValue.hintColor,
+                            color: role == "seller" ? ColorValue.hintColor : ColorValue.hintColor,
                           ),
                         ),
                       ],
@@ -307,11 +401,11 @@ class ChatBubble extends StatelessWidget {
                 ],
               ),
             ),
-            if (isCurrentUser)
-              const CircleAvatar(
+            if (role == "seller")
+              CircleAvatar(
                 // Foto profil Toko
                 radius: 16,
-                backgroundColor: ColorValue.primaryColor,
+                backgroundImage: NetworkImage(imageSeller),
               ),
           ],
         ),
@@ -325,14 +419,45 @@ class ChatMessage {
   final String name;
   final String message;
   final String date;
+  final String role;
   final bool isCurrentUser;
 
   ChatMessage({
     required this.name,
     required this.message,
     required this.date,
+    required this.role,
     required this.isCurrentUser,
   });
 }
+
+class ChatFunc {
+  final String _url = 'https://kangsayur.nitipaja.online/api/';
+
+  Future<bool> sendMessage(String conversationId, String message) async {
+    print("conversationId : $conversationId");
+    print("message : $message");
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+    print(token);
+    try {
+      var response =
+      await http.post(Uri.parse(_url + 'seller/chat/send'), headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      }, body: {
+        'conversationId': conversationId,
+        'message': message,
+      });
+      print(response.body);
+      print(response.statusCode);
+      return true;
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return false;
+    }
+  }
+}
+
 
 

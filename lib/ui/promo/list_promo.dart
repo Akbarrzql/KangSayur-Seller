@@ -8,7 +8,7 @@ import 'package:kangsayur_seller/repository/list_promo_repository.dart';
 import 'package:kangsayur_seller/ui/promo/promo.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
-
+import 'package:intl/intl.dart';
 import '../../common/color_value.dart';
 import '../bottom_navigation/bottom_navigation.dart';
 
@@ -295,7 +295,7 @@ class _ListPromoPageState extends State<ListPromoPage> {
                                                 ),
                                                 const SizedBox(height: 10,),
                                                 Text(
-                                                  listPromo[index].hargaAwal.toString(),
+                                                  NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(listPromo[index].hargaAwal),
                                                   style: textTheme.bodyText2!.copyWith(
                                                     color: Colors.red,
                                                     fontSize: 10,
@@ -304,7 +304,7 @@ class _ListPromoPageState extends State<ListPromoPage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  listPromo[index].hargaSale.toString(),
+                                                  NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(listPromo[index].hargaSale),
                                                   style: textTheme.bodyText2!.copyWith(
                                                     color: ColorValue.neutralColor,
                                                     fontSize: 14,

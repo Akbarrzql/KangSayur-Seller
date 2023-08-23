@@ -133,13 +133,7 @@ class _OTPState extends State<OTP> {
           }else{
             return const Scaffold(
               body: Center(
-                child: Text(
-                  "Terjadi kesalahan",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
+                child: CircularProgressIndicator(),
               ),
             );
           }

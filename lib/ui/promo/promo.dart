@@ -414,7 +414,8 @@ class _PromoPageState extends State<PromoPage> {
                                                         child: Text(
                                                           "Harga Normal ${
                                                           //set state jika ada perubahan harga dari chip variant
-                                                              chip[0] ? widget.variantPrice[0].toString() : chip[1] ? widget.variantPrice[1].toString() : chip[2] ? widget.variantPrice[2].toString() : chip[3] ? widget.variantPrice[3].toString() : chip[4] ? widget.variantPrice[4].toString() : chip[5] ? widget.variantPrice[5].toString() : widget.price.toString()
+                                                          //format ke rupiah
+                                                          chip[0] ? NumberFormat.currency(locale: 'id', decimalDigits: 0, symbol: 'Rp. ').format(widget.variantPrice[0]) : chip[1] ? NumberFormat.currency(locale: 'id', decimalDigits: 0, symbol: 'Rp. ').format(widget.variantPrice[1]) : chip[2] ? NumberFormat.currency(locale: 'id', decimalDigits: 0, symbol: 'Rp. ').format(widget.variantPrice[2]) : chip[3] ? NumberFormat.currency(locale: 'id', decimalDigits: 0, symbol: 'Rp. ').format(widget.variantPrice[3]) : chip[4] ? NumberFormat.currency(locale: 'id', decimalDigits: 0, symbol: 'Rp. ').format(widget.variantPrice[4]) : chip[5] ? NumberFormat.currency(locale: 'id', decimalDigits: 0, symbol: 'Rp. ').format(widget.variantPrice[5]) : NumberFormat.currency(locale: 'id', decimalDigits: 0, symbol: 'Rp. ').format(widget.price)
                                                           }",
                                                           style: Theme.of(context).textTheme.subtitle1!.copyWith(
                                                             fontWeight: FontWeight.w500,
