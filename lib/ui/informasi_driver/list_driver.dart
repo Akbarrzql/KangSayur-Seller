@@ -75,7 +75,7 @@ class _ListDriverState extends State<ListDriver> {
                               children: [
                                 Lottie.asset("assets/json/drivernf.json", width: 300, height: 300,),
                                 Text(
-                                  'Belum ada inbox yang masuk',
+                                  'Kamu belum memiliki driver',
                                   style: textTheme.headline6!.copyWith(
                                     color: ColorValue.neutralColor,
                                     fontSize: 16,

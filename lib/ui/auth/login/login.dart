@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kangsayur_seller/bloc/bloc/device_token_bloc.dart';
 import 'package:kangsayur_seller/bloc/bloc/login_bloc.dart';
 import 'package:kangsayur_seller/bloc/state/login_state.dart';
 import 'package:kangsayur_seller/common/color_value.dart';
-import 'package:kangsayur_seller/model/login_model.dart';
-import 'package:kangsayur_seller/ui/auth/login/otp.dart';
 import 'package:kangsayur_seller/ui/widget/custom_textfield.dart';
 import 'package:kangsayur_seller/validator/input_validator.dart';
 import '../../../bloc/bloc/validasi_email_bloc.dart';
-import '../../../bloc/event/device_token_event.dart';
 import '../../../bloc/event/login_event.dart';
 import '../../../bloc/event/validasi_email_event.dart';
 import '../../../bloc/state/validasi_email_state.dart';
-import '../../../firebase/firebase_messaging.dart';
-import '../../../repository/device_token_repository.dart';
 import '../../../repository/login_repository.dart';
 import '../../../repository/validasi_email_repository.dart';
 import '../../bottom_navigation/bottom_navigation.dart';
-import '../../widget/dialog_alret.dart';
-import 'package:http/http.dart' as http;
-import 'package:kangsayur_seller/ui/auth/login/otp.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../password/send_email.dart';
 
 class login_screen extends StatefulWidget {
   const login_screen({Key? key}) : super(key: key);
@@ -129,6 +121,7 @@ class _login_screenState extends State<login_screen> {
                         if (p0!.length > 5) {
                           context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
                         }
+                        return null;
                       },
                     );
                   }else if (state is ValidasiEmailLoading) {
@@ -141,6 +134,7 @@ class _login_screenState extends State<login_screen> {
                         if (p0!.length > 5) {
                           context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
                         }
+                        return null;
                       },
                     );
                   }else if (state is ValidasiEmailSuccess) {
@@ -162,6 +156,7 @@ class _login_screenState extends State<login_screen> {
                         if (p0!.length > 5) {
                           context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
                         }
+                        return null;
                       },
                     );
                   }
@@ -175,6 +170,7 @@ class _login_screenState extends State<login_screen> {
                         if (p0!.length > 5) {
                           context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
                         }
+                        return null;
                       },
                     );
                   }else{
@@ -187,6 +183,7 @@ class _login_screenState extends State<login_screen> {
                         if (p0!.length > 5) {
                           context.read<ValidasiEmailPageBloc>().add(ValidasiEmail(email: p0));
                         }
+                        return null;
                       },
                     );
                   }
@@ -209,7 +206,22 @@ class _login_screenState extends State<login_screen> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  if(_emailController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.red,
+                        margin: EdgeInsets.fromLTRB(24, 0, 24, 80),
+                        behavior: SnackBarBehavior.floating,
+                        content: Text('Email tidak boleh kosong dan harus diisi terlebih dahulu'),
+                      ),
+                    );
+                  }else{
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SendEmailPage(
+                      email: _emailController.text,
+                    )));
+                  }
+                },
                 child: Text(
                   'Lupa Password?',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
@@ -220,7 +232,7 @@ class _login_screenState extends State<login_screen> {
               ),
             ),
             const Spacer(),
-            Container(
+            SizedBox(
               child: ElevatedButton(
                 onPressed: () async{
                   if(_formKey.currentState!.validate()){

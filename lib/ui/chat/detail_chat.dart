@@ -10,9 +10,10 @@ import 'package:kangsayur_seller/repository/room_chat_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:kangsayur_seller/repository/send_massage_repository.dart';
 import 'package:pusher_client/pusher_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/color_value.dart';
 import '../../model/list_chat_seller_model.dart';
-
+import 'package:http/http.dart' as http;
 import '../../model/room_chat_model.dart';
 
 class DetailChatPage extends StatefulWidget {
@@ -28,11 +29,12 @@ class _DetailChatPageState extends State<DetailChatPage> {
   final TextEditingController _messageController = TextEditingController(); // Tambahkan controller untuk TextField
 
   final List<ChatMessage> _chatMessages = [];
+  bool isLoading = false;
 
   //inisisasi pusher dan stream controller
   late PusherClient pusher;
   StreamController<dynamic> dataStreamController = StreamController<dynamic>();
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
 
   @override
@@ -40,7 +42,7 @@ class _DetailChatPageState extends State<DetailChatPage> {
     super.initState();
     _initPusher();
     //inisialisasi pusher dijalanakan di initstate untuk pertama kali
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     });
   }
@@ -94,6 +96,7 @@ class _DetailChatPageState extends State<DetailChatPage> {
 
   @override
   void dispose() {
+    // pusher.unsubscribe('conversation.${widget.data.conversationId}');
     // pusher.disconnect();
     dataStreamController.close();
     super.dispose();
@@ -116,7 +119,7 @@ class _DetailChatPageState extends State<DetailChatPage> {
                   children: [
                     CircleAvatar(
                       radius: 16,
-                      backgroundImage: NetworkImage('https://kangsayur.nitipaja.online${roomChatModel.interlocutors.photo}'),
+                      backgroundImage: NetworkImage('https://kangsayur.nitipaja.online${widget.data.photo}'),
                     ),
                     const SizedBox(
                       width: 10,
@@ -155,14 +158,14 @@ class _DetailChatPageState extends State<DetailChatPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                             itemCount: updatedRoomChatModel.messages.length,
                             itemBuilder: (context, index) {
-                              final interlocutors = updatedRoomChatModel.interlocutors;
+                              final interlocutors = widget.data;
                               final message = updatedRoomChatModel.messages[index];
                               return GestureDetector(
                                 onLongPress: () {},
                                 child: ChatBubble(
                                   imageUser: 'https://kangsayur.nitipaja.online${message.photo}',
                                   imageSeller: 'https://kangsayur.nitipaja.online${message.photo}',
-                                  name: message.name.toString(),
+                                  name: message.name,
                                   nameSeller: interlocutors.name.toString(),
                                   message: message.message,
                                   date: DateFormat('HH:mm').format(DateTime.parse(message.createdAt.toString())),
@@ -177,14 +180,14 @@ class _DetailChatPageState extends State<DetailChatPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                             itemCount: roomChatModel.messages.length,
                             itemBuilder: (context, index) {
-                              final interlocutors = roomChatModel.interlocutors;
+                              final interlocutors = widget.data;
                               final message = roomChatModel.messages[index];
                               return GestureDetector(
                                 onLongPress: () {},
                                 child: ChatBubble(
                                   imageUser: 'https://kangsayur.nitipaja.online${message.photo}',
                                   imageSeller: 'https://kangsayur.nitipaja.online${message.photo}',
-                                  name: message.name.toString(),
+                                  name: message.name,
                                   nameSeller: interlocutors.name.toString(),
                                   message: message.message,
                                   date: DateFormat('HH:mm').format(DateTime.parse(message.createdAt.toString())),
@@ -235,10 +238,28 @@ class _DetailChatPageState extends State<DetailChatPage> {
                             ),
                           ),
                           const SizedBox(width: 10),
+                          if(isLoading)
+                            Container(
+                              width: 35,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: const Icon(
+                                Icons.send,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            )
+                          else
                           InkWell(
                             onTap: () async{
                               // Tambahkan kondisi jika _messageController.text tidak kosong
                               if (_messageController.text.isNotEmpty) {
+                                setState(() {
+                                  isLoading = true;
+                                });
                                 setState(() {
                                   _chatMessages.add(
                                     ChatMessage(
@@ -249,20 +270,24 @@ class _DetailChatPageState extends State<DetailChatPage> {
                                       isCurrentUser: true,
                                     ),
                                   );
-                                  context.read<RoomChatPageBloc>().add(SendMassage(widget.data.conversationId.toString(), _messageController.text));
+                                  // context.read<RoomChatPageBloc>().add(SendMassage(widget.data.conversationId.toString(), _messageController.text));
+                                });
+                                await ChatFunc().sendMessage(widget.data.conversationId.toString(), _messageController.text);
+                                setState(() {
+                                  isLoading = false;
                                 });
                                 _messageController.clear(); // Clear text field
 
-                                // Tunggu sebentar agar pesan dapat dikirim
-                                await Future.delayed(Duration(milliseconds: 500));
-
-                                // Kembali ke halaman yang sama
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DetailChatPage(data: widget.data),
-                                  ),
-                                );
+                                // // Tunggu sebentar agar pesan dapat dikirim
+                                // await Future.delayed(Duration(milliseconds: 500));
+                                //
+                                // // Kembali ke halaman yang sama
+                                // Navigator.pushReplacement(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => DetailChatPage(data: widget.data),
+                                //   ),
+                                // );
                               }
                             },
                             child: Container(
@@ -405,6 +430,34 @@ class ChatMessage {
     required this.role,
     required this.isCurrentUser,
   });
+}
+
+class ChatFunc {
+  final String _url = 'https://kangsayur.nitipaja.online/api/';
+
+  Future<bool> sendMessage(String conversationId, String message) async {
+    print("conversationId : $conversationId");
+    print("message : $message");
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+    print(token);
+    try {
+      var response =
+      await http.post(Uri.parse(_url + 'seller/chat/send'), headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      }, body: {
+        'conversationId': conversationId,
+        'message': message,
+      });
+      print(response.body);
+      print(response.statusCode);
+      return true;
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return false;
+    }
+  }
 }
 
 

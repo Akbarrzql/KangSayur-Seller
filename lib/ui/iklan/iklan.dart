@@ -60,7 +60,7 @@ class _IklanPageState extends State<IklanPage> {
     "assets/svg/buah.svg",
     "assets/svg/daging.svg",
     "assets/svg/unggas.svg",
-    "assets/svg/telur.svg"
+    "assets/svg/telur.svg",
   ];
 
   Future<File> compressImage(File imageFile) async {
@@ -108,28 +108,7 @@ class _IklanPageState extends State<IklanPage> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          'Iklan',
-          style: Theme.of(context).textTheme.headline6!.copyWith(
-                color: ColorValue.neutralColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: ColorValue.neutralColor,
-          ),
-        ),
-      ),
-      body: BlocProvider(
+    return BlocProvider(
         create: (context) => iklanBloc,
         child: BlocConsumer<IklanBloc, AddIklanState>(
           listener: (context, state) {},
@@ -150,313 +129,138 @@ class _IklanPageState extends State<IklanPage> {
             }
           },
         )
-      )
-    );
+      );
   }
 
   Widget buildInitailLayout(BuildContext context){
     final textTheme = Theme.of(context).textTheme;
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xffD7FEDF),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              height: 45,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.info_outline,
-                    color: ColorValue.primaryColor,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Text(
-                      "Untuk bisa menampilkan iklan kamu harus dengan format lebar 250 & tinggi 94 ",
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 10,
-                        color: ColorValue.primaryColor,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          'Iklan',
+          style: Theme.of(context).textTheme.headline6!.copyWith(
+            color: ColorValue.neutralColor,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+            color: ColorValue.neutralColor,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xffD7FEDF),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                height: 45,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      color: ColorValue.primaryColor,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Text(
+                        "Untuk bisa menampilkan iklan kamu harus dengan format lebar 250 & tinggi 94 ",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 10,
+                          color: ColorValue.primaryColor,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Foto Banner Iklan",
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color: ColorValue.neutralColor,
+              const SizedBox(
+                height: 10,
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            //image picker
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    _showBottomSheet(context);
-                  },
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: ColorValue.neutralColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: _imageFile != null
-                        ? ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.file(_imageFile!, fit: BoxFit.cover),
-                    )
-                        : Container(
+              Text(
+                "Foto Banner Iklan",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: ColorValue.neutralColor,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              //image picker
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      _showBottomSheet(context);
+                    },
+                    child: Container(
+                      height: 100,
+                      width: 100,
                       decoration: BoxDecoration(
                         color: ColorValue.neutralColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
-                        Icons.add_a_photo_outlined,
-                        color: ColorValue.primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Text(
-                      "Unggah Foto Toko",
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: ColorValue.neutralColor,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
-                    _imageFile != null
-                        ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: ColorValue.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
+                      child: _imageFile != null
+                          ? ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(_imageFile!, fit: BoxFit.cover),
+                      )
+                          : Container(
+                        decoration: BoxDecoration(
+                          color: ColorValue.neutralColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.add_a_photo_outlined,
+                          color: ColorValue.primaryColor,
                         ),
                       ),
-                      onPressed: () {
-                        _showBottomSheet(context);
-                      },
-                      child: Text(
-                        "Unggah Ulang",
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1!
-                            .copyWith(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                        : Container(),
-                  ],
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Nama Iklan Toko",
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color: ColorValue.neutralColor,
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            textfield(context, "Nama Iklan", _judulIklanController,
-                TextInputType.text),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Pilih Kateogri Iklan",
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color: ColorValue.neutralColor,
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ActionChip(
-                  label: Text(
-                    "Iklan Katalog",
-                    style: textTheme.bodyText2!.copyWith(
-                      color: _iskategoriIklanSelected
-                          ? Colors.white
-                          : ColorValue.neutralColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
                     ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _iskategoriIklanSelected = true;
-                      _iskategoriIklanSelected1 = false;
-                    });
-                  },
-                  backgroundColor: _iskategoriIklanSelected
-                      ? ColorValue.primaryColor
-                      : ColorValue.neutralColor.withOpacity(0.1),
-                  elevation: 2,
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  labelPadding: const EdgeInsets.symmetric(vertical: 5),
-                  visualDensity: VisualDensity.compact,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+                  const SizedBox(
+                    width: 15,
                   ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                ActionChip(
-                  label: Text(
-                    "Iklan Toko",
-                    style: textTheme.bodyText2!.copyWith(
-                      color: _iskategoriIklanSelected1
-                          ? Colors.white
-                          : ColorValue.neutralColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _iskategoriIklanSelected1 = true;
-                      _iskategoriIklanSelected = false;
-                    });
-                  },
-                  backgroundColor: _iskategoriIklanSelected1
-                      ? ColorValue.primaryColor
-                      : ColorValue.neutralColor.withOpacity(0.1),
-                  elevation: 2,
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  labelPadding: const EdgeInsets.symmetric(vertical: 5),
-                  visualDensity: VisualDensity.compact,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-              ],
-            ),
-            _iskategoriIklanSelected
-                ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Kategori Toko",
-                  style:
-                  Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: ColorValue.neutralColor,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                if (_isCategorySelected)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (var i = 0;
-                      i < widget.selectedCategories.length;
-                      i++)
-                        if (widget.selectedCategories[i])
-                          Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Container(
-                                        width: 50,
-                                        height: 50,
-                                        //border radius
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(5),
-                                          color:
-                                          ColorValue.primaryColor,
-                                        ),
-                                      ),
-                                      SvgPicture.asset(
-                                        categoryIcons[i],
-                                        width: 30,
-                                        height: 30,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  Text(
-                                    categoryNames[i],
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1!
-                                        .copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color:
-                                      ColorValue.neutralColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              )
-                            ],
-                          ),
-                      ElevatedButton(
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        "Unggah Foto Toko",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: ColorValue.neutralColor,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //kondisi jika foto sudah di upload maka akan menampilkan button upload ulanng
+                      _imageFile != null
+                          ? ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           primary: ColorValue.primaryColor,
                           shape: RoundedRectangleBorder(
@@ -464,12 +268,10 @@ class _IklanPageState extends State<IklanPage> {
                           ),
                         ),
                         onPressed: () {
-                          setState(() {
-                            _isCategorySelected = false;
-                          });
+                          _showBottomSheet(context);
                         },
                         child: Text(
-                          "Batal",
+                          "Unggah Ulang",
                           style: Theme.of(context)
                               .textTheme
                               .subtitle1!
@@ -479,58 +281,256 @@ class _IklanPageState extends State<IklanPage> {
                             color: Colors.white,
                           ),
                         ),
-                      ),
+                      )
+                          : Container(),
                     ],
                   )
-                else
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: ColorValue.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Nama Iklan Toko",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: ColorValue.neutralColor,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              textfield(context, "Nama Iklan", _judulIklanController,
+                  TextInputType.text),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Pilih Kateogri Iklan",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: ColorValue.neutralColor,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ActionChip(
+                    label: Text(
+                      "Iklan Katalog",
+                      style: textTheme.bodyText2!.copyWith(
+                        color: _iskategoriIklanSelected
+                            ? Colors.white
+                            : ColorValue.neutralColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const KategoriIklan()));
+                      setState(() {
+                        _iskategoriIklanSelected = true;
+                        _iskategoriIklanSelected1 = false;
+                      });
                     },
-                    child: Text(
-                      "Pilih Kategori Iklan",
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1!
-                          .copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
+                    backgroundColor: _iskategoriIklanSelected
+                        ? ColorValue.primaryColor
+                        : ColorValue.neutralColor.withOpacity(0.1),
+                    elevation: 2,
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    labelPadding: const EdgeInsets.symmetric(vertical: 5),
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-              ],
-            )
-                : Container(),
-            const SizedBox(
-              height: 20,
-            ),
-            main_button('Iklankan', context, onPressed: () async{
-              File? selectedImage = await compressImage(_imageFile!);
-              //jika menekan Action chip Iklan Katalog maka akan menjalankan fungsi postIklan pada bloc
-              if(_iskategoriIklanSelected){
-                print("Iklan katalog");
-                BlocProvider.of<IklanBloc>(context).add(PostIklan(
-                  imgPamflet: selectedImage,
-                  kategoriId: widget.selectedCategories.indexWhere((element) => element == true) + 1
-                ));
-              } else {
-                print("Iklan Toko");
-                BlocProvider.of<IklanBloc>(context).add(PostIklanToko(
-                  imgPamflet: selectedImage,
-                ));
-              }
-            })
-          ],
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  ActionChip(
+                    label: Text(
+                      "Iklan Toko",
+                      style: textTheme.bodyText2!.copyWith(
+                        color: _iskategoriIklanSelected1
+                            ? Colors.white
+                            : ColorValue.neutralColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _iskategoriIklanSelected1 = true;
+                        _iskategoriIklanSelected = false;
+                      });
+                    },
+                    backgroundColor: _iskategoriIklanSelected1
+                        ? ColorValue.primaryColor
+                        : ColorValue.neutralColor.withOpacity(0.1),
+                    elevation: 2,
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    labelPadding: const EdgeInsets.symmetric(vertical: 5),
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                ],
+              ),
+              _iskategoriIklanSelected
+                  ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "Kategori Toko",
+                    style:
+                    Theme.of(context).textTheme.subtitle1!.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: ColorValue.neutralColor,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  if (_isCategorySelected)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var i = 0;
+                        i < widget.selectedCategories.length;
+                        i++)
+                          if (widget.selectedCategories[i])
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          width: 50,
+                                          height: 50,
+                                          //border radius
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(5),
+                                            color:
+                                            ColorValue.primaryColor,
+                                          ),
+                                        ),
+                                        SvgPicture.asset(
+                                          categoryIcons[i],
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    Text(
+                                      categoryNames[i],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                        color:
+                                        ColorValue.neutralColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                )
+                              ],
+                            ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: ColorValue.primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isCategorySelected = false;
+                            });
+                          },
+                          child: Text(
+                            "Batal",
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: ColorValue.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const KategoriIklan()));
+                      },
+                      child: Text(
+                        "Pilih Kategori Iklan",
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1!
+                            .copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                ],
+              )
+                  : Container(),
+              const SizedBox(
+                height: 20,
+              ),
+              main_button('Iklankan', context, onPressed: () async{
+                File? selectedImage = await compressImage(_imageFile!);
+                //jika menekan Action chip Iklan Katalog maka akan menjalankan fungsi postIklan pada bloc
+                if(_iskategoriIklanSelected){
+                  print("Iklan katalog");
+                  BlocProvider.of<IklanBloc>(context).add(PostIklan(
+                    imgPamflet: selectedImage,
+                    kategoriId: widget.selectedCategories.indexWhere((element) => element == true) + 1
+                  ));
+                } else {
+                  print("Iklan Toko");
+                  BlocProvider.of<IklanBloc>(context).add(PostIklanToko(
+                    imgPamflet: selectedImage,
+                  ));
+                }
+              })
+            ],
+          ),
         ),
       ),
     );

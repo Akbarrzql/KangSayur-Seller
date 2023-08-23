@@ -58,19 +58,11 @@ class _DetailProdukState extends State<DetailProduk> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SvgPicture.asset(
-                          'assets/svg/bahan_pokok.svg',
-                          width: 45,
-                          height: 45,
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Bahan Pokok',
+                              widget.verifikasiModel.namaKategori,
                               style: textTheme.headline6!.copyWith(
                                 color: ColorValue.neutralColor,
                                 fontSize: 14,

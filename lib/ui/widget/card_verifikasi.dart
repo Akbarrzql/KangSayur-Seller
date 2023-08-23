@@ -62,18 +62,6 @@ class CardVerifikasi extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    onPressed: (){},
-                    icon: const Icon(
-                      Icons.more_vert,
-                      color: ColorValue.neutralColor,
-                      size: 24,
-                    ),
-                  ),
-                ),
               ],
             ),
             const Divider(
