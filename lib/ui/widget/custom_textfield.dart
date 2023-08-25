@@ -11,6 +11,7 @@ class CustomTextFormField extends StatefulWidget {
     this.validator,
     required this.controller,
     this.onChanged,
+    this.width = 343,
   });
 
   final String label;
@@ -20,6 +21,7 @@ class CustomTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final String? Function(String?)? onChanged;
+  final int width;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -32,69 +34,72 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return TextFormField(
-      controller: widget.controller,
-      keyboardType: widget.textInputType,
-      maxLines: widget.maxLines,
-      validator: widget.validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      obscureText: widget.isPassword ? _isPasswordVisible : false,
-      autocorrect: !widget.isPassword,
-      enableSuggestions: !widget.isPassword,
-      onChanged: widget.onChanged,
-      style: textTheme.labelLarge,
-      decoration: InputDecoration(
-        hintText: widget.label,
-        hintStyle: textTheme.bodyMedium,
-        filled: true,
-        fillColor: Colors.transparent,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 18,
-        ),
-        suffixIcon: widget.isPassword
-            ? IconButton(
-                onPressed: () {
-                  setState(() {
-                    _isPasswordVisible = !_isPasswordVisible;
-                  });
-                },
-                icon: Icon(
-                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                  color: ColorValue.primaryColor,
-                ),
-              )
-            : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            width: 0.5,
-            color: ColorValue.hintColor,
+    return Container(
+      width: widget.width.toDouble(),
+      child: TextFormField(
+        controller: widget.controller,
+        keyboardType: widget.textInputType,
+        maxLines: widget.maxLines,
+        validator: widget.validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        obscureText: widget.isPassword ? _isPasswordVisible : false,
+        autocorrect: !widget.isPassword,
+        enableSuggestions: !widget.isPassword,
+        onChanged: widget.onChanged,
+        style: textTheme.labelLarge,
+        decoration: InputDecoration(
+          hintText: widget.label,
+          hintStyle: textTheme.bodyMedium,
+          filled: true,
+          fillColor: Colors.transparent,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 18,
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            width: 0.5,
-            color: ColorValue.hintColor,
+          suffixIcon: widget.isPassword
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                  icon: Icon(
+                    _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                    color: ColorValue.primaryColor,
+                  ),
+                )
+              : null,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
           ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            width: 2,
-            color: Colors.red,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              width: 0.5,
+              color: ColorValue.hintColor,
+            ),
           ),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            width: 2,
-            color: Colors.red,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              width: 0.5,
+              color: ColorValue.hintColor,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              width: 2,
+              color: Colors.red,
+            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              width: 2,
+              color: Colors.red,
+            ),
           ),
         ),
       ),
