@@ -69,4 +69,22 @@ class InputValidator {
         ? 'Email sudah terdaftar'
         : null;
   }
+
+  static String? noPolisiDepan(value) {
+    return value.toString().length >= 3
+        ? 'Tidak valid'
+        : null;
+  }
+
+  static String? noPolisiBelakang(value) {
+    return value.toString().length >= 5
+        ? 'Tidak valid'
+        : null;
+  }
+
+  static String? noPolisiTengah(value) {
+    return value.toString().trim().isEmpty && value.toString().length >= 5
+        ? 'Tidak valid'
+        : null;
+  }
 }

@@ -15,9 +15,14 @@ import 'package:kangsayur_seller/ui/ulasan/review_ulasan_all.dart';
 import 'package:kangsayur_seller/ui/widget/main_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
+import '../../../bloc/bloc/pesanan_bloc.dart';
 import '../../../bloc/bloc/profile_bloc.dart';
+import '../../../bloc/event/pesanan_event.dart';
 import '../../../bloc/event/profile_event.dart';
+import '../../../bloc/state/pesanan_state.dart';
 import '../../../bloc/state/profile_state.dart';
+import '../../../repository/konfirmasi_repository.dart';
+import '../../../repository/pesanan_repository.dart';
 import '../../../repository/profile_repository.dart';
 import '../../informasi_driver/list_driver.dart';
 import '../../auth/register/driver/register_driver.dart';
@@ -36,6 +41,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
 
   bool isLoadedBg = false;
+  bool isPesananLoaded = false;
   UserModel? userModel;
 
   Future _logout() async {
@@ -253,9 +259,77 @@ class _ProfilePageState extends State<ProfilePage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", 32, 32,  onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const TranskasiPage()));
-                                }),
+                                BlocProvider(
+                                  create: (context) => PesananPageBloc(pesananPageRepository: PesananRepository(), konfirmasiPageRepository: KonfirmasiRepository())..add(GetPesanan()),
+                                  child: BlocBuilder<PesananPageBloc, PesananPageState>(
+                                    builder: (context, state){
+                                      if (state is PesananPageLoading) {
+                                        return KategoriProfile2("Transaksi", "assets/svg/pembayaran.svg", 32, 32, onTap: (){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const TranskasiPage()));
+                                        });
+                                      }
+                                      else if (state is PesananPageLoaded){
+                                        final pesanan = state.pesananModel;
+                                        if(pesanan.data.isEmpty){
+                                          return KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", 32, 32,  onTap: (){
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoPage(selectedCategories: [])));
+                                          });
+                                        }else{
+                                          return GestureDetector(
+                                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const TranskasiPage())),
+                                            child: Container(
+                                              width: 55,
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    margin: const EdgeInsets.only(right: 30),
+                                                    height: 20,
+                                                    width: 20,
+                                                    decoration: BoxDecoration(
+                                                      color: ColorValue.primaryColor,
+                                                      borderRadius: BorderRadius.circular(10),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        pesanan.data.length.toString(),
+                                                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                                          color: Colors.white,
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SvgPicture.asset("assets/svg/pembayaran.svg", width: 32, height: 32,),
+                                                  const SizedBox(height: 10,),
+                                                  Text(
+                                                    "Transaksi",
+                                                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                                                      color: ColorValue.neutralColor,
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                      else if (state is PesananPageError){
+                                        return KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", 32, 32,  onTap: (){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoPage(selectedCategories: [])));
+                                        });
+                                      }
+                                      else{
+                                        return KategoriProfile("Transaksi", "assets/svg/pembayaran.svg", 32, 32,  onTap: (){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoPage(selectedCategories: [])));
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
                                 KategoriProfile("Promo", "assets/svg/promo_profile.svg", 32, 32,  onTap: (){
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoPage(selectedCategories: [])));
                                 }),
@@ -341,6 +415,49 @@ class _ProfilePageState extends State<ProfilePage> {
         width: 55,
         child: Column(
           children: [
+            SvgPicture.asset(image, width: width, height: height,),
+            const SizedBox(height: 10,),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                color: ColorValue.neutralColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget KategoriProfile2(String title, String image, double width, double height, {VoidCallback? onTap, String Pesanan = ""}){
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 55,
+        child: Column(
+          children: [
+              Container(
+                margin: const EdgeInsets.only(right: 30),
+              height: 20,
+              width: 20,
+              decoration: BoxDecoration(
+                color: ColorValue.primaryColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(
+                  Pesanan,
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
             SvgPicture.asset(image, width: width, height: height,),
             const SizedBox(height: 10,),
             Text(

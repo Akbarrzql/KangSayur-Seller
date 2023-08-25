@@ -47,7 +47,9 @@ class _RegisterKendaraanState extends State<RegisterKendaraan> {
 
 
   final SingleValueDropDownController _jenisKendaraanController = SingleValueDropDownController();
-  final TextEditingController _nomorPolisiController = TextEditingController();
+  final TextEditingController _nomorPolisiDepanController = TextEditingController();
+  final TextEditingController _nomorPolisiTengahController = TextEditingController();
+  final TextEditingController _nomorPolisiBelakangController = TextEditingController();
   final TextEditingController _nomorRangkaController = TextEditingController();
   final TextEditingController _namaKendaraanController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -145,23 +147,49 @@ class _RegisterKendaraanState extends State<RegisterKendaraan> {
                       fontWeight: FontWeight.w500,),
                   ),
                   const SizedBox(height: 10,),
-                  CustomTextFormField(
-                    controller: _nomorPolisiController,
-                    label: 'No Polisi',
-                    validator: (value) =>  InputValidator.licenseValidator(value),
-                  ),
-                  const SizedBox(height: 20,),
-                  Text(
-                    "Nomor Rangka",
-                    style: textTheme.bodyText1!.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,),
-                  ),
-                  const SizedBox(height: 10,),
-                  CustomTextFormField(
-                    controller: _nomorRangkaController,
-                    label: 'No Rangka',
-                    validator: (value) =>  InputValidator.noRangkaValidator(value),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 80,
+                        child: CustomTextFormField(
+                          controller: _nomorPolisiDepanController,
+                          label: 'Depan',
+                          validator: (value) =>  InputValidator.noPolisiDepan(value),
+                          onChanged: (value) {
+                            if (value!.length == 2) {
+                              FocusScope.of(context).nextFocus();
+                            }
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10,),
+                      Expanded(
+                        child: CustomTextFormField(
+                          controller: _nomorPolisiTengahController,
+                          label: 'Tengah',
+                          validator: (value) =>  InputValidator.noPolisiTengah(value),
+                          onChanged: (value) {
+                            if (value!.length == 5) {
+                              FocusScope.of(context).nextFocus();
+                            }
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10,),
+                      SizedBox(
+                        width: 80,
+                        child: CustomTextFormField(
+                          controller: _nomorPolisiBelakangController,
+                          label: 'Belakang',
+                          validator: (value) =>  InputValidator.noPolisiBelakang(value),
+                          onChanged: (value) {
+                            if (value!.length == 3) {
+                              FocusScope.of(context).nextFocus();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20,),
                   main_button("Daftar menjadi driver", context, onPressed: () async {
@@ -169,6 +197,7 @@ class _RegisterKendaraanState extends State<RegisterKendaraan> {
                     File? fotoKTP = await compressImage(widget.fotoKTP!);
                     File? fotoSTNK = await compressImage(widget.fotoSTNK!);
                     File? fotoKendaraan = await compressImage(widget.fotoKendaraan!);
+                    var _nomorPolisi = _nomorPolisiDepanController.text + " " + _nomorPolisiTengahController.text + " " + _nomorPolisiBelakangController.text;
 
                     if(_formKey.currentState!.validate()) {
                       BlocProvider.of<RegisterDriverPageBloc>(context).add(RegisterDriverButtonPressed(
@@ -180,7 +209,7 @@ class _RegisterKendaraanState extends State<RegisterKendaraan> {
                         // konfirmasiPassword: widget.konfirmasiPassword.text,
                         jenisKendaraan: _jenisKendaraanController.dropDownValue!.name,
                         namaKendaraan: _namaKendaraanController.text,
-                        platNomor: _nomorPolisiController.text,
+                        platNomor: _nomorPolisi,
                         noRangka: _nomorRangkaController.text,
                         photoDriver: fotoDriver,
                         photoKTP: fotoKTP,

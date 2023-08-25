@@ -69,29 +69,61 @@ class _ChatPageState extends State<ChatPage> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: ListView.builder(
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return Column(
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
                                 children: [
                                   Container(
-                                    width: 100,
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 100,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width * 0.6,
+                                        child: Container(
+                                          width: 100,
+                                          height: 10,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5),
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    width: 30,
                                     height: 10,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
@@ -101,50 +133,23 @@ class _ChatPageState extends State<ChatPage> {
                                   const SizedBox(
                                     height: 4,
                                   ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.6,
-                                    child: Container(
-                                      width: 100,
-                                      height: 10,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
                                 ],
                               ),
                             ],
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 10,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                            ],
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          const Divider(
+                            height: 1,
+                            color: ColorValue.hintColor,
+                          ),
+                          const SizedBox(
+                            height: 16,
                           ),
                         ],
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      const Divider(
-                        height: 1,
-                        color: ColorValue.hintColor,
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 ),
               );

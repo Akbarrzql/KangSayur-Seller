@@ -259,7 +259,7 @@ class _DahsboardPageState extends State<DahsboardPage> {
                             childAspectRatio: 1.5,
                             children: [
                               card_analytic(
-                                  ColorValue.primaryColor, "Penjualan", state.analisaModel.data.pesanan.toString()),
+                                  ColorValue.primaryColor, "Pesanan", state.analisaModel.data.pesanan.toString()),
                               card_analytic(ColorValue.secondaryColor,
                                   "Pengunjung toko", state.analisaModel.data.pengunjungToko.toString()),
                               card_analytic(

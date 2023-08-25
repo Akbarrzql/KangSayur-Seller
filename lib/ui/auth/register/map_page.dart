@@ -53,6 +53,9 @@ class _MapScreenState extends State<MapScreen> {
   LatLng _currentPosition = AppConstants.myLocation;
   final List<Marker> _markers = [];
   Marker? _currentMarker;
+  TextEditingController _searchController = TextEditingController();
+  List<String> _searchResults = [];
+
 
   var mapController = MapController();
 
@@ -138,6 +141,58 @@ class _MapScreenState extends State<MapScreen> {
     // Memindahkan peta ke lokasi pengguna atau marker
     mapController.move(_currentPosition, 14.0); // Sesuaikan level zoom jika perlu
   }
+
+  Future<void> _searchMapboxAddress(String query) async {
+    if (query.isEmpty) {
+      setState(() {
+        _searchResults.clear();
+      });
+      return;
+    }
+
+    const apiKey = AppConstants.mapBoxAccessToken;
+    final apiUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/$query.json?access_token=$apiKey';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      final data = json.decode(response.body);
+
+      final List<String> results = [];
+
+      for (var feature in data['features']) {
+        String address = feature['place_name'];
+        results.add(address);
+      }
+
+      setState(() {
+        _searchResults = results;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _selectAddress(String address) async {
+    List<Location> locations = await locationFromAddress(address);
+    setState(() {
+      _currentPosition = LatLng(locations[0].latitude, locations[0].longitude);
+      _currentAddress = address;
+      _markers.clear();
+      _markers.add(
+        Marker(
+          point: _currentPosition,
+          builder: (context) => const Icon(
+            Icons.location_pin,
+            size: 50,
+            color: ColorValue.primaryColor,
+          ),
+        ),
+      );
+    });
+    mapController.move(_currentPosition, 14.0);
+  }
+
+
 
 
   // //list jam buka tutup
@@ -264,6 +319,74 @@ class _MapScreenState extends State<MapScreen> {
             ],
           )
         ],
+      ),
+      Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 5.0,
+                    spreadRadius: 0.0,
+                    offset: Offset(0.0, 1.0), // shadow direction: bottom right
+                  )
+                ],
+              ),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Cari alamat...',
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  border: InputBorder.none,
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() {
+                        _searchResults.clear();
+                      });
+                    },
+                  )
+                ),
+                onChanged: _searchMapboxAddress,
+                //icon clear textfield
+              ),
+            ),
+            if (_searchResults.isNotEmpty)
+              // Tampilkan hasil pencarian alamat
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                height: 200,
+                width: double.infinity,
+                color: Colors.white,
+                child: ListView.builder(
+                  itemCount: _searchResults.length,
+                  itemBuilder: (context, index) {
+                    String address = _searchResults[index];
+                    return ListTile(
+                      title: Text(address),
+                      onTap: () {
+                        _searchController.text = address;
+                        _selectAddress(address);
+                        setState(() {
+                          _searchResults.clear();
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+          ],
+        ),
       ),
       Positioned(
         bottom: 0,
