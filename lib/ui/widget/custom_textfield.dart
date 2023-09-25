@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../common/color_value.dart';
 
 class CustomTextFormField extends StatefulWidget {
@@ -12,6 +13,7 @@ class CustomTextFormField extends StatefulWidget {
     required this.controller,
     this.onChanged,
     this.width = 343,
+    this.inputFormatters,
   });
 
   final String label;
@@ -22,6 +24,7 @@ class CustomTextFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final String? Function(String?)? onChanged;
   final int width;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -37,6 +40,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return Container(
       width: widget.width.toDouble(),
       child: TextFormField(
+        inputFormatters: widget.inputFormatters,
         controller: widget.controller,
         keyboardType: widget.textInputType,
         maxLines: widget.maxLines,
