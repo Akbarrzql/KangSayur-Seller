@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kangsayur_seller/bloc/bloc/register_driver_bloc.dart';
 import 'package:kangsayur_seller/bloc/state/resgister_driver_state.dart';
@@ -154,6 +155,7 @@ class _RegisterKendaraanState extends State<RegisterKendaraan> {
                         child: CustomTextFormField(
                           controller: _nomorPolisiDepanController,
                           label: 'Depan',
+                          inputFormatters: [LengthLimitingTextInputFormatter(2)],
                           validator: (value) =>  InputValidator.noPolisiDepan(value),
                           onChanged: (value) {
                             if (value!.length == 2) {
@@ -167,9 +169,10 @@ class _RegisterKendaraanState extends State<RegisterKendaraan> {
                         child: CustomTextFormField(
                           controller: _nomorPolisiTengahController,
                           label: 'Tengah',
+                          inputFormatters: [LengthLimitingTextInputFormatter(4)],
                           validator: (value) =>  InputValidator.noPolisiTengah(value),
                           onChanged: (value) {
-                            if (value!.length == 5) {
+                            if (value!.length == 4) {
                               FocusScope.of(context).nextFocus();
                             }
                           },
@@ -181,6 +184,7 @@ class _RegisterKendaraanState extends State<RegisterKendaraan> {
                         child: CustomTextFormField(
                           controller: _nomorPolisiBelakangController,
                           label: 'Belakang',
+                          inputFormatters: [LengthLimitingTextInputFormatter(3)],
                           validator: (value) =>  InputValidator.noPolisiBelakang(value),
                           onChanged: (value) {
                             if (value!.length == 3) {

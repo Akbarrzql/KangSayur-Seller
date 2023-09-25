@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kangsayur_seller/bloc/bloc/add_iklan_bloc.dart';
 import 'package:kangsayur_seller/repository/iklan_repository.dart';
 import 'package:kangsayur_seller/repository/iklan_toko_repository.dart';
+import 'package:kangsayur_seller/ui/bottom_navigation/bottom_navigation.dart';
 import 'package:kangsayur_seller/ui/iklan/kategori_iklan.dart';
 import 'package:kangsayur_seller/ui/informasi/informasi.dart';
 import 'package:kangsayur_seller/ui/profile/inbox.dart';
@@ -93,7 +94,7 @@ class _IklanPageState extends State<IklanPage> {
     iklanBloc = IklanBloc(iklanRepository: IklanRepository(), iklanTokoPageRepository: IklanTokoRepository());
     iklanBloc.stream.listen((event) {
       if(event is AddIklanPageLoaded){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const InformasiIklanPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
       }
     });
   }
